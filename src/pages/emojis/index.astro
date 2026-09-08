@@ -20,31 +20,200 @@ const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
   </section>
 
   <section class="shell explorer" id="explorer" aria-labelledby="explore-title">
-    <div class="section-heading"><div><p class="eyebrow">EXPLORE</p><h2 id="explore-title">Emoji library</h2></div><p id="result-count">{emojis.length} results</p></div>
-    <div class="filters" aria-label="Emoji filters">
-      <label class="search-box"><span class="sr-only">Search emoji</span><span aria-hidden="true">⌕</span><input id="emoji-search" type="search" placeholder="Search emoji, shortcode or tag…" autocomplete="off" /></label>
-      <select id="source-filter" aria-label="Filter by source"><option value="all">All sources</option>{sources.map((source) => <option value={source.toLowerCase()}>{source}</option>)}</select>
-      <select id="group-filter" aria-label="Filter by category"><option value="all">All categories</option>{groups.map((group) => <option value={group}>{group.replaceAll('-', ' ')}</option>)}</select>
-      <select id="motion-filter" aria-label="Filter by animation"><option value="all">Static + animated</option><option value="yes">Animated only</option><option value="no">Static only</option></select>
+    <div class="section-heading">
+      <div><p class="eyebrow">EXPLORE</p><h2 id="explore-title">Emoji library</h2></div>
+      <p id="result-count">{emojis.length} results</p>
     </div>
-    <div class="results-summary" aria-live="polite"><span id="range-count"></span><span>48 per page</span></div>
+
+    <div class="filters" aria-label="Emoji filters">
+      <label class="search-box">
+        <span class="sr-only">Search emoji</span>
+        <span aria-hidden="true">⌕</span>
+        <input id="emoji-search" type="search" placeholder="Search emoji, shortcode or tag…" autocomplete="off" />
+      </label>
+      <select id="source-filter" aria-label="Filter by source">
+        <option value="all">All sources</option>
+        {sources.map((source) => <option value={source.toLowerCase()}>{source}</option>)}
+      </select>
+      <select id="group-filter" aria-label="Filter by category">
+        <option value="all">All categories</option>
+        {groups.map((group) => <option value={group}>{group.replaceAll('-', ' ')}</option>)}
+      </select>
+      <select id="motion-filter" aria-label="Filter by animation">
+        <option value="all">Static + animated</option>
+        <option value="yes">Animated only</option>
+        <option value="no">Static only</option>
+      </select>
+    </div>
+
+    <div class="results-summary" aria-live="polite">
+      <span id="range-count"></span>
+      <span>48 per page</span>
+    </div>
+
     <div class="emoji-grid" id="emoji-grid">{emojis.map((emoji) => <EmojiCard emoji={emoji} />)}</div>
-    <div class="empty-state" id="empty-state" hidden><div>🫥</div><h3>No emoji found</h3><p>Try another keyword or clear one of the filters.</p></div>
-    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden><button class="pagination-nav" type="button" data-page-action="prev">← Prev</button><div class="pagination-pages" id="pagination-pages"></div><button class="pagination-nav" type="button" data-page-action="next">Next →</button></nav>
+
+    <div class="empty-state" id="empty-state" hidden>
+      <div>🫥</div><h3>No emoji found</h3><p>Try another keyword or clear one of the filters.</p>
+    </div>
+
+    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden>
+      <button class="pagination-nav" type="button" data-page-action="prev">← Prev</button>
+      <div class="pagination-pages" id="pagination-pages"></div>
+      <button class="pagination-nav" type="button" data-page-action="next">Next →</button>
+    </nav>
   </section>
 
   <script>
     const PAGE_SIZE = 48;
-    const search = document.querySelector('#emoji-search'); const source = document.querySelector('#source-filter'); const group = document.querySelector('#group-filter'); const motion = document.querySelector('#motion-filter');
-    const cards = [...document.querySelectorAll('[data-emoji-card]')]; const count = document.querySelector('#result-count'); const rangeCount = document.querySelector('#range-count'); const empty = document.querySelector('#empty-state'); const pagination = document.querySelector('#pagination'); const paginationPages = document.querySelector('#pagination-pages'); const explorer = document.querySelector('#explorer');
-    const previousButton = pagination.querySelector('[data-page-action="prev"]'); const nextButton = pagination.querySelector('[data-page-action="next"]');
-    const pageFromUrl = Number.parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10); let currentPage = Number.isFinite(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1; let filteredCards = cards;
-    const updateUrl = () => { const url = new URL(window.location.href); if (currentPage > 1) url.searchParams.set('page', String(currentPage)); else url.searchParams.delete('page'); window.history.replaceState({}, '', url); };
-    const pageItems = (totalPages) => { if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1); const items = [1]; const start = Math.max(2, currentPage - 1); const end = Math.min(totalPages - 1, currentPage + 1); if (start > 2) items.push('ellipsis-start'); for (let page = start; page <= end; page += 1) items.push(page); if (end < totalPages - 1) items.push('ellipsis-end'); items.push(totalPages); return items; };
-    const renderPagination = (totalPages) => { pagination.hidden = totalPages <= 1; paginationPages.replaceChildren(); previousButton.disabled = currentPage <= 1; nextButton.disabled = currentPage >= totalPages; for (const item of pageItems(totalPages)) { if (typeof item === 'string') { const ellipsis = document.createElement('span'); ellipsis.className = 'pagination-ellipsis'; ellipsis.textContent = '…'; paginationPages.append(ellipsis); continue; } const button = document.createElement('button'); button.type = 'button'; button.className = 'pagination-page'; button.textContent = String(item); button.dataset.page = String(item); if (item === currentPage) { button.classList.add('is-active'); button.setAttribute('aria-current', 'page'); } paginationPages.append(button); } };
-    const renderPage = ({ scroll = false } = {}) => { const total = filteredCards.length; const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE)); currentPage = Math.min(Math.max(currentPage, 1), totalPages); for (const card of cards) card.hidden = true; const start = (currentPage - 1) * PAGE_SIZE; const end = Math.min(start + PAGE_SIZE, total); for (const card of filteredCards.slice(start, end)) card.hidden = false; count.textContent = `${total} result${total === 1 ? '' : 's'}`; rangeCount.textContent = total === 0 ? '0 results' : `Showing ${start + 1}–${end} of ${total}`; empty.hidden = total !== 0; renderPagination(totalPages); updateUrl(); if (scroll) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-    const applyFilters = () => { const q = search.value.trim().toLowerCase(); filteredCards = cards.filter((card) => (!q || card.dataset.search.includes(q)) && (source.value === 'all' || card.dataset.source === source.value) && (group.value === 'all' || card.dataset.group === group.value) && (motion.value === 'all' || card.dataset.animated === motion.value)); currentPage = 1; renderPage(); };
-    [search, source, group, motion].forEach((control) => control.addEventListener('input', applyFilters)); pagination.addEventListener('click', (event) => { const target = event.target.closest('button'); if (!target) return; const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE)); if (target.dataset.pageAction === 'prev') currentPage -= 1; else if (target.dataset.pageAction === 'next') currentPage += 1; else if (target.dataset.page) currentPage = Number.parseInt(target.dataset.page, 10); else return; currentPage = Math.min(Math.max(currentPage, 1), totalPages); renderPage({ scroll: true }); });
-    document.addEventListener('click', async (event) => { const button = event.target.closest('[data-copy]'); if (!button) return; await navigator.clipboard.writeText(button.dataset.copy); const previous = button.textContent; button.textContent = 'Copied!'; setTimeout(() => { button.textContent = previous; }, 900); }); renderPage();
+    const search = document.querySelector('#emoji-search');
+    const source = document.querySelector('#source-filter');
+    const group = document.querySelector('#group-filter');
+    const motion = document.querySelector('#motion-filter');
+    const cards = [...document.querySelectorAll('[data-emoji-card]')];
+    const count = document.querySelector('#result-count');
+    const rangeCount = document.querySelector('#range-count');
+    const empty = document.querySelector('#empty-state');
+    const pagination = document.querySelector('#pagination');
+    const paginationPages = document.querySelector('#pagination-pages');
+    const explorer = document.querySelector('#explorer');
+    const previousButton = pagination.querySelector('[data-page-action="prev"]');
+    const nextButton = pagination.querySelector('[data-page-action="next"]');
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedPage = Number.parseInt(params.get('page') || '1', 10);
+    let currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+    let filteredCards = cards;
+
+    const setSelectFromParam = (control, value) => {
+      if (!value) return;
+      const exists = [...control.options].some((option) => option.value === value);
+      if (exists) control.value = value;
+    };
+
+    search.value = params.get('q') || '';
+    setSelectFromParam(source, params.get('source'));
+    setSelectFromParam(group, params.get('group'));
+    setSelectFromParam(motion, params.get('motion'));
+
+    const updateUrl = () => {
+      const url = new URL(window.location.href);
+      const q = search.value.trim();
+
+      if (q) url.searchParams.set('q', q);
+      else url.searchParams.delete('q');
+
+      if (source.value !== 'all') url.searchParams.set('source', source.value);
+      else url.searchParams.delete('source');
+
+      if (group.value !== 'all') url.searchParams.set('group', group.value);
+      else url.searchParams.delete('group');
+
+      if (motion.value !== 'all') url.searchParams.set('motion', motion.value);
+      else url.searchParams.delete('motion');
+
+      if (currentPage > 1) url.searchParams.set('page', String(currentPage));
+      else url.searchParams.delete('page');
+
+      window.history.replaceState({}, '', url);
+    };
+
+    const pageItems = (totalPages) => {
+      if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
+      const items = [1];
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      if (start > 2) items.push('ellipsis-start');
+      for (let page = start; page <= end; page += 1) items.push(page);
+      if (end < totalPages - 1) items.push('ellipsis-end');
+      items.push(totalPages);
+      return items;
+    };
+
+    const renderPagination = (totalPages) => {
+      pagination.hidden = totalPages <= 1;
+      paginationPages.replaceChildren();
+      previousButton.disabled = currentPage <= 1;
+      nextButton.disabled = currentPage >= totalPages;
+
+      for (const item of pageItems(totalPages)) {
+        if (typeof item === 'string') {
+          const ellipsis = document.createElement('span');
+          ellipsis.className = 'pagination-ellipsis';
+          ellipsis.textContent = '…';
+          paginationPages.append(ellipsis);
+          continue;
+        }
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'pagination-page';
+        button.textContent = String(item);
+        button.dataset.page = String(item);
+        if (item === currentPage) {
+          button.classList.add('is-active');
+          button.setAttribute('aria-current', 'page');
+        }
+        paginationPages.append(button);
+      }
+    };
+
+    const renderPage = ({ scroll = false } = {}) => {
+      const total = filteredCards.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+
+      for (const card of cards) card.hidden = true;
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, total);
+      for (const card of filteredCards.slice(start, end)) card.hidden = false;
+
+      count.textContent = `${total} result${total === 1 ? '' : 's'}`;
+      rangeCount.textContent = total === 0 ? '0 results' : `Showing ${start + 1}–${end} of ${total}`;
+      empty.hidden = total !== 0;
+      renderPagination(totalPages);
+      updateUrl();
+
+      if (scroll) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const applyFilters = ({ resetPage = true } = {}) => {
+      const q = search.value.trim().toLowerCase();
+      filteredCards = cards.filter((card) =>
+        (!q || card.dataset.search.includes(q)) &&
+        (source.value === 'all' || card.dataset.source === source.value) &&
+        (group.value === 'all' || card.dataset.group === group.value) &&
+        (motion.value === 'all' || card.dataset.animated === motion.value)
+      );
+      if (resetPage) currentPage = 1;
+      renderPage();
+    };
+
+    [search, source, group, motion].forEach((control) =>
+      control.addEventListener('input', () => applyFilters({ resetPage: true }))
+    );
+
+    pagination.addEventListener('click', (event) => {
+      const target = event.target.closest('button');
+      if (!target) return;
+      const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
+      if (target.dataset.pageAction === 'prev') currentPage -= 1;
+      else if (target.dataset.pageAction === 'next') currentPage += 1;
+      else if (target.dataset.page) currentPage = Number.parseInt(target.dataset.page, 10);
+      else return;
+      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+      renderPage({ scroll: true });
+    });
+
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-copy]');
+      if (!button) return;
+      await navigator.clipboard.writeText(button.dataset.copy);
+      const previous = button.textContent;
+      button.textContent = 'Copied!';
+      setTimeout(() => { button.textContent = previous; }, 900);
+    });
+
+    applyFilters({ resetPage: false });
   </script>
 </Layout>
