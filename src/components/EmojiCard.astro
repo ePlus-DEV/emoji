@@ -1,0 +1,53 @@
+---
+interface Emoji {
+  slug: string;
+  name: string;
+  shortcode: string;
+  emoji: string;
+  image: string;
+  sourceLabel: string;
+  license: string;
+  tags: string[];
+  group: string;
+  animated: boolean;
+}
+
+interface Props {
+  emoji: Emoji;
+}
+
+const { emoji } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const imageUrl = emoji.image.startsWith('http')
+  ? emoji.image
+  : `${base}${emoji.image.replace(/^\//, '')}`;
+const detailUrl = `${base}emoji/${emoji.slug}`;
+const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group, ...emoji.tags]
+  .join(' ')
+  .toLowerCase();
+---
+<article
+  class="emoji-card"
+  data-emoji-card
+  data-search={searchText}
+  data-source={emoji.sourceLabel.toLowerCase()}
+  data-group={emoji.group}
+  data-animated={emoji.animated ? 'yes' : 'no'}
+>
+  <a class="emoji-preview" href={detailUrl} aria-label={`Open ${emoji.name}`}>
+    <img src={imageUrl} alt={emoji.name} loading="lazy" width="128" height="128" />
+  </a>
+  <div class="emoji-card-body">
+    <div class="emoji-title-row">
+      <a class="emoji-name" href={detailUrl}>{emoji.name}</a>
+      <span class="native-emoji" aria-hidden="true">{emoji.emoji}</span>
+    </div>
+    <button class="shortcode" type="button" data-copy={`:${emoji.shortcode}:`} title="Copy shortcode">
+      :{emoji.shortcode}:
+    </button>
+    <div class="emoji-meta">
+      <span>{emoji.sourceLabel}</span>
+      <span>{emoji.license}</span>
+    </div>
+  </div>
+</article>
