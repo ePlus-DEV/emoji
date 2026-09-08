@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import emojis from '../../data/emojis.json';
 import { emojiAssetUrl } from '../../lib/emojiAsset';
+import { withBase } from '../../lib/url';
 
 export function getStaticPaths() {
   return emojis.map((emoji) => ({
@@ -13,11 +14,12 @@ export function getStaticPaths() {
 const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
+const homeUrl = withBase('/', base);
 const title = `${emoji.name} — ${emoji.sourceLabel} | ePlus Emoji`;
 ---
 <Layout title={title} description={`Download ${emoji.name} from ${emoji.sourceLabel} and copy :${emoji.shortcode}:.`}>
   <section class="shell detail-page">
-    <a class="back-link" href={base}>← Back to all emoji</a>
+    <a class="back-link" href={homeUrl}>← Back to all emoji</a>
     <div class="detail-grid">
       <div class="detail-preview">
         <img src={imageUrl} alt={emoji.name} width="320" height="320" />
