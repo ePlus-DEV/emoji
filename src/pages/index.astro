@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import EmojiCard from '../components/EmojiCard.astro';
 import emojis from '../data/emojis.json';
+import '../styles/pagination.css';
 
 const groups = [...new Set(emojis.map((emoji) => emoji.group))].sort();
 const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
