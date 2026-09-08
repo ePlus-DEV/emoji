@@ -24,3 +24,5 @@ jobs:
         run: npm run check:data
       - name: Build
         run: npm run build
+      - name: Verify built links
+        run: npm run check:build
