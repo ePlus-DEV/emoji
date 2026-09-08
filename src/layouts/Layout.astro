@@ -9,11 +9,12 @@ interface Props {
 
 const {
   title = 'ePlus Emoji',
-  description = 'An open emoji directory for developers and communities.'
+  description = 'An open custom emoji directory for developers and communities.'
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 const homeUrl = withBase('/', base);
+const emojisUrl = withBase('/emojis', base);
 const faviconUrl = withBase('/favicon.svg', base);
 const apiUrl = withBase('/api/emojis.json', base);
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
@@ -37,7 +38,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
           <span>ePlus Emoji</span>
         </a>
         <nav class="nav-links" aria-label="Primary navigation">
-          <a href={homeUrl}>Explore</a>
+          <a href={homeUrl}>Home</a>
+          <a href={emojisUrl}>Emojis</a>
           <a href={apiUrl}>API</a>
           <a href="https://github.com/ePlus-DEV/emoji" rel="noreferrer">GitHub</a>
         </nav>
