@@ -1,10 +1,14 @@
 ---
+import { emojiAssetUrl } from '../lib/emojiAsset';
+
 interface Emoji {
   slug: string;
   name: string;
   shortcode: string;
   emoji: string;
   image: string;
+  source: string;
+  hexcode: string;
   sourceLabel: string;
   license: string;
   tags: string[];
@@ -18,9 +22,7 @@ interface Props {
 
 const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const imageUrl = emoji.image.startsWith('http')
-  ? emoji.image
-  : `${base}${emoji.image.replace(/^\//, '')}`;
+const imageUrl = emojiAssetUrl(emoji, base);
 const detailUrl = `${base}emoji/${emoji.slug}`;
 const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group, ...emoji.tags]
   .join(' ')
