@@ -1,3 +1,5 @@
+import { withBase } from './url';
+
 export interface EmojiAssetRef {
   image: string;
   source: string;
@@ -27,6 +29,5 @@ export function localEmojiAssetPath(emoji: EmojiAssetRef) {
 }
 
 export function emojiAssetUrl(emoji: EmojiAssetRef, base: string) {
-  const localPath = localEmojiAssetPath(emoji);
-  return `${base}${localPath.replace(/^\//, '')}`;
+  return withBase(localEmojiAssetPath(emoji), base);
 }
