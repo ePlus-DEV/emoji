@@ -1,241 +1,91 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import EmojiCard from '../components/EmojiCard.astro';
+import { emojiAssetUrl } from '../lib/emojiAsset';
+import { withBase } from '../lib/url';
 import emojis from '../data/emojis.json';
-import '../styles/pagination.css';
+import '../styles/home.css';
 
-const groups = [...new Set(emojis.map((emoji) => emoji.group))].sort();
-const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
+const base = import.meta.env.BASE_URL;
+const allEmojiUrl = withBase('/emojis', base);
+const animated = emojis.filter((emoji) => emoji.animated).slice(0, 18);
+const staticEmoji = emojis.filter((emoji) => !emoji.animated).slice(0, 18);
+const recent = [...emojis].sort((a, b) => String(b.addedAt).localeCompare(String(a.addedAt))).slice(0, 18);
+const random = [...emojis].sort((a, b) => a.id.localeCompare(b.id)).filter((_, index) => index % 7 === 0).slice(0, 18);
+
+const sections = [
+  { title: 'Most Popular Animated', subtitle: 'Reaction GIFs and moving emoji', items: animated },
+  { title: 'Most Popular Static', subtitle: 'Clean static emoji for chat and communities', items: staticEmoji },
+  { title: 'Recently Added', subtitle: 'Fresh additions to the library', items: recent },
+  { title: 'Random Picks', subtitle: 'A mixed bag worth stealing', items: random }
+];
+
+const collections = [
+  { name: 'Animated', emoji: '⚡', href: `${allEmojiUrl}?motion=yes` },
+  { name: 'Reactions', emoji: '😂', href: `${allEmojiUrl}?q=reaction` },
+  { name: 'Faces', emoji: '😎', href: `${allEmojiUrl}?q=face` },
+  { name: 'Party', emoji: '🎉', href: `${allEmojiUrl}?q=party` },
+  { name: 'Animals', emoji: '🐱', href: `${allEmojiUrl}?q=animal` },
+  { name: 'Symbols', emoji: '✨', href: `${allEmojiUrl}?q=symbol` }
+];
 ---
-<Layout title="ePlus Emoji — Open Emoji Directory">
-  <section class="hero">
-    <div class="shell hero-grid">
+<Layout title="ePlus Emoji — Custom emoji, GIFs and reactions" description="Browse animated GIF emoji, static emoji and reactions for Slack, Discord and communities.">
+  <section class="directory-hero">
+    <div class="shell directory-hero-inner">
       <div>
-        <p class="eyebrow">OPEN EMOJI DIRECTORY</p>
-        <h1>Find the right emoji.<br />Copy it in one click.</h1>
-        <p class="hero-copy">
-          A developer-friendly emoji library inspired by the browsing experience of Slackmojis and Discadia,
-          built from sources with explicit redistribution licenses.
-        </p>
+        <p class="eyebrow">CUSTOM EMOJI DIRECTORY</p>
+        <h1>Emoji for every<br />reaction.</h1>
+        <p>Browse animated GIFs, static emoji, reactions and community-ready assets — all hosted directly on ePlus Emoji.</p>
       </div>
-      <div class="hero-stat-card">
-        <strong>{emojis.length}</strong>
-        <span>indexed emoji variants</span>
-        <div class="source-pills">
-          {sources.map((source) => <span>{source}</span>)}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="shell explorer" id="explorer" aria-labelledby="explore-title">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">EXPLORE</p>
-        <h2 id="explore-title">Emoji library</h2>
-      </div>
-      <p id="result-count">{emojis.length} results</p>
-    </div>
-
-    <div class="filters" aria-label="Emoji filters">
-      <label class="search-box">
-        <span class="sr-only">Search emoji</span>
+      <form class="hero-search" action={allEmojiUrl} method="get">
         <span aria-hidden="true">⌕</span>
-        <input id="emoji-search" type="search" placeholder="Search emoji, shortcode or tag…" autocomplete="off" />
-      </label>
-      <select id="source-filter" aria-label="Filter by source">
-        <option value="all">All sources</option>
-        {sources.map((source) => <option value={source.toLowerCase()}>{source}</option>)}
-      </select>
-      <select id="group-filter" aria-label="Filter by category">
-        <option value="all">All categories</option>
-        {groups.map((group) => <option value={group}>{group.replaceAll('-', ' ')}</option>)}
-      </select>
-      <select id="motion-filter" aria-label="Filter by animation">
-        <option value="all">Static + animated</option>
-        <option value="yes">Animated only</option>
-        <option value="no">Static only</option>
-      </select>
+        <input type="search" name="q" placeholder="Search emoji, reaction, meme…" aria-label="Search emoji" />
+        <button type="submit">Search</button>
+      </form>
+      <div class="hero-count"><strong>{emojis.length}</strong><span>emoji indexed</span></div>
     </div>
-
-    <div class="results-summary" aria-live="polite">
-      <span id="range-count"></span>
-      <span>48 per page</span>
-    </div>
-
-    <div class="emoji-grid" id="emoji-grid">
-      {emojis.map((emoji) => <EmojiCard emoji={emoji} />)}
-    </div>
-
-    <div class="empty-state" id="empty-state" hidden>
-      <div>🫥</div>
-      <h3>No emoji found</h3>
-      <p>Try another keyword or clear one of the filters.</p>
-    </div>
-
-    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden>
-      <button class="pagination-nav" type="button" data-page-action="prev" aria-label="Previous page">← Prev</button>
-      <div class="pagination-pages" id="pagination-pages"></div>
-      <button class="pagination-nav" type="button" data-page-action="next" aria-label="Next page">Next →</button>
-    </nav>
   </section>
 
-  <section class="shell source-section">
+  <section class="shell collection-strip" aria-label="Emoji collections">
+    {collections.map((collection) => (
+      <a href={collection.href} class="collection-chip">
+        <span>{collection.emoji}</span>
+        <strong>{collection.name}</strong>
+      </a>
+    ))}
+  </section>
+
+  {sections.map((section) => section.items.length > 0 && (
+    <section class="shell directory-section">
+      <div class="directory-heading">
+        <div>
+          <h2>{section.title}</h2>
+          <p>{section.subtitle}</p>
+        </div>
+        <a href={allEmojiUrl}>View all →</a>
+      </div>
+      <div class="mini-emoji-grid">
+        {section.items.map((emoji) => {
+          const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
+          const imageUrl = emojiAssetUrl(emoji, base);
+          return (
+            <a class="mini-emoji-card" href={detailUrl} title={emoji.name}>
+              <div class="mini-preview">
+                <img src={imageUrl} alt={emoji.name} loading="lazy" width="96" height="96" />
+                {emoji.animated && <span class="gif-badge">GIF</span>}
+              </div>
+              <span class="mini-name">:{emoji.shortcode}:</span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+
+  <section class="shell directory-cta">
     <div>
-      <p class="eyebrow">DATA SOURCES</p>
-      <h2>License-aware by design</h2>
+      <p class="eyebrow">BROWSE EVERYTHING</p>
+      <h2>Thousands of combinations, one searchable catalog.</h2>
     </div>
-    <div class="source-grid">
-      <article>
-        <h3>OpenMoji</h3>
-        <p>Color SVG assets with metadata, categories, tags and author attribution.</p>
-        <span>CC BY-SA 4.0</span>
-      </article>
-      <article>
-        <h3>Twemoji</h3>
-        <p>SVG emoji artwork synced from the community-maintained Twemoji repository.</p>
-        <span>CC BY 4.0</span>
-      </article>
-      <article>
-        <h3>Community</h3>
-        <p>Custom emoji can be added by pull request with explicit source and license metadata.</p>
-        <span>Contributor supplied</span>
-      </article>
-    </div>
+    <a href={allEmojiUrl}>Open all emojis</a>
   </section>
-
-  <script>
-    const PAGE_SIZE = 48;
-    const search = document.querySelector('#emoji-search');
-    const source = document.querySelector('#source-filter');
-    const group = document.querySelector('#group-filter');
-    const motion = document.querySelector('#motion-filter');
-    const cards = [...document.querySelectorAll('[data-emoji-card]')];
-    const count = document.querySelector('#result-count');
-    const rangeCount = document.querySelector('#range-count');
-    const empty = document.querySelector('#empty-state');
-    const pagination = document.querySelector('#pagination');
-    const paginationPages = document.querySelector('#pagination-pages');
-    const explorer = document.querySelector('#explorer');
-    const previousButton = pagination.querySelector('[data-page-action="prev"]');
-    const nextButton = pagination.querySelector('[data-page-action="next"]');
-
-    const pageFromUrl = Number.parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10);
-    let currentPage = Number.isFinite(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1;
-    let filteredCards = cards;
-
-    const updateUrl = () => {
-      const url = new URL(window.location.href);
-      if (currentPage > 1) url.searchParams.set('page', String(currentPage));
-      else url.searchParams.delete('page');
-      window.history.replaceState({}, '', url);
-    };
-
-    const pageItems = (totalPages) => {
-      if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
-
-      const items = [1];
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      if (start > 2) items.push('ellipsis-start');
-      for (let page = start; page <= end; page += 1) items.push(page);
-      if (end < totalPages - 1) items.push('ellipsis-end');
-      items.push(totalPages);
-      return items;
-    };
-
-    const renderPagination = (totalPages) => {
-      pagination.hidden = totalPages <= 1;
-      paginationPages.replaceChildren();
-
-      previousButton.disabled = currentPage <= 1;
-      nextButton.disabled = currentPage >= totalPages;
-
-      for (const item of pageItems(totalPages)) {
-        if (typeof item === 'string') {
-          const ellipsis = document.createElement('span');
-          ellipsis.className = 'pagination-ellipsis';
-          ellipsis.textContent = '…';
-          ellipsis.setAttribute('aria-hidden', 'true');
-          paginationPages.append(ellipsis);
-          continue;
-        }
-
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'pagination-page';
-        button.textContent = String(item);
-        button.dataset.page = String(item);
-        button.setAttribute('aria-label', `Go to page ${item}`);
-        if (item === currentPage) {
-          button.classList.add('is-active');
-          button.setAttribute('aria-current', 'page');
-        }
-        paginationPages.append(button);
-      }
-    };
-
-    const renderPage = ({ scroll = false } = {}) => {
-      const total = filteredCards.length;
-      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
-
-      for (const card of cards) card.hidden = true;
-
-      const start = (currentPage - 1) * PAGE_SIZE;
-      const end = Math.min(start + PAGE_SIZE, total);
-      for (const card of filteredCards.slice(start, end)) card.hidden = false;
-
-      count.textContent = `${total} result${total === 1 ? '' : 's'}`;
-      rangeCount.textContent = total === 0 ? '0 results' : `Showing ${start + 1}–${end} of ${total}`;
-      empty.hidden = total !== 0;
-      renderPagination(totalPages);
-      updateUrl();
-
-      if (scroll) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-
-    const applyFilters = () => {
-      const q = search.value.trim().toLowerCase();
-
-      filteredCards = cards.filter((card) => {
-        const matchesSearch = !q || card.dataset.search.includes(q);
-        const matchesSource = source.value === 'all' || card.dataset.source === source.value;
-        const matchesGroup = group.value === 'all' || card.dataset.group === group.value;
-        const matchesMotion = motion.value === 'all' || card.dataset.animated === motion.value;
-        return matchesSearch && matchesSource && matchesGroup && matchesMotion;
-      });
-
-      currentPage = 1;
-      renderPage();
-    };
-
-    [search, source, group, motion].forEach((control) => control.addEventListener('input', applyFilters));
-
-    pagination.addEventListener('click', (event) => {
-      const target = event.target.closest('button');
-      if (!target) return;
-
-      const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
-      if (target.dataset.pageAction === 'prev') currentPage -= 1;
-      else if (target.dataset.pageAction === 'next') currentPage += 1;
-      else if (target.dataset.page) currentPage = Number.parseInt(target.dataset.page, 10);
-      else return;
-
-      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
-      renderPage({ scroll: true });
-    });
-
-    document.addEventListener('click', async (event) => {
-      const button = event.target.closest('[data-copy]');
-      if (!button) return;
-      await navigator.clipboard.writeText(button.dataset.copy);
-      const previous = button.textContent;
-      button.textContent = 'Copied!';
-      setTimeout(() => { button.textContent = previous; }, 900);
-    });
-
-    renderPage();
-  </script>
 </Layout>
