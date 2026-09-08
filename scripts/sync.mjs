@@ -135,8 +135,17 @@ for (const source of selectedSources) {
     return available && (!current || current.image.startsWith('http'));
   });
 
+  // Always localize existing hotlinked records before spending the limit on new emoji.
+  candidates.sort((a, b) => {
+    const aCurrent = byId.get(`${source.id}-${a.hexcode.toLowerCase()}`);
+    const bCurrent = byId.get(`${source.id}-${b.hexcode.toLowerCase()}`);
+    const aHotlinked = aCurrent?.image?.startsWith('http') ? 1 : 0;
+    const bHotlinked = bCurrent?.image?.startsWith('http') ? 1 : 0;
+    return bHotlinked - aHotlinked;
+  });
+
   if (Number.isFinite(limit) && limit > 0) candidates = candidates.slice(0, limit);
-  console.log(`[${source.label}] ${candidates.length} new assets selected.`);
+  console.log(`[${source.label}] ${candidates.length} new/localized assets selected.`);
 
   await runPool(candidates, async (item) => {
     try {
