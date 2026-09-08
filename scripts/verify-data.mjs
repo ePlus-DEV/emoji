@@ -6,6 +6,21 @@ const ids = new Set();
 const slugs = new Set();
 let errors = 0;
 
+function twemojiFilename(hexcode) {
+  return `${hexcode
+    .split('-')
+    .filter((part) => part.toUpperCase() !== 'FE0F')
+    .map((part) => part.toLowerCase().replace(/^0+/, '') || '0')
+    .join('-')}.svg`;
+}
+
+function localImagePath(emoji) {
+  if (emoji.image.startsWith('/emojis/')) return emoji.image;
+  if (emoji.source === 'openmoji') return `/emojis/openmoji/${emoji.hexcode}.svg`;
+  if (emoji.source === 'twemoji') return `/emojis/twemoji/${twemojiFilename(emoji.hexcode)}`;
+  return null;
+}
+
 for (const emoji of emojis) {
   for (const field of ['id', 'slug', 'name', 'shortcode', 'image', 'source', 'license']) {
     if (!emoji[field]) {
@@ -24,14 +39,19 @@ for (const emoji of emojis) {
   ids.add(emoji.id);
   slugs.add(emoji.slug);
 
-  if (!emoji.image.startsWith('http')) {
-    const localPath = path.resolve('public', emoji.image.replace(/^\//, ''));
-    try {
-      await access(localPath);
-    } catch {
-      console.error(`[missing asset] ${emoji.id}: ${localPath}`);
-      errors += 1;
-    }
+  const image = localImagePath(emoji);
+  if (!image) {
+    console.error(`[external asset not supported] ${emoji.id}: ${emoji.image}`);
+    errors += 1;
+    continue;
+  }
+
+  const localPath = path.resolve('public', image.replace(/^\//, ''));
+  try {
+    await access(localPath);
+  } catch {
+    console.error(`[missing local asset] ${emoji.id}: ${localPath}`);
+    errors += 1;
   }
 }
 
@@ -39,4 +59,4 @@ if (errors) {
   console.error(`\nData verification failed with ${errors} error(s).`);
   process.exit(1);
 }
-console.log(`Verified ${emojis.length} emoji records.`);
+console.log(`Verified ${emojis.length} emoji records and local assets.`);
