@@ -1,5 +1,6 @@
 ---
 import { emojiAssetUrl } from '../lib/emojiAsset';
+import { withBase } from '../lib/url';
 
 interface Emoji {
   slug: string;
@@ -23,7 +24,7 @@ interface Props {
 const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
-const detailUrl = `${base}emoji/${emoji.slug}`;
+const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
 const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group, ...emoji.tags]
   .join(' ')
   .toLowerCase();
