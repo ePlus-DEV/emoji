@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'ePlus Emoji',
+  description = 'An open emoji directory for developers and communities.'
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#111827" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href={base} aria-label="ePlus Emoji home">
+          <span class="brand-mark">😀</span>
+          <span>ePlus Emoji</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href={base}>Explore</a>
+          <a href={`${base}api/emojis.json`}>API</a>
+          <a href="https://github.com/ePlus-DEV/emoji" rel="noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <p>Built by ePlus.DEV. Emoji assets keep their upstream licenses and attribution.</p>
+        <a href="https://github.com/ePlus-DEV/emoji/blob/main/NOTICE.md">Licenses & attribution</a>
+      </div>
+    </footer>
+  </body>
+</html>

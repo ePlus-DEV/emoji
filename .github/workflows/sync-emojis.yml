@@ -1,0 +1,61 @@
+name: Sync Emoji Sources
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Source to sync
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - openmoji
+          - twemoji
+      limit:
+        description: Maximum new assets per source. Use 0 for all remaining assets.
+        required: true
+        default: '250'
+        type: string
+  schedule:
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: emoji-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      SYNC_SOURCE: ${{ github.event.inputs.source || 'all' }}
+      SYNC_LIMIT: ${{ github.event.inputs.limit || '250' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Sync licensed emoji assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sync.mjs --source="$SYNC_SOURCE" --limit="$SYNC_LIMIT"
+      - name: Verify index
+        run: node scripts/verify-data.mjs
+      - name: Commit changes
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No emoji updates found."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/emojis public/api/emojis.json src/data/emojis.json
+          git commit -m "chore: sync emoji sources"
+          git push
