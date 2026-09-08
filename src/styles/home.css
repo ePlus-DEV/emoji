@@ -1,0 +1,33 @@
+.directory-hero { background: #fff; border-bottom: 1px solid #e5e7eb; }
+.directory-hero-inner { position: relative; padding: 70px 0 54px; }
+.directory-hero h1 { margin: 0; max-width: 760px; font-size: clamp(3.4rem, 8vw, 7rem); line-height: .9; letter-spacing: -.075em; }
+.directory-hero p:not(.eyebrow) { max-width: 720px; margin: 24px 0 0; color: #64748b; font-size: 1.08rem; line-height: 1.7; }
+.hero-search { display: flex; align-items: center; gap: 10px; max-width: 720px; margin-top: 34px; padding: 9px 10px 9px 16px; border: 1px solid #dbe2ea; border-radius: 18px; background: #f8fafc; }
+.hero-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; }
+.hero-search button { border: 0; border-radius: 12px; padding: 11px 17px; background: #111827; color: white; font-weight: 800; cursor: pointer; }
+.hero-count { position: absolute; right: 0; top: 86px; display: grid; min-width: 180px; padding: 20px 22px; border: 1px solid #e2e8f0; border-radius: 20px; background: #f8fafc; }
+.hero-count strong { font-size: 2.3rem; letter-spacing: -.05em; }
+.hero-count span { color: #64748b; font-size: .88rem; }
+.collection-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; padding: 26px 0 8px; }
+.collection-chip { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; text-decoration: none; }
+.collection-chip:hover { border-color: #c7d2fe; box-shadow: 0 10px 26px rgba(15,23,42,.06); }
+.collection-chip span { font-size: 1.45rem; }
+.collection-chip strong { font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.directory-section { padding: 46px 0 10px; }
+.directory-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+.directory-heading h2 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.35rem); letter-spacing: -.045em; }
+.directory-heading p { margin: 7px 0 0; color: #94a3b8; }
+.directory-heading > a { color: #4f46e5; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.mini-emoji-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 10px; }
+.mini-emoji-card { min-width: 0; padding: 10px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; text-decoration: none; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+.mini-emoji-card:hover { transform: translateY(-2px); border-color: #c7d2fe; box-shadow: 0 12px 28px rgba(15,23,42,.08); }
+.mini-preview { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 12px; background: #f8fafc; overflow: hidden; }
+.mini-preview img { width: 74%; height: 74%; object-fit: contain; }
+.gif-badge { position: absolute; top: 7px; right: 7px; padding: 3px 6px; border-radius: 6px; background: #111827; color: #fff; font-size: .6rem; font-weight: 900; letter-spacing: .05em; }
+.mini-name { display: block; margin-top: 9px; overflow: hidden; color: #475569; font-size: .75rem; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.directory-cta { margin-top: 58px; margin-bottom: 72px; padding: 34px; display: flex; align-items: center; justify-content: space-between; gap: 28px; border-radius: 28px; background: #111827; color: #fff; }
+.directory-cta .eyebrow { color: #a5b4fc; }
+.directory-cta h2 { max-width: 750px; margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.05em; }
+.directory-cta > a { padding: 14px 18px; border-radius: 14px; background: #fff; color: #111827; font-weight: 900; text-decoration: none; white-space: nowrap; }
+@media (max-width: 1050px) { .mini-emoji-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } .collection-strip { grid-template-columns: repeat(3, 1fr); } .hero-count { position: static; width: max-content; margin-top: 22px; } }
+@media (max-width: 700px) { .directory-hero-inner { padding-top: 50px; } .directory-hero h1 { font-size: clamp(3rem, 17vw, 5rem); } .collection-strip { grid-template-columns: repeat(2, 1fr); } .mini-emoji-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .directory-section { padding-top: 36px; } .directory-heading { align-items: start; } .directory-heading p { font-size: .88rem; } .directory-cta { flex-direction: column; align-items: stretch; } }
