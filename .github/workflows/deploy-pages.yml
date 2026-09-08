@@ -26,6 +26,10 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Sync animated GIF emoji
+        env:
+          ANIMATED_LIMIT: '32'
+        run: node scripts/sync-animated-showcase.mjs
       - name: Verify emoji index
         run: npm run check:data
       - name: Build site
