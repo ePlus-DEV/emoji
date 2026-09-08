@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import emojis from '../../data/emojis.json';
+
+export function getStaticPaths() {
+  return emojis.map((emoji) => ({
+    params: { slug: emoji.slug },
+    props: { emoji }
+  }));
+}
+
+const { emoji } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const imageUrl = emoji.image.startsWith('http')
+  ? emoji.image
+  : `${base}${emoji.image.replace(/^\//, '')}`;
+const title = `${emoji.name} — ${emoji.sourceLabel} | ePlus Emoji`;
+---
+<Layout title={title} description={`Download ${emoji.name} from ${emoji.sourceLabel} and copy :${emoji.shortcode}:.`}>
+  <section class="shell detail-page">
+    <a class="back-link" href={base}>← Back to all emoji</a>
+    <div class="detail-grid">
+      <div class="detail-preview">
+        <img src={imageUrl} alt={emoji.name} width="320" height="320" />
+      </div>
+      <div class="detail-content">
+        <div class="detail-title-row">
+          <div>
+            <p class="eyebrow">{emoji.sourceLabel}</p>
+            <h1>{emoji.name}</h1>
+          </div>
+          <span class="detail-native">{emoji.emoji}</span>
+        </div>
+        <button class="copy-large" type="button" data-copy={`:${emoji.shortcode}:`}>
+          <span>:{emoji.shortcode}:</span>
+          <strong>Copy</strong>
+        </button>
+        <div class="tag-list">
+          {emoji.tags.map((tag) => <span>{tag}</span>)}
+        </div>
+        <dl class="metadata-list">
+          <div><dt>Category</dt><dd>{emoji.group.replaceAll('-', ' ')}</dd></div>
+          <div><dt>Hexcode</dt><dd>{emoji.hexcode}</dd></div>
+          <div><dt>Format</dt><dd>{emoji.format.toUpperCase()}</dd></div>
+          <div><dt>License</dt><dd>{emoji.license}</dd></div>
+          <div><dt>Attribution</dt><dd>{emoji.attribution}</dd></div>
+        </dl>
+        <div class="detail-actions">
+          <a class="primary-action" href={imageUrl} download>Download {emoji.format.toUpperCase()}</a>
+          <a class="secondary-action" href={emoji.sourceUrl} rel="noreferrer">View source</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-copy]');
+      if (!button) return;
+      await navigator.clipboard.writeText(button.dataset.copy);
+      const label = button.querySelector('strong');
+      const previous = label.textContent;
+      label.textContent = 'Copied!';
+      setTimeout(() => { label.textContent = previous; }, 900);
+    });
+  </script>
+</Layout>
