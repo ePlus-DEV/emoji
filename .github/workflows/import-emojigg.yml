@@ -1,0 +1,125 @@
+name: Import Emoji.gg Catalog
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "Category to import: all, pepe, anime, gaming, category ID, or comma-separated values"
+        required: true
+        default: "all"
+        type: string
+      limit_per_category:
+        description: "Maximum missing emoji to import per category. Use 0 to import every missing emoji in selected categories."
+        required: true
+        default: "1000"
+        type: string
+      max_pages_per_category:
+        description: "Safety cap for category pagination"
+        required: true
+        default: "1500"
+        type: string
+  schedule:
+    # Keep filling missing Emoji.gg items automatically. 4 runs/day.
+    - cron: "17 */6 * * *"
+  push:
+    paths:
+      - ".github/workflows/import-emojigg.yml"
+      - "scripts/import-emojigg.mjs"
+      - "package.json"
+
+permissions:
+  contents: write
+
+# Share the same lock with every workflow that writes emoji indexes/assets.
+concurrency:
+  group: emoji-data-write
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      IMPORT_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.category || 'all' }}
+      IMPORT_LIMIT_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit_per_category || github.event_name == 'schedule' && '750' || '250' }}
+      IMPORT_MAX_PAGES_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.max_pages_per_category || '1500' }}
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Import Emoji.gg catalog
+        run: |
+          echo "Category: $IMPORT_CATEGORY"
+          echo "Limit/category: $IMPORT_LIMIT_PER_CATEGORY (0 = all missing)"
+          echo "Max pages/category: $IMPORT_MAX_PAGES_PER_CATEGORY"
+
+          node scripts/import-emojigg.mjs \
+            --category="$IMPORT_CATEGORY" \
+            --limit-per-category="$IMPORT_LIMIT_PER_CATEGORY" \
+            --max-pages-per-category="$IMPORT_MAX_PAGES_PER_CATEGORY" \
+            --empty-page-stop=3 \
+            --concurrency=8
+
+      - name: Verify emoji index
+        run: npm run check:data
+
+      - name: Show import summary
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const emojis = JSON.parse(await readFile('src/data/emojis.json', 'utf8'));
+          const categories = JSON.parse(await readFile('src/data/categories.json', 'utf8').catch(() => '[]'));
+          const emojigg = emojis.filter((item) => item.source === 'emojigg');
+          console.log(`Emoji.gg indexed: ${emojigg.length}`);
+          console.log(`All emoji indexed: ${emojis.length}`);
+          console.log(`Emoji.gg categories: ${categories.length}`);
+          for (const category of categories) {
+            console.log(`- ${category.name}: ${category.count} (${category.animated} animated, ${category.static} static)`);
+          }
+          NODE
+
+      - name: Commit imported assets and indexes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/api/emojis.json src/data/emojis.json src/data/community-sync-state.json
+
+          if [ -f src/data/categories.json ]; then
+            git add src/data/categories.json
+          fi
+          if [ -f public/api/categories.json ]; then
+            git add public/api/categories.json
+          fi
+          if [ -d public/emojis/community/emojigg ]; then
+            git add public/emojis/community/emojigg
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No Emoji.gg updates found."
+            exit 0
+          fi
+
+          git commit -m "chore: import Emoji.gg catalog"
+          git push origin HEAD:main
