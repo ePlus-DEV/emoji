@@ -27,7 +27,7 @@ const SOURCES = {
     label: 'Slackmojis',
     home: 'https://slackmojis.com/',
     list: 'https://slackmojis.com/',
-    detailPattern: /\/emojis\/\d+[-/][^/?#]+|\/emojis\/\d+-[^/?#]+/i
+    detailPattern: /\/emojis\/\d+-[^/?#]+/i
   },
   discadia: {
     id: 'discadia',
@@ -54,6 +54,19 @@ function shortcode(value) {
 
 function absoluteUrl(href, base) {
   try { return new URL(href, base).toString(); } catch { return ''; }
+}
+
+function normalizeDetailUrl(url, source) {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url, source.home);
+    if (source.id === 'slackmojis') {
+      parsed.pathname = parsed.pathname.replace(/\/download\/?$/i, '').replace(/\/$/, '');
+    }
+    return parsed.toString();
+  } catch {
+    return '';
+  }
 }
 
 function hashBuffer(buffer) {
@@ -98,11 +111,14 @@ async function discoverFromSitemap(source) {
       const xml = await response.text();
       const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((match) => match[1].trim());
       for (const loc of locs) {
-        if (/\.xml(?:\.gz)?(?:\?|$)/i.test(loc)) await visit(loc, depth + 1);
-        else {
-          const pathname = new URL(loc).pathname;
-          if (source.detailPattern.test(pathname)) pageUrls.add(loc);
+        if (/\.xml(?:\.gz)?(?:\?|$)/i.test(loc)) {
+          await visit(loc, depth + 1);
+          continue;
         }
+        const normalized = normalizeDetailUrl(loc, source);
+        if (!normalized) continue;
+        const pathname = new URL(normalized).pathname;
+        if (source.detailPattern.test(pathname)) pageUrls.add(normalized);
       }
     } catch (error) {
       console.warn(`[${source.label}] sitemap skipped ${url}: ${error.message}`);
@@ -116,15 +132,69 @@ async function discoverFromSitemap(source) {
 async function discoverFromPage(page, source) {
   await page.goto(source.list, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await page.waitForTimeout(1200);
-  for (let i = 0; i < 4; i += 1) {
-    await page.mouse.wheel(0, 2400);
+  for (let i = 0; i < 5; i += 1) {
+    await page.mouse.wheel(0, 2600);
     await page.waitForTimeout(350);
   }
   const hrefs = await page.locator('a[href]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href')).filter(Boolean));
   return [...new Set(hrefs
-    .map((href) => absoluteUrl(href, source.home))
+    .map((href) => normalizeDetailUrl(absoluteUrl(href, source.home), source))
     .filter(Boolean)
     .filter((url) => source.detailPattern.test(new URL(url).pathname)))];
+}
+
+async function discoverDiscadiaAssets(page, source) {
+  await page.goto(source.list, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await page.waitForTimeout(1200);
+  for (let i = 0; i < 8; i += 1) {
+    await page.mouse.wheel(0, 3000);
+    await page.waitForTimeout(450);
+  }
+
+  const raw = await page.locator('img[src], img[data-src]').evaluateAll((nodes) => nodes.map((node) => {
+    const src = node.getAttribute('src') || node.getAttribute('data-src') || '';
+    const alt = node.getAttribute('alt') || '';
+    const title = node.getAttribute('title') || '';
+    const anchor = node.closest('a');
+    const href = anchor?.getAttribute('href') || '';
+    const parentText = (anchor?.textContent || node.parentElement?.textContent || '').trim();
+    return { src, alt, title, href, parentText };
+  }));
+
+  const ignored = /logo|avatar|banner|favicon|discord server|advert/i;
+  const assets = [];
+  const seen = new Set();
+
+  for (const item of raw) {
+    const assetUrl = absoluteUrl(item.src, source.home);
+    if (!assetUrl || seen.has(assetUrl)) continue;
+    let parsed;
+    try { parsed = new URL(assetUrl); } catch { continue; }
+    const haystack = `${assetUrl} ${item.alt} ${item.title} ${item.parentText}`;
+    const imageLike = /\.(?:gif|png|webp|jpe?g)(?:\?|$)/i.test(parsed.pathname + parsed.search)
+      || /emoji|cdn\.discordapp|media\.discordapp/i.test(assetUrl);
+    if (!imageLike || ignored.test(haystack)) continue;
+
+    const detailUrl = absoluteUrl(item.href, source.home) || source.list;
+    const fallbackName = path.basename(parsed.pathname).replace(/\.[^.]+$/, '');
+    const name = String(item.alt || item.title || item.parentText || fallbackName)
+      .replace(/^:+|:+$/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 120) || fallbackName;
+    if (!name) continue;
+
+    seen.add(assetUrl);
+    assets.push({
+      direct: true,
+      detailUrl,
+      assetUrl,
+      name,
+      remoteKey: slugify(`${name}-${fallbackName}`)
+    });
+  }
+
+  return assets;
 }
 
 async function extractDetail(page, source, detailUrl) {
@@ -144,7 +214,7 @@ async function extractDetail(page, source, detailUrl) {
   const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content').catch(() => '');
   const imageSrc = await page.locator('img').evaluateAll((nodes) => {
     const ignored = /logo|avatar|icon|banner/i;
-    const choices = nodes.map((node) => ({ src: node.getAttribute('src') || '', alt: node.getAttribute('alt') || '' }));
+    const choices = nodes.map((node) => ({ src: node.getAttribute('src') || node.getAttribute('data-src') || '', alt: node.getAttribute('alt') || '' }));
     return choices.find((item) => item.src && !ignored.test(`${item.src} ${item.alt}`))?.src || '';
   }).catch(() => '');
 
@@ -201,29 +271,57 @@ const state = await readJson(STATE_FILE, { slackmojis: { cursor: 0 }, discadia: 
 const browser = await chromium.launch({ headless: true });
 try {
   for (const source of selectedSources) {
-    console.log(`\n[${source.label}] discovering emoji pages...`);
+    console.log(`\n[${source.label}] discovering emoji...`);
     const discoveryPage = await browser.newPage();
-    let urls = await discoverFromSitemap(source);
-    if (!urls.length) urls = await discoverFromPage(discoveryPage, source);
+    let items = [];
+
+    if (source.id === 'discadia') {
+      const detailUrls = await discoverFromSitemap(source);
+      if (detailUrls.length) {
+        items = detailUrls.map((detailUrl) => ({ detailUrl }));
+      } else {
+        const pageUrls = await discoverFromPage(discoveryPage, source);
+        if (pageUrls.length) items = pageUrls.map((detailUrl) => ({ detailUrl }));
+        else items = await discoverDiscadiaAssets(discoveryPage, source);
+      }
+    } else {
+      let urls = await discoverFromSitemap(source);
+      if (!urls.length) urls = await discoverFromPage(discoveryPage, source);
+      items = urls.map((detailUrl) => ({ detailUrl }));
+    }
     await discoveryPage.close();
 
-    urls = [...new Set(urls)].sort();
-    if (!urls.length) {
-      console.warn(`[${source.label}] no emoji URLs discovered.`);
+    const deduped = [];
+    const seen = new Set();
+    for (const item of items) {
+      const key = item.direct ? item.assetUrl : item.detailUrl;
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      deduped.push(item);
+    }
+    items = deduped.sort((a, b) => String(a.detailUrl || a.assetUrl).localeCompare(String(b.detailUrl || b.assetUrl)));
+
+    if (!items.length) {
+      console.warn(`[${source.label}] no emoji assets discovered.`);
       continue;
     }
 
     const previousCursor = Number(state[source.id]?.cursor || 0);
-    const start = previousCursor % urls.length;
-    const chosen = Array.from({ length: Math.min(limit, urls.length) }, (_, index) => urls[(start + index) % urls.length]);
-    state[source.id] = { cursor: (start + chosen.length) % urls.length, discovered: urls.length, lastRunAt: new Date().toISOString() };
-    console.log(`[${source.label}] discovered ${urls.length}; importing ${chosen.length} from cursor ${start}.`);
+    const start = previousCursor % items.length;
+    const chosen = Array.from({ length: Math.min(limit, items.length) }, (_, index) => items[(start + index) % items.length]);
+    state[source.id] = { cursor: (start + chosen.length) % items.length, discovered: items.length, lastRunAt: new Date().toISOString() };
+    console.log(`[${source.label}] discovered ${items.length}; importing ${chosen.length} from cursor ${start}.`);
 
-    await runPool(chosen, async (detailUrl) => {
+    await runPool(chosen, async (item) => {
       const page = await browser.newPage();
       try {
-        const detail = await extractDetail(page, source, detailUrl);
-        const remoteKey = path.basename(new URL(detailUrl).pathname).replace(/[^a-zA-Z0-9_-]+/g, '-');
+        const detailUrl = normalizeDetailUrl(item.detailUrl || source.list, source) || source.list;
+        const detail = item.direct
+          ? { name: item.name, assetUrl: item.assetUrl }
+          : await extractDetail(page, source, detailUrl);
+        const remoteKey = item.remoteKey
+          || path.basename(new URL(detailUrl).pathname).replace(/[^a-zA-Z0-9_-]+/g, '-')
+          || slugify(detail.name);
         const stableId = `${source.id}-${slugify(remoteKey || detail.name)}`;
         const asset = await downloadAsset(page.context(), source, detailUrl, detail.assetUrl, stableId);
         const duplicateOf = byHash.get(asset.hash);
@@ -257,7 +355,7 @@ try {
         byHash.set(asset.hash, stableId);
         console.log(`[${source.label}] ${detail.name} -> ${asset.format}${asset.animated ? ' animated' : ''}`);
       } catch (error) {
-        console.warn(`[${source.label}] skipped ${detailUrl}: ${error.message}`);
+        console.warn(`[${source.label}] skipped ${item.detailUrl || item.assetUrl}: ${error.message}`);
       } finally {
         await page.close();
       }
