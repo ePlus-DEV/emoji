@@ -83,9 +83,9 @@ Each record contains fields such as:
 
 ## GitHub Pages
 
-The repository is configured for project Pages at:
+The website is configured to use the custom domain:
 
-`https://eplus-dev.github.io/emoji/`
+`https://emoji.eplus.dev`
 
 After merging to `main`, enable **Settings → Pages → Source: GitHub Actions** if it is not already enabled. The `Deploy Pages` workflow will build and deploy the site.
 
