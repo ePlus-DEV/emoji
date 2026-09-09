@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: Maximum Pepe emoji detail pages to import
+        description: Maximum Pepe emoji items to import in this run
         required: true
-        default: '300'
+        default: '10000'
         type: string
   schedule:
     # Weekly on Wednesday at 04:30 UTC = 11:30 Asia/Ho_Chi_Minh
@@ -28,9 +28,10 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 240
     env:
-      IMPORT_LIMIT: ${{ github.event.inputs.limit || '300' }}
+      # Push/manual runs fill the catalog aggressively; the weekly refresh stays lighter.
+      IMPORT_LIMIT: ${{ github.event_name == 'schedule' && '500' || github.event.inputs.limit || '10000' }}
 
     steps:
       - name: Checkout latest main
@@ -60,8 +61,8 @@ jobs:
         run: |
           node scripts/import-pepe.mjs \
             --limit="$IMPORT_LIMIT" \
-            --concurrency=6 \
-            --max-pages=250
+            --concurrency=8 \
+            --max-pages=500
 
       - name: Verify emoji index
         run: npm run check:data
