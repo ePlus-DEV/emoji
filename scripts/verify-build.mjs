@@ -2,7 +2,9 @@ import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const dist = path.resolve('dist');
-const base = process.env.GITHUB_ACTIONS === 'true' ? '/emoji' : '';
+// The site is deployed on the custom domain https://emoji.eplus.dev with Astro base '/'.
+// Do not infer '/emoji' merely because the build runs inside GitHub Actions.
+const base = (process.env.VERIFY_BASE ?? '').replace(/\/+$/g, '');
 let errors = 0;
 let checked = 0;
 
