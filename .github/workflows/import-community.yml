@@ -20,6 +20,11 @@ on:
   schedule:
     # Every day at 04:10 UTC = 11:10 Asia/Ho_Chi_Minh
     - cron: '10 4 * * *'
+  push:
+    paths:
+      - '.github/workflows/import-community.yml'
+      - 'scripts/import-community.mjs'
+      - 'package.json'
 
 permissions:
   contents: write
@@ -34,7 +39,7 @@ jobs:
     timeout-minutes: 30
     env:
       IMPORT_SOURCE: ${{ github.event.inputs.source || 'all' }}
-      IMPORT_LIMIT: ${{ github.event.inputs.limit || '60' }}
+      IMPORT_LIMIT: ${{ github.event_name == 'push' && '10' || github.event.inputs.limit || '60' }}
 
     steps:
       - name: Checkout
