@@ -29,8 +29,9 @@ on:
 permissions:
   contents: write
 
+# Shared with Pepe importer so both workflows never write emoji JSON at once.
 concurrency:
-  group: community-emoji-import
+  group: emoji-data-write
   cancel-in-progress: false
 
 jobs:
@@ -42,10 +43,17 @@ jobs:
       IMPORT_LIMIT: ${{ github.event_name == 'push' && '10' || github.event.inputs.limit || '60' }}
 
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -87,5 +95,4 @@ jobs:
           fi
 
           git commit -m "chore: import community emoji"
-          git pull --rebase origin main
           git push origin HEAD:main
