@@ -8,5 +8,10 @@
     "cursor": 0,
     "discovered": 1,
     "lastRunAt": "2026-09-09T07:16:49.107Z"
+  },
+  "emojigg-pepe": {
+    "cursor": 20,
+    "discovered": 50,
+    "lastRunAt": "2026-09-09T09:36:30.309Z"
   }
 }
