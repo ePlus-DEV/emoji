@@ -20,8 +20,9 @@ on:
 permissions:
   contents: write
 
+# All emoji writers share one lock so JSON/index commits never race each other.
 concurrency:
-  group: pepe-emoji-import
+  group: emoji-data-write
   cancel-in-progress: false
 
 jobs:
@@ -32,10 +33,17 @@ jobs:
       IMPORT_LIMIT: ${{ github.event.inputs.limit || '300' }}
 
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -77,5 +85,4 @@ jobs:
           fi
 
           git commit -m "chore: import Pepe emoji"
-          git pull --rebase origin main
           git push origin HEAD:main
