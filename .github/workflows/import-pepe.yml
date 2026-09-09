@@ -6,7 +6,7 @@ on:
       limit:
         description: Maximum Pepe emoji detail pages to import
         required: true
-        default: '40'
+        default: '300'
         type: string
   schedule:
     # Weekly on Wednesday at 04:30 UTC = 11:30 Asia/Ho_Chi_Minh
@@ -27,9 +27,9 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
-      IMPORT_LIMIT: ${{ github.event_name == 'push' && '20' || github.event.inputs.limit || '40' }}
+      IMPORT_LIMIT: ${{ github.event.inputs.limit || '300' }}
 
     steps:
       - name: Checkout
@@ -52,7 +52,8 @@ jobs:
         run: |
           node scripts/import-pepe.mjs \
             --limit="$IMPORT_LIMIT" \
-            --concurrency=4
+            --concurrency=6 \
+            --max-pages=250
 
       - name: Verify emoji index
         run: npm run check:data
