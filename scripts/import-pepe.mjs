@@ -14,6 +14,7 @@ const valueFor = (name, fallback) => {
 const limit = Math.max(1, Number.parseInt(valueFor('limit', '300'), 10) || 300);
 const concurrency = Math.max(1, Math.min(8, Number.parseInt(valueFor('concurrency', '6'), 10) || 6));
 const maxPages = Math.max(1, Math.min(500, Number.parseInt(valueFor('max-pages', '250'), 10) || 250));
+const maxEmptyPages = Math.max(1, Number.parseInt(valueFor('max-empty-pages', '3'), 10) || 3);
 const maxBytes = 8 * 1024 * 1024;
 
 const SOURCE = {
@@ -77,6 +78,7 @@ async function discoverDetailUrls(page) {
   const visitedPages = new Set();
   let nextUrl = SOURCE.list;
   let pageNumber = 0;
+  let emptyPageStreak = 0;
 
   while (nextUrl && pageNumber < maxPages && !visitedPages.has(nextUrl)) {
     visitedPages.add(nextUrl);
@@ -104,7 +106,13 @@ async function discoverDetailUrls(page) {
       }
     }
 
-    console.log(`[${SOURCE.label}] page ${pageNumber}: +${added}, total ${urls.size}`);
+    emptyPageStreak = added === 0 ? emptyPageStreak + 1 : 0;
+    console.log(`[${SOURCE.label}] page ${pageNumber}: +${added}, total ${urls.size}${added === 0 ? ` (empty ${emptyPageStreak}/${maxEmptyPages})` : ''}`);
+
+    if (emptyPageStreak >= maxEmptyPages) {
+      console.log(`[${SOURCE.label}] stopping discovery after ${emptyPageStreak} consecutive pages with no new emoji.`);
+      break;
+    }
 
     const nextHref = await page
       .locator('a')
