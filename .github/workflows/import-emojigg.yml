@@ -9,9 +9,9 @@ on:
         default: "all"
         type: string
       limit_per_category:
-        description: "Maximum missing emoji to import per category. Use 0 to import every missing emoji in selected categories."
+        description: "Maximum missing emoji to import per category. Use 0 only for an intentional full manual import."
         required: true
-        default: "1000"
+        default: "250"
         type: string
       max_pages_per_category:
         description: "Safety cap for category pagination"
@@ -19,18 +19,13 @@ on:
         default: "1500"
         type: string
   schedule:
-    # Keep filling missing Emoji.gg items automatically. 4 runs/day.
-    - cron: "17 */6 * * *"
-  push:
-    paths:
-      - ".github/workflows/import-emojigg.yml"
-      - "scripts/import-emojigg.mjs"
-      - "package.json"
+    # Once per day at 10:17 Asia/Ho_Chi_Minh (03:17 UTC).
+    - cron: "17 3 * * *"
 
 permissions:
   contents: write
 
-# Share the same lock with every workflow that writes emoji indexes/assets.
+# Serialize every workflow that writes emoji indexes/assets.
 concurrency:
   group: emoji-data-write
   cancel-in-progress: false
@@ -38,11 +33,12 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 180
     env:
       IMPORT_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.category || 'all' }}
-      IMPORT_LIMIT_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit_per_category || github.event_name == 'schedule' && '750' || '250' }}
-      IMPORT_MAX_PAGES_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.max_pages_per_category || '1500' }}
+      # Scheduled runs stay deliberately small. Manual runs can override this.
+      IMPORT_LIMIT_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit_per_category || '75' }}
+      IMPORT_MAX_PAGES_PER_CATEGORY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.max_pages_per_category || '750' }}
 
     steps:
       - name: Checkout latest main
@@ -100,6 +96,7 @@ jobs:
           NODE
 
       - name: Commit imported assets and indexes
+        id: import_commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -118,8 +115,57 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "No Emoji.gg updates found."
+            echo "created=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           git commit -m "chore: import Emoji.gg catalog"
-          git push origin HEAD:main
+          echo "created=true" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Push imported commit safely
+        if: steps.import_commit.outputs.created == 'true'
+        run: |
+          set -e
+
+          for attempt in 1 2 3; do
+            echo "Push attempt $attempt/3"
+            git fetch origin main
+
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Could not rebase the import commit onto the latest main. Keeping the local import commit for rescue." >&2
+              exit 1
+            fi
+
+            if git push origin HEAD:main; then
+              echo "Import pushed successfully."
+              exit 0
+            fi
+
+            echo "main changed again while pushing; retrying..."
+            sleep $((attempt * 5))
+          done
+
+          echo "Push failed after 3 attempts. The rescue artifact step will preserve this import." >&2
+          exit 1
+
+      - name: Create rescue archive after push failure
+        if: failure() && steps.import_commit.outputs.created == 'true'
+        run: |
+          git rebase --abort 2>/dev/null || true
+          RESCUE="/tmp/emojigg-import-${GITHUB_RUN_ID}.tar"
+          git diff-tree --no-commit-id --name-only -r -z HEAD > /tmp/emojigg-import-files.zlist
+          tar --null -T /tmp/emojigg-import-files.zlist -cf "$RESCUE"
+          echo "Rescue archive: $RESCUE"
+          echo "RESCUE_ARCHIVE=$RESCUE" >> "$GITHUB_ENV"
+
+      - name: Upload rescue artifact
+        if: failure() && steps.import_commit.outputs.created == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: emojigg-import-rescue-${{ github.run_id }}
+          path: ${{ env.RESCUE_ARCHIVE }}
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
