@@ -1,0 +1,80 @@
+name: Import Pepe Emoji
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Maximum Pepe emoji detail pages to import
+        required: true
+        default: '40'
+        type: string
+  schedule:
+    # Weekly on Wednesday at 04:30 UTC = 11:30 Asia/Ho_Chi_Minh
+    - cron: '30 4 * * 3'
+  push:
+    paths:
+      - '.github/workflows/import-pepe.yml'
+      - 'scripts/import-pepe.mjs'
+      - 'package.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pepe-emoji-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IMPORT_LIMIT: ${{ github.event_name == 'push' && '20' || github.event.inputs.limit || '40' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Import Pepe emoji from Emoji.gg
+        run: |
+          node scripts/import-pepe.mjs \
+            --limit="$IMPORT_LIMIT" \
+            --concurrency=4
+
+      - name: Verify emoji index
+        run: npm run check:data
+
+      - name: Commit imported assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/api/emojis.json src/data/emojis.json
+          if [ -f src/data/community-sync-state.json ]; then
+            git add src/data/community-sync-state.json
+          fi
+          if [ -d public/emojis/community/emojigg-pepe ]; then
+            git add public/emojis/community/emojigg-pepe
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No Pepe emoji updates found."
+            exit 0
+          fi
+
+          git commit -m "chore: import Pepe emoji"
+          git pull --rebase origin main
+          git push origin HEAD:main
