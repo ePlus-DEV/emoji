@@ -11,15 +11,16 @@ const valueFor = (name, fallback) => {
   return index >= 0 && args[index + 1] ? args[index + 1] : fallback;
 };
 
-const limit = Math.max(1, Number.parseInt(valueFor('limit', '40'), 10) || 40);
-const concurrency = Math.max(1, Math.min(6, Number.parseInt(valueFor('concurrency', '4'), 10) || 4));
+const limit = Math.max(1, Number.parseInt(valueFor('limit', '300'), 10) || 300);
+const concurrency = Math.max(1, Math.min(8, Number.parseInt(valueFor('concurrency', '6'), 10) || 6));
+const maxPages = Math.max(1, Math.min(500, Number.parseInt(valueFor('max-pages', '250'), 10) || 250));
 const maxBytes = 8 * 1024 * 1024;
 
 const SOURCE = {
   id: 'emojigg-pepe',
   label: 'Emoji.gg Pepe',
   home: 'https://emoji.gg/',
-  list: 'https://emoji.gg/emojis/pepe',
+  list: 'https://emoji.gg/category/13/pepe',
   detailPattern: /\/emoji\/\d+-[^/?#]+/i
 };
 
@@ -72,33 +73,56 @@ async function writeJson(file, value) {
 }
 
 async function discoverDetailUrls(page) {
-  await page.goto(SOURCE.list, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForTimeout(1500);
+  const urls = new Set();
+  const visitedPages = new Set();
+  let nextUrl = SOURCE.list;
+  let pageNumber = 0;
 
-  let stableRounds = 0;
-  let previousCount = 0;
-  for (let i = 0; i < 24 && stableRounds < 4; i += 1) {
-    await page.mouse.wheel(0, 3200);
-    await page.waitForTimeout(500);
-    const count = await page.locator('a[href*="/emoji/"]').count();
-    if (count === previousCount) stableRounds += 1;
-    else stableRounds = 0;
-    previousCount = count;
+  while (nextUrl && pageNumber < maxPages && !visitedPages.has(nextUrl)) {
+    visitedPages.add(nextUrl);
+    pageNumber += 1;
+
+    await page.goto(nextUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForTimeout(450);
+
+    const hrefs = await page.locator('a[href*="/emoji/"]').evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('href')).filter(Boolean)
+    );
+
+    let added = 0;
+    for (const href of hrefs) {
+      const url = absoluteUrl(href, page.url());
+      if (!url) continue;
+      try {
+        if (!SOURCE.detailPattern.test(new URL(url).pathname)) continue;
+      } catch {
+        continue;
+      }
+      if (!urls.has(url)) {
+        urls.add(url);
+        added += 1;
+      }
+    }
+
+    console.log(`[${SOURCE.label}] page ${pageNumber}: +${added}, total ${urls.size}`);
+
+    const nextHref = await page
+      .locator('a')
+      .filter({ hasText: /^\s*Next Page\s*$/i })
+      .first()
+      .getAttribute('href')
+      .catch(() => '');
+
+    const candidate = absoluteUrl(nextHref, page.url());
+    nextUrl = candidate && !visitedPages.has(candidate) ? candidate : '';
   }
 
-  const hrefs = await page.locator('a[href]').evaluateAll((nodes) =>
-    nodes.map((node) => node.getAttribute('href')).filter(Boolean)
-  );
-
-  return [...new Set(hrefs
-    .map((href) => absoluteUrl(href, SOURCE.home))
-    .filter(Boolean)
-    .filter((url) => SOURCE.detailPattern.test(new URL(url).pathname)))];
+  return { urls: [...urls].sort(), pages: visitedPages.size };
 }
 
 async function extractDetail(page, detailUrl) {
   await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(450);
 
   const title = await page.locator('meta[property="og:title"]').getAttribute('content').catch(() => '')
     || await page.locator('h1').first().textContent().catch(() => '')
@@ -114,8 +138,7 @@ async function extractDetail(page, detailUrl) {
     nodes.map((node) => ({
       href: node.getAttribute('href') || '',
       src: node.getAttribute('src') || node.getAttribute('data-src') || '',
-      text: (node.textContent || '').trim(),
-      alt: node.getAttribute('alt') || ''
+      text: (node.textContent || '').trim()
     }))
   );
 
@@ -187,10 +210,11 @@ const state = await readJson(STATE_FILE, {});
 const browser = await chromium.launch({ headless: true });
 try {
   const discoveryPage = await browser.newPage();
-  const discovered = (await discoverDetailUrls(discoveryPage)).sort();
+  const discovery = await discoverDetailUrls(discoveryPage);
   await discoveryPage.close();
 
-  if (!discovered.length) throw new Error('Emoji.gg Pepe page returned no emoji detail URLs');
+  const discovered = discovery.urls;
+  if (!discovered.length) throw new Error('Emoji.gg Pepe category returned no emoji detail URLs');
 
   const previousCursor = Number(state[SOURCE.id]?.cursor || 0);
   const start = previousCursor % discovered.length;
@@ -202,10 +226,11 @@ try {
   state[SOURCE.id] = {
     cursor: (start + chosen.length) % discovered.length,
     discovered: discovered.length,
+    pagesDiscovered: discovery.pages,
     lastRunAt: new Date().toISOString()
   };
 
-  console.log(`[${SOURCE.label}] discovered ${discovered.length}; importing ${chosen.length} from cursor ${start}.`);
+  console.log(`[${SOURCE.label}] discovered ${discovered.length} across ${discovery.pages} pages; importing ${chosen.length} from cursor ${start}.`);
 
   await runPool(chosen, async (detailUrl) => {
     const page = await browser.newPage();
@@ -216,10 +241,6 @@ try {
       const asset = await downloadAsset(page.context(), detailUrl, detail.assetUrl, stableId);
       const duplicateOf = byHash.get(asset.hash);
       const now = new Date().toISOString().slice(0, 10);
-
-      if (duplicateOf && duplicateOf !== stableId) {
-        console.log(`[${SOURCE.label}] duplicate asset: ${detail.name} == ${duplicateOf}`);
-      }
 
       byId.set(stableId, {
         ...(byId.get(stableId) || {}),
@@ -250,7 +271,8 @@ try {
         duplicateAsset: Boolean(duplicateOf && duplicateOf !== stableId),
         duplicateOf: duplicateOf && duplicateOf !== stableId ? duplicateOf : null
       });
-      byHash.set(asset.hash, stableId);
+
+      if (!duplicateOf) byHash.set(asset.hash, stableId);
       console.log(`[${SOURCE.label}] ${detail.name} -> ${asset.format}${asset.animated ? ' animated' : ''}`);
     } catch (error) {
       console.warn(`[${SOURCE.label}] skipped ${detailUrl}: ${error.message}`);
