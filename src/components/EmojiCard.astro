@@ -60,7 +60,13 @@ const searchText = [
       <a class="emoji-name" href={detailUrl}>{emoji.name}</a>
       <span class="native-emoji" aria-hidden="true">{emoji.emoji}</span>
     </div>
-    <button class="shortcode" type="button" data-copy={`:${emoji.shortcode}:`} title="Copy shortcode">
+    <button
+      class="shortcode"
+      type="button"
+      data-copy={`:${emoji.shortcode}:`}
+      title="Copy shortcode"
+      aria-label={`Copy shortcode :${emoji.shortcode}:`}
+    >
       :{emoji.shortcode}:
     </button>
     <div class="emoji-meta">
