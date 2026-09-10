@@ -395,12 +395,9 @@ main {
 }
 
 .shortcode {
-  display: flex;
+  display: block;
   width: 100%;
   min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
   margin-top: 6px;
   padding: 5px 7px;
   overflow: hidden;
@@ -414,23 +411,10 @@ main {
   white-space: nowrap;
 }
 
-.shortcode::after {
-  content: 'Copy';
-  flex: 0 0 auto;
-  color: #a1a8b3;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: .53rem;
-  font-weight: 700;
-}
-
 .shortcode:hover {
   border-color: transparent;
   background: #f1f3f6;
   color: var(--ink);
-}
-
-.shortcode:hover::after {
-  color: var(--ink-soft);
 }
 
 .emoji-meta {
@@ -729,7 +713,6 @@ body .back-to-top svg {
     font-size: .54rem;
   }
 
-  .shortcode::after,
   .emoji-meta {
     display: none;
   }
