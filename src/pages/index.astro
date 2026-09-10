@@ -3,77 +3,116 @@ import Layout from '../layouts/Layout.astro';
 import { emojiAssetUrl } from '../lib/emojiAsset';
 import { withBase } from '../lib/url';
 import emojis from '../data/emojis.json';
+import categories from '../data/categories.json';
 import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL;
 const allEmojiUrl = withBase('/emojis', base);
-const animated = emojis.filter((emoji) => emoji.animated).slice(0, 18);
-const staticEmoji = emojis.filter((emoji) => !emoji.animated).slice(0, 18);
-const recent = [...emojis].sort((a, b) => String(b.addedAt).localeCompare(String(a.addedAt))).slice(0, 18);
-const random = [...emojis].sort((a, b) => a.id.localeCompare(b.id)).filter((_, index) => index % 7 === 0).slice(0, 18);
+const apiUrl = withBase('/api/emojis.json', base);
+const animatedCount = emojis.filter((emoji) => emoji.animated).length;
+const sourceCount = new Set(emojis.map((emoji) => emoji.source)).size;
+const recent = [...emojis]
+  .sort((a, b) => {
+    const date = String(b.syncedAt || b.addedAt).localeCompare(String(a.syncedAt || a.addedAt));
+    return date || String(a.id).localeCompare(String(b.id));
+  })
+  .slice(0, 12);
+const animated = emojis.filter((emoji) => emoji.animated).slice(0, 12);
+const staticEmoji = emojis.filter((emoji) => !emoji.animated).slice(0, 12);
+const showcase = recent.slice(0, 5);
+const topCategories = [...categories].sort((a, b) => b.count - a.count).slice(0, 8);
 
 const sections = [
-  { title: 'Most Popular Animated', subtitle: 'Reaction GIFs and moving emoji', items: animated },
-  { title: 'Most Popular Static', subtitle: 'Clean static emoji for chat and communities', items: staticEmoji },
-  { title: 'Recently Added', subtitle: 'Fresh additions to the library', items: recent },
-  { title: 'Random Picks', subtitle: 'A mixed bag worth stealing', items: random }
-];
-
-const collections = [
-  { name: 'Animated', emoji: '⚡', href: `${allEmojiUrl}?motion=yes` },
-  { name: 'Reactions', emoji: '😂', href: `${allEmojiUrl}?q=reaction` },
-  { name: 'Faces', emoji: '😎', href: `${allEmojiUrl}?q=face` },
-  { name: 'Party', emoji: '🎉', href: `${allEmojiUrl}?q=party` },
-  { name: 'Animals', emoji: '🐱', href: `${allEmojiUrl}?q=animal` },
-  { name: 'Symbols', emoji: '✨', href: `${allEmojiUrl}?q=symbol` }
+  { title: 'Recently added', subtitle: 'Freshly indexed emoji from the latest source syncs.', items: recent },
+  { title: 'Animated reactions', subtitle: 'GIFs and moving emoji for expressive conversations.', items: animated, href: `${allEmojiUrl}?motion=yes` },
+  { title: 'Static favorites', subtitle: 'Crisp, lightweight emoji ready for Slack, Discord and the web.', items: staticEmoji, href: `${allEmojiUrl}?motion=no` }
 ];
 ---
-<Layout title="ePlus Emoji — Custom emoji, GIFs and reactions" description="Browse animated GIF emoji, static emoji and reactions for Slack, Discord and communities.">
-  <section class="directory-hero">
-    <div class="shell directory-hero-inner">
-      <div>
-        <p class="eyebrow">CUSTOM EMOJI DIRECTORY</p>
-        <h1>Emoji for every<br />reaction.</h1>
-        <p>Browse animated GIFs, static emoji, reactions and community-ready assets — all hosted directly on ePlus Emoji.</p>
+<Layout
+  title="ePlus Emoji — Searchable emoji, GIFs and reactions"
+  description="Browse a fast, searchable library of animated GIF emoji, static emoji and reactions with source and license metadata."
+>
+  <section class="home-hero">
+    <div class="shell home-hero-grid">
+      <div class="hero-content">
+        <div class="hero-kicker"><span></span> Open emoji library</div>
+        <h1>Find the right emoji.<br /><em>Fast.</em></h1>
+        <p class="hero-lead">A clean, searchable directory of animated reactions, static emoji and community assets — with source and attribution kept intact.</p>
+
+        <form class="hero-search" action={allEmojiUrl} method="get">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="search" name="q" placeholder="Search by name, shortcode, tag or category…" aria-label="Search emoji" />
+          <button type="submit">Search</button>
+        </form>
+
+        <div class="hero-stats" aria-label="Library statistics">
+          <div><strong>{emojis.length.toLocaleString('en-US')}</strong><span>Total emoji</span></div>
+          <div><strong>{animatedCount.toLocaleString('en-US')}</strong><span>Animated</span></div>
+          <div><strong>{categories.length}</strong><span>Categories</span></div>
+          <div><strong>{sourceCount}</strong><span>Sources</span></div>
+        </div>
       </div>
-      <form class="hero-search" action={allEmojiUrl} method="get">
-        <span aria-hidden="true">⌕</span>
-        <input type="search" name="q" placeholder="Search emoji, reaction, meme…" aria-label="Search emoji" />
-        <button type="submit">Search</button>
-      </form>
-      <div class="hero-count"><strong>{emojis.length}</strong><span>emoji indexed</span></div>
+
+      <div class="hero-showcase" aria-hidden="true">
+        <div class="showcase-orbit"></div>
+        <div class="showcase-card showcase-card-primary">
+          {showcase[0] && <img src={emojiAssetUrl(showcase[0], base)} alt="" width="180" height="180" />}
+        </div>
+        {showcase.slice(1).map((emoji, index) => (
+          <div class={`showcase-card showcase-card-${index + 2}`}>
+            <img src={emojiAssetUrl(emoji, base)} alt="" width="96" height="96" />
+          </div>
+        ))}
+        <div class="showcase-label"><span class="live-dot"></span> Updated automatically</div>
+      </div>
     </div>
   </section>
 
-  <section class="shell collection-strip" aria-label="Emoji collections">
-    {collections.map((collection) => (
-      <a href={collection.href} class="collection-chip">
-        <span>{collection.emoji}</span>
-        <strong>{collection.name}</strong>
-      </a>
-    ))}
+  <section class="shell category-section" aria-labelledby="category-title">
+    <div class="category-heading">
+      <div>
+        <p class="section-kicker">Browse by category</p>
+        <h2 id="category-title">Popular collections</h2>
+      </div>
+      <a href={allEmojiUrl}>Explore all <span>→</span></a>
+    </div>
+    <div class="category-grid">
+      {topCategories.map((category) => (
+        <a class="category-card" href={`${allEmojiUrl}?q=${encodeURIComponent(category.slug)}`}>
+          <span class="category-icon">{category.animated > category.static ? '⚡' : '✦'}</span>
+          <span class="category-copy"><strong>{category.name}</strong><small>{category.count.toLocaleString('en-US')} emoji</small></span>
+          <span class="category-arrow">↗</span>
+        </a>
+      ))}
+    </div>
   </section>
 
   {sections.map((section) => section.items.length > 0 && (
-    <section class="shell directory-section">
-      <div class="directory-heading">
+    <section class="shell emoji-section">
+      <div class="section-heading-modern">
         <div>
+          <p class="section-kicker">Curated library</p>
           <h2>{section.title}</h2>
           <p>{section.subtitle}</p>
         </div>
-        <a href={allEmojiUrl}>View all →</a>
+        <a href={section.href || allEmojiUrl}>View all <span>→</span></a>
       </div>
-      <div class="mini-emoji-grid">
+
+      <div class="home-emoji-grid">
         {section.items.map((emoji) => {
           const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
           const imageUrl = emojiAssetUrl(emoji, base);
           return (
-            <a class="mini-emoji-card" href={detailUrl} title={emoji.name}>
-              <div class="mini-preview">
-                <img src={imageUrl} alt={emoji.name} loading="lazy" width="96" height="96" />
-                {emoji.animated && <span class="gif-badge">GIF</span>}
+            <a class="home-emoji-card" href={detailUrl} title={emoji.name}>
+              <div class="home-emoji-preview">
+                <img src={imageUrl} alt={emoji.name} loading="lazy" width="120" height="120" />
+                {emoji.animated && <span class="motion-badge">GIF</span>}
               </div>
-              <span class="mini-name">:{emoji.shortcode}:</span>
+              <div class="home-emoji-info">
+                <strong>{emoji.name}</strong>
+                <span>:{emoji.shortcode}:</span>
+                <small>{emoji.sourceLabel}</small>
+              </div>
             </a>
           );
         })}
@@ -81,11 +120,15 @@ const collections = [
     </section>
   ))}
 
-  <section class="shell directory-cta">
+  <section class="shell developer-banner">
     <div>
-      <p class="eyebrow">BROWSE EVERYTHING</p>
-      <h2>Thousands of combinations, one searchable catalog.</h2>
+      <p class="section-kicker">For developers</p>
+      <h2>Need the catalog in your app?</h2>
+      <p>Use the public JSON index for search, integrations and custom emoji tooling.</p>
     </div>
-    <a href={allEmojiUrl}>Open all emojis</a>
+    <div class="developer-actions">
+      <a class="button-secondary" href={apiUrl}>Open JSON API</a>
+      <a class="button-primary" href={allEmojiUrl}>Browse library</a>
+    </div>
   </section>
 </Layout>
