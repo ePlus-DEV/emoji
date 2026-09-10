@@ -28,6 +28,7 @@ const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
 const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
+const category = emoji.category || emoji.group.replaceAll('-', ' ');
 const searchText = [
   emoji.name,
   emoji.shortcode,
@@ -47,6 +48,7 @@ const searchText = [
   data-search={searchText}
   data-source={emoji.sourceLabel.toLowerCase()}
   data-group={emoji.group}
+  data-category={category.toLowerCase()}
   data-animated={emoji.animated ? 'yes' : 'no'}
 >
   <a class="emoji-preview" href={detailUrl} aria-label={`Open ${emoji.name}`}>
@@ -62,7 +64,7 @@ const searchText = [
       :{emoji.shortcode}:
     </button>
     <div class="emoji-meta">
-      <span>{emoji.category || emoji.sourceLabel}</span>
+      <span>{category}</span>
       <span>{emoji.animated ? 'Animated' : (emoji.format || 'Static').toUpperCase()}</span>
     </div>
   </div>
