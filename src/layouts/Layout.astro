@@ -55,10 +55,11 @@ const schemaGraph = [
     description,
     isPartOf: { '@id': websiteId },
     ...(isBrowseIndex ? {
-      about: { '@type': 'Thing', name: 'Emoji' },
+      about: { '@type': 'Thing', name: 'Custom emoji' },
       mainEntity: {
         '@type': 'ItemList',
-        name: 'ePlus Emoji catalog'
+        name: 'ePlus Emoji catalog',
+        itemListOrder: 'https://schema.org/ItemListUnordered'
       }
     } : {})
   }
