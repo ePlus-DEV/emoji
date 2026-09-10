@@ -11,18 +11,33 @@ const allEmojiUrl = withBase('/emojis', base);
 const apiUrl = withBase('/api/emojis.json', base);
 const animatedCount = emojis.filter((emoji) => emoji.animated).length;
 const sourceCount = new Set(emojis.map((emoji) => emoji.source)).size;
-const showcase = [...emojis]
-  .sort((a, b) => {
-    const date = String(b.syncedAt || b.addedAt).localeCompare(String(a.syncedAt || a.addedAt));
-    return date || String(a.id).localeCompare(String(b.id));
-  })
-  .slice(0, 12);
-const showcaseIds = new Set(showcase.map((emoji) => emoji.id));
+
+const shuffle = (items) => {
+  const pool = [...items];
+  for (let index = pool.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+  }
+  return pool;
+};
+
+const heroPool = shuffle(emojis)
+  .slice(0, Math.min(120, emojis.length))
+  .map((emoji) => ({
+    id: emoji.id,
+    slug: emoji.slug,
+    name: emoji.name,
+    image: emojiAssetUrl(emoji, base),
+    animated: Boolean(emoji.animated)
+  }));
+const showcase = heroPool.slice(0, 12);
+const heroPoolIds = new Set(heroPool.map((emoji) => emoji.id));
+const heroPoolJson = JSON.stringify(heroPool).replaceAll('<', '\\u003c');
 const animated = emojis
-  .filter((emoji) => emoji.animated && !showcaseIds.has(emoji.id))
+  .filter((emoji) => emoji.animated && !heroPoolIds.has(emoji.id))
   .slice(0, 12);
 const staticEmoji = emojis
-  .filter((emoji) => !emoji.animated && !showcaseIds.has(emoji.id))
+  .filter((emoji) => !emoji.animated && !heroPoolIds.has(emoji.id))
   .slice(0, 12);
 const topCategories = [...categories].sort((a, b) => b.count - a.count).slice(0, 10);
 
@@ -56,29 +71,71 @@ const sections = [
         </div>
       </div>
 
-      <div class="hero-library" aria-label="Latest emoji additions">
+      <div class="hero-library" aria-label="Random emoji picks">
         <div class="hero-library-head">
           <div>
             <span class="status-dot" aria-hidden="true"></span>
-            <strong>Latest additions</strong>
+            <strong>Random picks</strong>
           </div>
           <span>{emojis.length.toLocaleString('en-US')} assets</span>
         </div>
-        <div class="hero-library-grid">
+        <div class="hero-library-grid" id="hero-random-grid">
           {showcase.map((emoji) => (
             <a href={withBase(`/emoji/${emoji.slug}`, base)} title={emoji.name}>
-              <img src={emojiAssetUrl(emoji, base)} alt={emoji.name} loading="eager" width="80" height="80" />
+              <img src={emoji.image} alt={emoji.name} loading="eager" width="80" height="80" />
               {emoji.animated && <span>GIF</span>}
             </a>
           ))}
         </div>
         <div class="hero-library-foot">
-          <span>Most recently synced</span>
+          <span>Shuffled on every visit</span>
           <a href={allEmojiUrl}>Browse all →</a>
         </div>
       </div>
     </div>
   </section>
+
+  <script type="application/json" id="hero-random-pool" set:html={heroPoolJson}></script>
+  <script>
+    const poolNode = document.querySelector('#hero-random-pool');
+    const randomGrid = document.querySelector('#hero-random-grid');
+
+    if (poolNode && randomGrid) {
+      try {
+        const pool = JSON.parse(poolNode.textContent || '[]');
+        for (let index = pool.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+        }
+
+        const fragment = document.createDocumentFragment();
+        for (const emoji of pool.slice(0, 12)) {
+          const link = document.createElement('a');
+          link.href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/emoji/${emoji.slug}`;
+          link.title = emoji.name;
+
+          const image = document.createElement('img');
+          image.src = emoji.image;
+          image.alt = emoji.name;
+          image.loading = 'eager';
+          image.width = 80;
+          image.height = 80;
+          link.append(image);
+
+          if (emoji.animated) {
+            const badge = document.createElement('span');
+            badge.textContent = 'GIF';
+            link.append(badge);
+          }
+
+          fragment.append(link);
+        }
+        randomGrid.replaceChildren(fragment);
+      } catch (error) {
+        console.error('Could not shuffle hero emoji', error);
+      }
+    }
+  </script>
 
   <section class="shell category-section" aria-labelledby="category-title">
     <div class="section-heading-modern category-heading">
