@@ -18,14 +18,21 @@ const emojisUrl = withBase('/emojis', base);
 const faviconUrl = withBase('/favicon.svg', base);
 const apiUrl = withBase('/api/emojis.json', base);
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === base;
+const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
     <link rel="icon" type="image/svg+xml" href={faviconUrl} />
     <link rel="canonical" href={canonical} />
     <title>{title}</title>
@@ -34,22 +41,44 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href={homeUrl} aria-label="ePlus Emoji home">
-          <span class="brand-mark">😀</span>
-          <span>ePlus Emoji</span>
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span class="brand-copy">
+            <strong>ePlus Emoji</strong>
+            <small>Open emoji directory</small>
+          </span>
         </a>
+
         <nav class="nav-links" aria-label="Primary navigation">
-          <a href={homeUrl}>Home</a>
-          <a href={emojisUrl}>Emojis</a>
+          <a class:list={[{ active: isHome }]} href={homeUrl} aria-current={isHome ? 'page' : undefined}>Home</a>
+          <a class:list={[{ active: isBrowse }]} href={emojisUrl} aria-current={isBrowse ? 'page' : undefined}>Browse</a>
           <a href={apiUrl}>API</a>
-          <a href="https://github.com/ePlus-DEV/emoji" rel="noreferrer">GitHub</a>
         </nav>
+
+        <a class="header-github" href="https://github.com/vietnam-awesome/emoji" rel="noreferrer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.57-.29-5.27-1.29-5.27-5.72 0-1.27.45-2.3 1.2-3.12-.12-.3-.52-1.48.11-3.08 0 0 .98-.31 3.16 1.19a10.98 10.98 0 0 1 5.76 0c2.18-1.5 3.16-1.19 3.16-1.19.63 1.6.23 2.79.11 3.08.75.82 1.2 1.85 1.2 3.12 0 4.44-2.71 5.42-5.29 5.71.42.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg>
+          <span>GitHub</span>
+        </a>
       </div>
     </header>
+
     <main><slot /></main>
+
     <footer class="site-footer">
-      <div class="shell footer-inner">
-        <p>Built by ePlus.DEV. Emoji assets keep their upstream licenses and attribution.</p>
-        <a href="https://github.com/ePlus-DEV/emoji/blob/main/NOTICE.md">Licenses & attribution</a>
+      <div class="shell footer-grid">
+        <div class="footer-brand">
+          <div class="footer-brand-title"><span class="brand-mark" aria-hidden="true">✦</span><strong>ePlus Emoji</strong></div>
+          <p>Fast, searchable emoji assets for communities, apps and developer tooling.</p>
+        </div>
+        <div class="footer-links">
+          <a href={emojisUrl}>Browse all</a>
+          <a href={apiUrl}>JSON API</a>
+          <a href="https://github.com/vietnam-awesome/emoji/blob/main/NOTICE.md" rel="noreferrer">Licenses</a>
+          <a href="https://github.com/vietnam-awesome/emoji" rel="noreferrer">Source</a>
+        </div>
+      </div>
+      <div class="shell footer-bottom">
+        <span>Built by ePlus.DEV</span>
+        <span>Emoji assets retain their upstream attribution and licenses.</span>
       </div>
     </footer>
   </body>
