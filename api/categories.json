@@ -1,0 +1,200 @@
+[
+  {
+    "id": "23",
+    "slug": "aesthetic",
+    "name": "Aesthetic",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 77,
+    "static": 748
+  },
+  {
+    "id": "17",
+    "slug": "animals",
+    "name": "Animals",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 76,
+    "static": 749
+  },
+  {
+    "id": "8",
+    "slug": "animated",
+    "name": "Animated",
+    "source": "emojigg",
+    "count": 827,
+    "animated": 821,
+    "static": 6
+  },
+  {
+    "id": "4",
+    "slug": "anime",
+    "name": "Anime",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 68,
+    "static": 757
+  },
+  {
+    "id": "6",
+    "slug": "blobs",
+    "name": "Blobs",
+    "source": "emojigg",
+    "count": 824,
+    "animated": 28,
+    "static": 796
+  },
+  {
+    "id": "5",
+    "slug": "celebrity",
+    "name": "Celebrity",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 55,
+    "static": 770
+  },
+  {
+    "id": "15",
+    "slug": "cute",
+    "name": "Cute",
+    "source": "emojigg",
+    "count": 827,
+    "animated": 136,
+    "static": 691
+  },
+  {
+    "id": "19",
+    "slug": "flags",
+    "name": "Flags",
+    "source": "emojigg",
+    "count": 818,
+    "animated": 23,
+    "static": 795
+  },
+  {
+    "id": "10",
+    "slug": "gaming",
+    "name": "Gaming",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 44,
+    "static": 781
+  },
+  {
+    "id": "20",
+    "slug": "hearts",
+    "name": "Hearts",
+    "source": "emojigg",
+    "count": 824,
+    "animated": 186,
+    "static": 638
+  },
+  {
+    "id": "11",
+    "slug": "letters",
+    "name": "Letters",
+    "source": "emojigg",
+    "count": 823,
+    "animated": 36,
+    "static": 787
+  },
+  {
+    "id": "14",
+    "slug": "logos",
+    "name": "Logos",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 69,
+    "static": 756
+  },
+  {
+    "id": "3",
+    "slug": "meme",
+    "name": "Meme",
+    "source": "emojigg",
+    "count": 826,
+    "animated": 55,
+    "static": 771
+  },
+  {
+    "id": "1",
+    "slug": "original-style",
+    "name": "Original Style",
+    "source": "emojigg",
+    "count": 824,
+    "animated": 29,
+    "static": 795
+  },
+  {
+    "id": "12",
+    "slug": "other",
+    "name": "Other",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 31,
+    "static": 794
+  },
+  {
+    "id": "13",
+    "slug": "pepe",
+    "name": "Pepe",
+    "source": "emojigg",
+    "count": 3784,
+    "animated": 354,
+    "static": 3430
+  },
+  {
+    "id": "21",
+    "slug": "pixel-art",
+    "name": "Pixel Art",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 376,
+    "static": 449
+  },
+  {
+    "id": "22",
+    "slug": "reactions",
+    "name": "Reactions",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 40,
+    "static": 785
+  },
+  {
+    "id": "18",
+    "slug": "recolors",
+    "name": "Recolors",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 46,
+    "static": 779
+  },
+  {
+    "id": "7",
+    "slug": "thinking",
+    "name": "Thinking",
+    "source": "emojigg",
+    "count": 712,
+    "animated": 15,
+    "static": 697
+  },
+  {
+    "id": "2",
+    "slug": "tv-movie",
+    "name": "TV / Movie",
+    "source": "emojigg",
+    "count": 823,
+    "animated": 57,
+    "static": 766
+  },
+  {
+    "id": "16",
+    "slug": "utility",
+    "name": "Utility",
+    "source": "emojigg",
+    "count": 825,
+    "animated": 24,
+    "static": 801
+  }
+]
