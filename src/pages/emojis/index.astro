@@ -7,7 +7,7 @@ import emojis from '../../data/emojis.json';
 import '../../styles/pagination.css';
 
 const PAGE_SIZE = catalogConfig.pageSize;
-const BROWSE_MODE = catalogConfig.mode;
+const DEFAULT_MODE = catalogConfig.mode;
 const initialEmojis = emojis.slice(0, PAGE_SIZE);
 const categories = [...new Set(emojis.map((emoji) => emoji.category || emoji.group.replaceAll('-', ' ')))].sort();
 const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
@@ -37,7 +37,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     data-api-url={apiUrl}
     data-base={base}
     data-total={emojis.length}
-    data-mode={BROWSE_MODE}
+    data-default-mode={DEFAULT_MODE}
     data-page-size={PAGE_SIZE}
     data-scroll-root-margin={catalogConfig.scrollRootMargin}
   >
@@ -67,9 +67,32 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       </select>
     </div>
 
-    <div class="results-summary" aria-live="polite">
-      <span id="range-count">Showing 1–{Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')}</span>
-      <span id="browse-mode-label">{BROWSE_MODE === 'pagination' ? `${PAGE_SIZE} per page` : `${PAGE_SIZE} at a time`}</span>
+    <div class="results-toolbar">
+      <div class="results-summary" aria-live="polite">
+        <span id="range-count">Showing 1–{Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')}</span>
+        <span id="browse-mode-label">{DEFAULT_MODE === 'pagination' ? `${PAGE_SIZE} per page` : `${PAGE_SIZE} at a time`}</span>
+      </div>
+
+      <div class="browse-mode-switcher" role="group" aria-label="Choose how emoji are loaded">
+        <button
+          class:list={['browse-mode-button', { 'is-active': DEFAULT_MODE === 'scroll' }]}
+          type="button"
+          data-browse-mode="scroll"
+          aria-pressed={DEFAULT_MODE === 'scroll' ? 'true' : 'false'}
+          title="Automatically load more as you scroll"
+        >
+          <span aria-hidden="true">↕</span> Scroll
+        </button>
+        <button
+          class:list={['browse-mode-button', { 'is-active': DEFAULT_MODE === 'pagination' }]}
+          type="button"
+          data-browse-mode="pagination"
+          aria-pressed={DEFAULT_MODE === 'pagination' ? 'true' : 'false'}
+          title="Browse with page numbers"
+        >
+          <span aria-hidden="true">☷</span> Pages
+        </button>
+      </div>
     </div>
 
     <div class="emoji-grid" id="emoji-grid">
@@ -80,13 +103,13 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       <div>🫥</div><h3>No emoji found</h3><p>Try another keyword or clear one of the filters.</p>
     </div>
 
-    <div class="infinite-loader" id="infinite-loader" hidden={BROWSE_MODE !== 'scroll' || emojis.length <= PAGE_SIZE}>
+    <div class="infinite-loader" id="infinite-loader" hidden={DEFAULT_MODE !== 'scroll' || emojis.length <= PAGE_SIZE}>
       <span class="infinite-loader-spinner" id="infinite-loader-spinner" aria-hidden="true"></span>
-      <span id="infinite-loader-status">Scroll to load more · {Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')} loaded</span>
+      <span id="infinite-loader-status">{Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')} loaded</span>
       <button class="load-more-fallback" id="load-more-fallback" type="button" hidden>Load {PAGE_SIZE} more</button>
     </div>
 
-    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden={BROWSE_MODE !== 'pagination' || totalPages <= 1}>
+    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden={DEFAULT_MODE !== 'pagination' || totalPages <= 1}>
       <button class="pagination-nav" type="button" data-page-action="prev">← Prev</button>
       <div class="pagination-pages" id="pagination-pages"></div>
       <button class="pagination-nav" type="button" data-page-action="next">Next →</button>
@@ -102,6 +125,8 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     const motion = document.querySelector('#motion-filter');
     const count = document.querySelector('#result-count');
     const rangeCount = document.querySelector('#range-count');
+    const browseModeLabel = document.querySelector('#browse-mode-label');
+    const modeButtons = [...document.querySelectorAll('[data-browse-mode]')];
     const empty = document.querySelector('#empty-state');
     const infiniteLoader = document.querySelector('#infinite-loader');
     const loaderSpinner = document.querySelector('#infinite-loader-spinner');
@@ -114,19 +139,35 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
 
     const apiUrl = explorer.dataset.apiUrl;
     const base = explorer.dataset.base || '/';
-    const mode = explorer.dataset.mode === 'pagination' ? 'pagination' : 'scroll';
+    const defaultMode = explorer.dataset.defaultMode === 'pagination' ? 'pagination' : 'scroll';
     const PAGE_SIZE = Math.max(1, Number.parseInt(explorer.dataset.pageSize || '48', 10));
     const scrollRootMargin = explorer.dataset.scrollRootMargin || '700px 0px';
     const totalCatalogCount = Number.parseInt(explorer.dataset.total || '0', 10);
     const basePrefix = base === '/' ? '' : base.replace(/\/$/, '');
+    const preferenceKey = 'emoji-browse-mode';
+
+    const params = new URLSearchParams(window.location.search);
+    const isBrowseMode = (value) => value === 'scroll' || value === 'pagination';
+
+    let storedMode = null;
+    try {
+      storedMode = window.localStorage.getItem(preferenceKey);
+    } catch {}
+
+    const requestedMode = params.get('view');
+    let mode = isBrowseMode(requestedMode)
+      ? requestedMode
+      : isBrowseMode(storedMode)
+        ? storedMode
+        : defaultMode;
 
     let catalogPromise;
     let filteredCatalog = null;
     let visibleCount = PAGE_SIZE;
     let searchTimer;
     let isLoadingMore = false;
+    let infiniteObserver = null;
 
-    const params = new URLSearchParams(window.location.search);
     const requestedPage = Number.parseInt(params.get('page') || '1', 10);
     let currentPage = mode === 'pagination' && Number.isFinite(requestedPage) && requestedPage > 0
       ? requestedPage
@@ -150,7 +191,6 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     const createEmojiCard = (emoji) => {
       const detailUrl = withBase(`/emoji/${emoji.slug}`);
       const categoryName = emoji.category || String(emoji.group || '').replaceAll('-', ' ');
-
       const article = document.createElement('article');
       article.className = 'emoji-card';
       article.dataset.emojiCard = '';
@@ -177,7 +217,6 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
 
       const body = document.createElement('div');
       body.className = 'emoji-card-body';
-
       const titleRow = document.createElement('div');
       titleRow.className = 'emoji-title-row';
 
@@ -252,6 +291,15 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       motion.value !== 'all'
     );
 
+    const updateModeUI = () => {
+      for (const button of modeButtons) {
+        const active = button.dataset.browseMode === mode;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+      browseModeLabel.textContent = mode === 'pagination' ? `${PAGE_SIZE} per page` : `${PAGE_SIZE} at a time`;
+    };
+
     const updateUrl = () => {
       const url = new URL(window.location.href);
       const q = search.value.trim();
@@ -260,6 +308,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       if (category.value !== 'all') url.searchParams.set('category', category.value); else url.searchParams.delete('category');
       if (motion.value !== 'all') url.searchParams.set('motion', motion.value); else url.searchParams.delete('motion');
       url.searchParams.delete('group');
+      url.searchParams.set('view', mode);
 
       if (mode === 'pagination' && currentPage > 1) url.searchParams.set('page', String(currentPage));
       else url.searchParams.delete('page');
@@ -339,25 +388,43 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
         infiniteLoader.hidden = true;
         return;
       }
-
       const hasMore = shown < total;
       infiniteLoader.hidden = !hasMore || total === 0;
-      if (!hasMore) return;
-      loaderStatus.textContent = `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} loaded`;
+      if (hasMore) loaderStatus.textContent = `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} loaded`;
+    };
+
+    const configureInfiniteScroll = () => {
+      if (infiniteObserver) {
+        infiniteObserver.disconnect();
+        infiniteObserver = null;
+      }
+      loadMoreFallback.hidden = true;
+
+      if (mode !== 'scroll' || infiniteLoader.hidden) return;
+      if (!('IntersectionObserver' in window)) {
+        loadMoreFallback.hidden = false;
+        return;
+      }
+
+      infiniteObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
+      }, { rootMargin: scrollRootMargin });
+      infiniteObserver.observe(infiniteLoader);
     };
 
     const renderScrollCatalog = () => {
       const items = filteredCatalog || [];
       const shown = Math.min(visibleCount, items.length);
       grid.replaceChildren(buildFragment(items.slice(0, shown)));
-
       count.textContent = `${items.length.toLocaleString('en-US')} result${items.length === 1 ? '' : 's'}`;
       rangeCount.textContent = items.length === 0
         ? '0 results'
         : `Showing 1–${shown.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')}`;
       empty.hidden = items.length !== 0;
+      pagination.hidden = true;
       updateInfiniteLoader(items.length, shown);
       updateUrl();
+      configureInfiniteScroll();
     };
 
     const renderPaginationCatalog = ({ scrollIntoView = false } = {}) => {
@@ -367,33 +434,39 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       const start = (currentPage - 1) * PAGE_SIZE;
       const end = Math.min(start + PAGE_SIZE, items.length);
       grid.replaceChildren(buildFragment(items.slice(start, end)));
-
       count.textContent = `${items.length.toLocaleString('en-US')} result${items.length === 1 ? '' : 's'}`;
       rangeCount.textContent = items.length === 0
         ? '0 results'
         : `Showing ${(start + 1).toLocaleString('en-US')}–${end.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')}`;
       empty.hidden = items.length !== 0;
       infiniteLoader.hidden = true;
+      if (infiniteObserver) infiniteObserver.disconnect();
       renderPagination(items.length);
       updateUrl();
-
       if (scrollIntoView) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    const renderInitialPagination = () => {
-      currentPage = 1;
+    const renderInitialState = () => {
       count.textContent = `${totalCatalogCount.toLocaleString('en-US')} results`;
       rangeCount.textContent = totalCatalogCount === 0
         ? '0 results'
         : `Showing 1–${Math.min(PAGE_SIZE, totalCatalogCount).toLocaleString('en-US')} of ${totalCatalogCount.toLocaleString('en-US')}`;
       empty.hidden = totalCatalogCount !== 0;
-      infiniteLoader.hidden = true;
-      renderPagination(totalCatalogCount);
+
+      if (mode === 'pagination') {
+        infiniteLoader.hidden = true;
+        renderPagination(totalCatalogCount);
+      } else {
+        pagination.hidden = true;
+        infiniteLoader.hidden = totalCatalogCount <= PAGE_SIZE;
+        updateInfiniteLoader(totalCatalogCount, Math.min(PAGE_SIZE, totalCatalogCount));
+        configureInfiniteScroll();
+      }
       updateUrl();
     };
 
-    const applyFilters = async ({ resetPage = true } = {}) => {
-      if (resetPage) {
+    const applyFilters = async ({ reset = true } = {}) => {
+      if (reset) {
         currentPage = 1;
         visibleCount = PAGE_SIZE;
       }
@@ -410,7 +483,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       }
     };
 
-    const loadNextBatch = async () => {
+    async function loadNextBatch() {
       if (mode !== 'scroll' || isLoadingMore || infiniteLoader.hidden) return;
       isLoadingMore = true;
       loaderSpinner.classList.add('is-loading');
@@ -420,12 +493,10 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       try {
         const catalog = await loadCatalog();
         if (!filteredCatalog) filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
-
         const start = Math.min(visibleCount, filteredCatalog.length);
         const end = Math.min(start + PAGE_SIZE, filteredCatalog.length);
         grid.append(buildFragment(filteredCatalog.slice(start, end)));
         visibleCount = end;
-
         count.textContent = `${filteredCatalog.length.toLocaleString('en-US')} result${filteredCatalog.length === 1 ? '' : 's'}`;
         rangeCount.textContent = filteredCatalog.length === 0
           ? '0 results'
@@ -441,17 +512,15 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
         loaderSpinner.classList.remove('is-loading');
         loadMoreFallback.disabled = false;
       }
-    };
+    }
 
     const goToPage = async (page) => {
       if (mode !== 'pagination') return;
       const total = filteredCatalog?.length ?? totalCatalogCount;
       const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      const nextPage = Math.min(Math.max(page, 1), totalPages);
-      if (nextPage === currentPage && filteredCatalog) return;
-
-      currentPage = nextPage;
+      currentPage = Math.min(Math.max(page, 1), totalPages);
       rangeCount.textContent = 'Loading page…';
+
       try {
         if (!filteredCatalog) {
           const catalog = await loadCatalog();
@@ -464,13 +533,38 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       }
     };
 
+    const switchMode = async (nextMode) => {
+      if (!isBrowseMode(nextMode) || nextMode === mode) return;
+      mode = nextMode;
+      currentPage = 1;
+      visibleCount = PAGE_SIZE;
+      updateModeUI();
+
+      try {
+        window.localStorage.setItem(preferenceKey, mode);
+      } catch {}
+
+      if (filteredCatalog) {
+        if (mode === 'pagination') renderPaginationCatalog();
+        else renderScrollCatalog();
+      } else if (hasActiveFilters()) {
+        await applyFilters({ reset: true });
+      } else {
+        renderInitialState();
+      }
+    };
+
     search.addEventListener('input', () => {
       clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => applyFilters({ resetPage: true }), 180);
+      searchTimer = setTimeout(() => applyFilters({ reset: true }), 180);
     });
     [source, category, motion].forEach((control) =>
-      control.addEventListener('input', () => applyFilters({ resetPage: true }))
+      control.addEventListener('input', () => applyFilters({ reset: true }))
     );
+
+    modeButtons.forEach((button) => {
+      button.addEventListener('click', () => switchMode(button.dataset.browseMode));
+    });
 
     loadMoreFallback.addEventListener('click', loadNextBatch);
 
@@ -482,20 +576,6 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       else if (target.dataset.page) goToPage(Number.parseInt(target.dataset.page, 10));
     });
 
-    if (mode === 'scroll') {
-      pagination.hidden = true;
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
-        }, { rootMargin: scrollRootMargin });
-        observer.observe(infiniteLoader);
-      } else {
-        loadMoreFallback.hidden = false;
-      }
-    } else {
-      infiniteLoader.hidden = true;
-    }
-
     document.addEventListener('click', async (event) => {
       const button = event.target.closest('[data-copy]');
       if (!button) return;
@@ -506,22 +586,20 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     });
 
     const initialize = async () => {
+      updateModeUI();
+
       if (hasActiveFilters()) {
-        await applyFilters({ resetPage: false });
+        await applyFilters({ reset: false });
         return;
       }
 
-      if (mode === 'pagination') {
-        if (currentPage > 1) {
-          await goToPage(currentPage);
-        } else {
-          renderInitialPagination();
-        }
+      if (mode === 'pagination' && currentPage > 1) {
+        await goToPage(currentPage);
         return;
       }
 
-      count.textContent = `${totalCatalogCount.toLocaleString('en-US')} results`;
-      infiniteLoader.hidden = totalCatalogCount <= PAGE_SIZE;
+      currentPage = 1;
+      renderInitialState();
     };
 
     initialize();
