@@ -41,7 +41,7 @@ const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href={homeUrl} aria-label="ePlus Emoji home">
-          <span class="brand-mark" aria-hidden="true">✦</span>
+          <img class="brand-mark" src={faviconUrl} alt="" aria-hidden="true" width="36" height="36" />
           <span class="brand-copy">
             <strong>ePlus Emoji</strong>
             <small>Open emoji directory</small>
@@ -66,7 +66,7 @@ const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
     <footer class="site-footer">
       <div class="shell footer-grid">
         <div class="footer-brand">
-          <div class="footer-brand-title"><span class="brand-mark" aria-hidden="true">✦</span><strong>ePlus Emoji</strong></div>
+          <div class="footer-brand-title"><img class="brand-mark" src={faviconUrl} alt="" aria-hidden="true" width="30" height="30" /><strong>ePlus Emoji</strong></div>
           <p>Fast, searchable emoji assets for communities, apps and developer tooling.</p>
         </div>
         <div class="footer-links">
