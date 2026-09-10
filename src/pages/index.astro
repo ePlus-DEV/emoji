@@ -77,7 +77,22 @@ const sections = [
             <span class="status-dot" aria-hidden="true"></span>
             <strong>Random picks</strong>
           </div>
-          <span>{emojis.length.toLocaleString('en-US')} assets</span>
+          <div class="hero-library-actions">
+            <span>{emojis.length.toLocaleString('en-US')} assets</span>
+            <button
+              class="hero-shuffle"
+              id="hero-shuffle"
+              type="button"
+              aria-controls="hero-random-grid"
+              aria-label="Show another random set of emoji"
+              title="Shuffle random emoji"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Shuffle</span>
+            </button>
+          </div>
         </div>
         <div class="hero-library-grid" id="hero-random-grid">
           {showcase.map((emoji) => (
@@ -88,7 +103,7 @@ const sections = [
           ))}
         </div>
         <div class="hero-library-foot">
-          <span>Shuffled on every visit</span>
+          <span>12 random picks from the catalog</span>
           <a href={allEmojiUrl}>Browse all →</a>
         </div>
       </div>
@@ -99,38 +114,59 @@ const sections = [
   <script>
     const poolNode = document.querySelector('#hero-random-pool');
     const randomGrid = document.querySelector('#hero-random-grid');
+    const shuffleButton = document.querySelector('#hero-shuffle');
 
     if (poolNode && randomGrid) {
       try {
         const pool = JSON.parse(poolNode.textContent || '[]');
-        for (let index = pool.length - 1; index > 0; index -= 1) {
-          const swapIndex = Math.floor(Math.random() * (index + 1));
-          [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
-        }
+        let currentSignature = '';
 
-        const fragment = document.createDocumentFragment();
-        for (const emoji of pool.slice(0, 12)) {
-          const link = document.createElement('a');
-          link.href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/emoji/${emoji.slug}`;
-          link.title = emoji.name;
+        const shufflePool = () => {
+          for (let index = pool.length - 1; index > 0; index -= 1) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+          }
+        };
 
-          const image = document.createElement('img');
-          image.src = emoji.image;
-          image.alt = emoji.name;
-          image.loading = 'eager';
-          image.width = 80;
-          image.height = 80;
-          link.append(image);
-
-          if (emoji.animated) {
-            const badge = document.createElement('span');
-            badge.textContent = 'GIF';
-            link.append(badge);
+        const renderRandom = () => {
+          let picks = [];
+          for (let attempt = 0; attempt < 4; attempt += 1) {
+            shufflePool();
+            picks = pool.slice(0, 12);
+            const nextSignature = picks.map((emoji) => emoji.id).join('|');
+            if (nextSignature !== currentSignature || pool.length <= 12) {
+              currentSignature = nextSignature;
+              break;
+            }
           }
 
-          fragment.append(link);
-        }
-        randomGrid.replaceChildren(fragment);
+          const fragment = document.createDocumentFragment();
+          for (const emoji of picks) {
+            const link = document.createElement('a');
+            link.href = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/emoji/${emoji.slug}`;
+            link.title = emoji.name;
+
+            const image = document.createElement('img');
+            image.src = emoji.image;
+            image.alt = emoji.name;
+            image.loading = 'eager';
+            image.width = 80;
+            image.height = 80;
+            link.append(image);
+
+            if (emoji.animated) {
+              const badge = document.createElement('span');
+              badge.textContent = 'GIF';
+              link.append(badge);
+            }
+
+            fragment.append(link);
+          }
+          randomGrid.replaceChildren(fragment);
+        };
+
+        renderRandom();
+        shuffleButton?.addEventListener('click', renderRandom);
       } catch (error) {
         console.error('Could not shuffle hero emoji', error);
       }
@@ -200,3 +236,60 @@ const sections = [
     </div>
   </section>
 </Layout>
+
+<style>
+  .hero-library-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-shuffle {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    gap: 6px;
+    padding: 0 9px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: .68rem;
+    font-weight: 720;
+    cursor: pointer;
+    transition: border-color .14s ease, background .14s ease, color .14s ease;
+  }
+
+  .hero-shuffle:hover {
+    border-color: var(--line-strong);
+    background: #f8f9fb;
+    color: var(--ink);
+  }
+
+  .hero-shuffle:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .hero-shuffle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (max-width: 520px) {
+    .hero-library-actions > span {
+      display: none;
+    }
+
+    .hero-shuffle span {
+      display: none;
+    }
+
+    .hero-shuffle {
+      width: 30px;
+      justify-content: center;
+      padding: 0;
+    }
+  }
+</style>
