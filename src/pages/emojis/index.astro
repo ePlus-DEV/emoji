@@ -11,6 +11,14 @@ const DEFAULT_MODE = catalogConfig.mode;
 const initialEmojis = emojis.slice(0, PAGE_SIZE);
 const categories = [...new Set(emojis.map((emoji) => emoji.category || emoji.group.replaceAll('-', ' ')))].sort();
 const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
+const categoryCounts = new Map();
+for (const emoji of emojis) {
+  const name = emoji.category || emoji.group.replaceAll('-', ' ');
+  categoryCounts.set(name, (categoryCounts.get(name) || 0) + 1);
+}
+const popularCategories = [...categoryCounts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 8);
 const base = import.meta.env.BASE_URL;
 const apiUrl = withBase('/api/emojis.json', base);
 const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
@@ -19,14 +27,17 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
   title="Browse all emoji — ePlus Emoji"
   description="Search the complete ePlus Emoji catalog by name, shortcode, category, source and animation type."
 >
-  <section class="hero">
-    <div class="shell hero-grid">
+  <section class="catalog-intro">
+    <div class="shell catalog-intro-inner">
       <div>
-        <p class="eyebrow">Complete catalog</p>
-        <h1>Browse every emoji.</h1>
-        <p class="hero-copy">Search by name, shortcode or tag, then narrow the library by source, category and motion.</p>
+        <p class="eyebrow">Emoji directory</p>
+        <h1>Find the right emoji, fast.</h1>
+        <p>Search custom emoji, reactions and GIFs, then narrow the catalog by source, category or motion.</p>
       </div>
-      <div class="hero-stat-card"><strong>{emojis.length.toLocaleString('en-US')}</strong><span>emoji indexed and searchable</span></div>
+      <div class="catalog-count" aria-label={`${emojis.length.toLocaleString('en-US')} emoji available`}>
+        <strong>{emojis.length.toLocaleString('en-US')}</strong>
+        <span>assets</span>
+      </div>
     </div>
   </section>
 
@@ -41,30 +52,48 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     data-page-size={PAGE_SIZE}
     data-scroll-root-margin={catalogConfig.scrollRootMargin}
   >
-    <div class="section-heading">
-      <div><p class="eyebrow">Explore</p><h2 id="explore-title">Emoji library</h2></div>
+    <div class="catalog-heading">
+      <div>
+        <h2 id="explore-title">Browse emoji</h2>
+        <p>Search by name, shortcode or tag.</p>
+      </div>
       <p id="result-count">{emojis.length.toLocaleString('en-US')} results</p>
     </div>
 
-    <div class="filters" aria-label="Emoji filters">
-      <label class="search-box">
+    <div class="search-panel" aria-label="Emoji search and filters">
+      <label class="search-box catalog-search">
+        <span class="search-icon" aria-hidden="true">⌕</span>
         <span class="sr-only">Search emoji</span>
-        <span aria-hidden="true">⌕</span>
-        <input id="emoji-search" type="search" placeholder="Search emoji, shortcode or tag…" autocomplete="off" />
+        <input id="emoji-search" type="search" placeholder="Search emoji, :shortcode:, tag or category" autocomplete="off" />
+        <kbd aria-hidden="true">/</kbd>
       </label>
-      <select id="source-filter" aria-label="Filter by source">
-        <option value="all">All sources</option>
-        {sources.map((source) => <option value={source.toLowerCase()}>{source}</option>)}
-      </select>
-      <select id="category-filter" aria-label="Filter by category">
-        <option value="all">All categories</option>
-        {categories.map((category) => <option value={category.toLowerCase()}>{category}</option>)}
-      </select>
-      <select id="motion-filter" aria-label="Filter by animation">
-        <option value="all">Static + animated</option>
-        <option value="yes">Animated only</option>
-        <option value="no">Static only</option>
-      </select>
+
+      <div class="quick-categories" aria-label="Popular categories">
+        <span>Popular</span>
+        <button class="category-chip is-active" type="button" data-category-chip="all">All</button>
+        {popularCategories.map(([name, amount]) => (
+          <button class="category-chip" type="button" data-category-chip={name.toLowerCase()} title={`${amount.toLocaleString('en-US')} emoji`}>
+            {name}
+          </button>
+        ))}
+      </div>
+
+      <div class="filter-row">
+        <select id="source-filter" aria-label="Filter by source">
+          <option value="all">All sources</option>
+          {sources.map((source) => <option value={source.toLowerCase()}>{source}</option>)}
+        </select>
+        <select id="category-filter" aria-label="Filter by category">
+          <option value="all">All categories</option>
+          {categories.map((category) => <option value={category.toLowerCase()}>{category}</option>)}
+        </select>
+        <select id="motion-filter" aria-label="Filter by animation">
+          <option value="all">Static + animated</option>
+          <option value="yes">Animated only</option>
+          <option value="no">Static only</option>
+        </select>
+        <button class="clear-filters" id="clear-filters" type="button" hidden>Clear filters</button>
+      </div>
     </div>
 
     <div class="results-toolbar">
@@ -123,6 +152,8 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
     const source = document.querySelector('#source-filter');
     const category = document.querySelector('#category-filter');
     const motion = document.querySelector('#motion-filter');
+    const clearFilters = document.querySelector('#clear-filters');
+    const categoryChips = [...document.querySelectorAll('[data-category-chip]')];
     const count = document.querySelector('#result-count');
     const rangeCount = document.querySelector('#range-count');
     const browseModeLabel = document.querySelector('#browse-mode-label');
@@ -236,6 +267,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       shortcode.type = 'button';
       shortcode.dataset.copy = `:${emoji.shortcode}:`;
       shortcode.title = 'Copy shortcode';
+      shortcode.setAttribute('aria-label', `Copy shortcode :${emoji.shortcode}:`);
       shortcode.textContent = `:${emoji.shortcode}:`;
 
       const meta = document.createElement('div');
@@ -290,6 +322,15 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       category.value !== 'all' ||
       motion.value !== 'all'
     );
+
+    const syncFilterUI = () => {
+      for (const chip of categoryChips) {
+        const active = chip.dataset.categoryChip === category.value;
+        chip.classList.toggle('is-active', active);
+        chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+      clearFilters.hidden = !hasActiveFilters();
+    };
 
     const updateModeUI = () => {
       for (const button of modeButtons) {
@@ -423,6 +464,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       empty.hidden = items.length !== 0;
       pagination.hidden = true;
       updateInfiniteLoader(items.length, shown);
+      syncFilterUI();
       updateUrl();
       configureInfiniteScroll();
     };
@@ -442,6 +484,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       infiniteLoader.hidden = true;
       if (infiniteObserver) infiniteObserver.disconnect();
       renderPagination(items.length);
+      syncFilterUI();
       updateUrl();
       if (scrollIntoView) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -462,6 +505,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
         updateInfiniteLoader(totalCatalogCount, Math.min(PAGE_SIZE, totalCatalogCount));
         configureInfiniteScroll();
       }
+      syncFilterUI();
       updateUrl();
     };
 
@@ -470,6 +514,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
         currentPage = 1;
         visibleCount = PAGE_SIZE;
       }
+      syncFilterUI();
       rangeCount.textContent = 'Loading matching emoji…';
 
       try {
@@ -562,6 +607,24 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       control.addEventListener('input', () => applyFilters({ reset: true }))
     );
 
+    categoryChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        category.value = chip.dataset.categoryChip || 'all';
+        applyFilters({ reset: true });
+      });
+    });
+
+    clearFilters.addEventListener('click', () => {
+      search.value = '';
+      source.value = 'all';
+      category.value = 'all';
+      motion.value = 'all';
+      filteredCatalog = null;
+      currentPage = 1;
+      visibleCount = PAGE_SIZE;
+      renderInitialState();
+    });
+
     modeButtons.forEach((button) => {
       button.addEventListener('click', () => switchMode(button.dataset.browseMode));
     });
@@ -587,6 +650,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
 
     const initialize = async () => {
       updateModeUI();
+      syncFilterUI();
 
       if (hasActiveFilters()) {
         await applyFilters({ reset: false });
