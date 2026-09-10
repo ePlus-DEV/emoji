@@ -11,19 +11,22 @@ const allEmojiUrl = withBase('/emojis', base);
 const apiUrl = withBase('/api/emojis.json', base);
 const animatedCount = emojis.filter((emoji) => emoji.animated).length;
 const sourceCount = new Set(emojis.map((emoji) => emoji.source)).size;
-const recent = [...emojis]
+const showcase = [...emojis]
   .sort((a, b) => {
     const date = String(b.syncedAt || b.addedAt).localeCompare(String(a.syncedAt || a.addedAt));
     return date || String(a.id).localeCompare(String(b.id));
   })
-  .slice(0, 18);
-const animated = emojis.filter((emoji) => emoji.animated).slice(0, 12);
-const staticEmoji = emojis.filter((emoji) => !emoji.animated).slice(0, 12);
-const showcase = recent.slice(0, 12);
+  .slice(0, 12);
+const showcaseIds = new Set(showcase.map((emoji) => emoji.id));
+const animated = emojis
+  .filter((emoji) => emoji.animated && !showcaseIds.has(emoji.id))
+  .slice(0, 12);
+const staticEmoji = emojis
+  .filter((emoji) => !emoji.animated && !showcaseIds.has(emoji.id))
+  .slice(0, 12);
 const topCategories = [...categories].sort((a, b) => b.count - a.count).slice(0, 10);
 
 const sections = [
-  { title: 'Recently added', subtitle: 'New additions from the latest catalog syncs.', items: recent.slice(0, 12) },
   { title: 'Animated reactions', subtitle: 'GIFs and moving emoji for expressive conversations.', items: animated, href: `${allEmojiUrl}?motion=yes` },
   { title: 'Static emoji', subtitle: 'Lightweight assets for Slack, Discord and the web.', items: staticEmoji, href: `${allEmojiUrl}?motion=no` }
 ];
@@ -103,7 +106,7 @@ const sections = [
           <h2>{section.title}</h2>
           <p>{section.subtitle}</p>
         </div>
-        <a href={section.href || allEmojiUrl}>View all <span>→</span></a>
+        <a href={section.href}>View all <span>→</span></a>
       </div>
 
       <div class="home-emoji-grid">
