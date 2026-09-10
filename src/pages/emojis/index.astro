@@ -74,11 +74,10 @@ const apiUrl = withBase('/api/emojis.json', base);
       <div>🫥</div><h3>No emoji found</h3><p>Try another keyword or clear one of the filters.</p>
     </div>
 
-    <div class="load-more-wrap" id="load-more-wrap" hidden={emojis.length <= PAGE_SIZE}>
-      <button class="load-more-button" id="load-more" type="button">
-        Load 48 more
-      </button>
-      <span id="load-more-progress">48 of {emojis.length.toLocaleString('en-US')} loaded</span>
+    <div class="infinite-loader" id="infinite-loader" hidden={emojis.length <= PAGE_SIZE}>
+      <span class="infinite-loader-spinner" id="infinite-loader-spinner" aria-hidden="true"></span>
+      <span id="infinite-loader-status">Scroll to load more · {Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')} loaded</span>
+      <button class="load-more-fallback" id="load-more-fallback" type="button" hidden>Load 48 more</button>
     </div>
   </section>
 
@@ -93,9 +92,10 @@ const apiUrl = withBase('/api/emojis.json', base);
     const count = document.querySelector('#result-count');
     const rangeCount = document.querySelector('#range-count');
     const empty = document.querySelector('#empty-state');
-    const loadMoreWrap = document.querySelector('#load-more-wrap');
-    const loadMore = document.querySelector('#load-more');
-    const loadMoreProgress = document.querySelector('#load-more-progress');
+    const infiniteLoader = document.querySelector('#infinite-loader');
+    const loaderSpinner = document.querySelector('#infinite-loader-spinner');
+    const loaderStatus = document.querySelector('#infinite-loader-status');
+    const loadMoreFallback = document.querySelector('#load-more-fallback');
 
     const apiUrl = explorer.dataset.apiUrl;
     const base = explorer.dataset.base || '/';
@@ -106,6 +106,7 @@ const apiUrl = withBase('/api/emojis.json', base);
     let filteredCatalog = null;
     let visibleCount = PAGE_SIZE;
     let searchTimer;
+    let isLoadingMore = false;
 
     const withBase = (path) => `${basePrefix}${path.startsWith('/') ? path : `/${path}`}`;
 
@@ -255,6 +256,13 @@ const apiUrl = withBase('/api/emojis.json', base);
       });
     };
 
+    const updateLoader = (total, shown) => {
+      const hasMore = shown < total;
+      infiniteLoader.hidden = !hasMore || total === 0;
+      if (!hasMore) return;
+      loaderStatus.textContent = `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} loaded`;
+    };
+
     const renderCatalog = () => {
       const items = filteredCatalog || [];
       const shown = Math.min(visibleCount, items.length);
@@ -267,26 +275,17 @@ const apiUrl = withBase('/api/emojis.json', base);
         ? '0 results'
         : `Showing 1–${shown.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')}`;
       empty.hidden = items.length !== 0;
-      loadMoreWrap.hidden = shown >= items.length || items.length === 0;
-      loadMoreProgress.textContent = `${shown.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')} loaded`;
+      updateLoader(items.length, shown);
     };
 
     const applyFilters = async ({ reset = true } = {}) => {
       if (reset) visibleCount = PAGE_SIZE;
       updateUrl();
-
-      if (!hasActiveFilters()) {
-        if (!filteredCatalog) return;
-        const catalog = await loadCatalog();
-        filteredCatalog = catalog;
-        renderCatalog();
-        return;
-      }
-
       rangeCount.textContent = 'Loading matching emoji…';
+
       try {
         const catalog = await loadCatalog();
-        filteredCatalog = filterCatalog(catalog);
+        filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
         renderCatalog();
       } catch (error) {
         console.error(error);
@@ -294,22 +293,40 @@ const apiUrl = withBase('/api/emojis.json', base);
       }
     };
 
-    loadMore.addEventListener('click', async () => {
-      loadMore.disabled = true;
-      loadMore.textContent = 'Loading…';
+    const loadNextBatch = async () => {
+      if (isLoadingMore || infiniteLoader.hidden) return;
+      isLoadingMore = true;
+      loaderSpinner.classList.add('is-loading');
+      loaderStatus.textContent = 'Loading more emoji…';
+      loadMoreFallback.disabled = true;
+
       try {
         const catalog = await loadCatalog();
-        filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
-        visibleCount += PAGE_SIZE;
-        renderCatalog();
+        if (!filteredCatalog) filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
+
+        const start = Math.min(visibleCount, filteredCatalog.length);
+        const end = Math.min(start + PAGE_SIZE, filteredCatalog.length);
+        const fragment = document.createDocumentFragment();
+        for (const emoji of filteredCatalog.slice(start, end)) fragment.append(createEmojiCard(emoji));
+        grid.append(fragment);
+        visibleCount = end;
+
+        count.textContent = `${filteredCatalog.length.toLocaleString('en-US')} result${filteredCatalog.length === 1 ? '' : 's'}`;
+        rangeCount.textContent = filteredCatalog.length === 0
+          ? '0 results'
+          : `Showing 1–${visibleCount.toLocaleString('en-US')} of ${filteredCatalog.length.toLocaleString('en-US')}`;
+        updateLoader(filteredCatalog.length, visibleCount);
+        loadMoreFallback.hidden = true;
       } catch (error) {
         console.error(error);
-        loadMoreProgress.textContent = 'Could not load more emoji.';
+        loaderStatus.textContent = 'Could not load more emoji.';
+        loadMoreFallback.hidden = false;
       } finally {
-        loadMore.disabled = false;
-        loadMore.textContent = 'Load 48 more';
+        isLoadingMore = false;
+        loaderSpinner.classList.remove('is-loading');
+        loadMoreFallback.disabled = false;
       }
-    });
+    };
 
     search.addEventListener('input', () => {
       clearTimeout(searchTimer);
@@ -318,6 +335,17 @@ const apiUrl = withBase('/api/emojis.json', base);
     [source, category, motion].forEach((control) =>
       control.addEventListener('input', () => applyFilters({ reset: true }))
     );
+
+    loadMoreFallback.addEventListener('click', loadNextBatch);
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
+      }, { rootMargin: '700px 0px' });
+      observer.observe(infiniteLoader);
+    } else {
+      loadMoreFallback.hidden = false;
+    }
 
     document.addEventListener('click', async (event) => {
       const button = event.target.closest('[data-copy]');
@@ -331,7 +359,7 @@ const apiUrl = withBase('/api/emojis.json', base);
     if (hasActiveFilters()) applyFilters({ reset: true });
     else {
       count.textContent = `${totalCatalogCount.toLocaleString('en-US')} results`;
-      loadMoreWrap.hidden = totalCatalogCount <= PAGE_SIZE;
+      infiniteLoader.hidden = totalCatalogCount <= PAGE_SIZE;
     }
   </script>
 </Layout>
