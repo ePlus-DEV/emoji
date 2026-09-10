@@ -620,9 +620,7 @@ const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
       category.value = 'all';
       motion.value = 'all';
       filteredCatalog = null;
-      currentPage = 1;
-      visibleCount = PAGE_SIZE;
-      renderInitialState();
+      applyFilters({ reset: true });
     });
 
     modeButtons.forEach((button) => {
