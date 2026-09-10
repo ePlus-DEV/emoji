@@ -14,72 +14,62 @@
   font-weight: 700;
 }
 
-.pagination {
+.load-more-wrap {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 36px;
+  gap: 10px;
+  margin-top: 34px;
 }
 
-.pagination[hidden] { display: none; }
-
-.pagination-pages {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.load-more-wrap[hidden] {
+  display: none;
 }
 
-.pagination button {
-  min-width: 40px;
-  height: 40px;
-  padding: 0 11px;
-  border: 1px solid var(--line);
+.load-more-button {
+  min-width: 156px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: #fff;
-  color: var(--ink-soft);
-  font-size: .8rem;
-  font-weight: 750;
+  color: var(--ink);
+  font-size: .82rem;
+  font-weight: 760;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease;
 }
 
-.pagination button:hover:not(:disabled) {
-  border-color: #c7d2fe;
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+.load-more-button:hover:not(:disabled) {
   transform: translateY(-1px);
+  border-color: #b9c0cc;
+  background: var(--surface-subtle);
+  box-shadow: 0 8px 18px rgba(16,24,40,.07);
 }
 
-.pagination button.is-active {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: #fff;
-  box-shadow: 0 7px 16px rgba(11,16,32,.14);
+.load-more-button:disabled {
+  opacity: .55;
+  cursor: wait;
 }
 
-.pagination button:disabled {
-  opacity: .38;
-  cursor: not-allowed;
-}
-
-.pagination-nav { min-width: 82px !important; }
-
-.pagination-ellipsis {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 40px;
+#load-more-progress {
   color: var(--muted-light);
-  user-select: none;
+  font-size: .72rem;
 }
 
 @media (max-width: 620px) {
-  .results-summary { align-items: flex-start; flex-direction: column; gap: 4px; }
-  .pagination { gap: 4px; margin-top: 26px; }
-  .pagination-pages { gap: 3px; }
-  .pagination button { min-width: 34px; height: 36px; padding: 0 8px; border-radius: 9px; font-size: .76rem; }
-  .pagination-nav { min-width: 62px !important; font-size: .72rem !important; }
-  .pagination-ellipsis { width: 18px; height: 36px; }
+  .results-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .load-more-wrap {
+    margin-top: 26px;
+  }
+
+  .load-more-button {
+    width: 100%;
+  }
 }
