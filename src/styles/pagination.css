@@ -565,6 +565,29 @@ body .back-to-top svg {
   height: 17px;
 }
 
+/* Remove repeated visual hierarchy: one title, one result indicator, one mode control. */
+.catalog-count,
+.catalog-heading,
+#browse-mode-label {
+  display: none;
+}
+
+.catalog-intro-inner {
+  display: block;
+}
+
+.explorer {
+  padding-top: 18px;
+}
+
+.results-toolbar {
+  margin-top: 2px;
+}
+
+.results-summary {
+  min-height: 31px;
+}
+
 @keyframes emoji-loader-spin {
   to { transform: rotate(360deg); }
 }
@@ -624,7 +647,7 @@ body .back-to-top svg {
   }
 
   .explorer {
-    padding-top: 18px;
+    padding-top: 14px;
   }
 
   .catalog-heading {
