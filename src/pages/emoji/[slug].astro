@@ -15,11 +15,14 @@ const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
 const homeUrl = withBase('/', base);
+const browseUrl = withBase('/emojis', base);
 const title = `${emoji.name} — ${emoji.sourceLabel} | ePlus Emoji`;
+const category = emoji.category || emoji.group.replaceAll('-', ' ');
+const description = `Download ${emoji.name} from ${emoji.sourceLabel}, copy :${emoji.shortcode}: and view source, format and license metadata.`;
 ---
-<Layout title={title} description={`Download ${emoji.name} from ${emoji.sourceLabel} and copy :${emoji.shortcode}:.`}>
+<Layout title={title} description={description}>
   <section class="shell detail-page">
-    <a class="back-link" href={homeUrl}>← Back to all emoji</a>
+    <a class="back-link" href={browseUrl}>← Back to emoji library</a>
     <div class="detail-grid">
       <div class="detail-preview">
         <img src={imageUrl} alt={emoji.name} width="320" height="320" />
@@ -30,25 +33,30 @@ const title = `${emoji.name} — ${emoji.sourceLabel} | ePlus Emoji`;
             <p class="eyebrow">{emoji.sourceLabel}</p>
             <h1>{emoji.name}</h1>
           </div>
-          <span class="detail-native">{emoji.emoji}</span>
+          {emoji.emoji && <span class="detail-native" aria-hidden="true">{emoji.emoji}</span>}
         </div>
+
         <button class="copy-large" type="button" data-copy={`:${emoji.shortcode}:`}>
           <span>:{emoji.shortcode}:</span>
-          <strong>Copy</strong>
+          <strong>Copy shortcode</strong>
         </button>
+
         <div class="tag-list">
-          {emoji.tags.map((tag) => <span>{tag}</span>)}
+          {emoji.tags.slice(0, 12).map((tag) => <span>{tag}</span>)}
         </div>
+
         <dl class="metadata-list">
-          <div><dt>Category</dt><dd>{emoji.group.replaceAll('-', ' ')}</dd></div>
-          <div><dt>Hexcode</dt><dd>{emoji.hexcode}</dd></div>
-          <div><dt>Format</dt><dd>{emoji.format.toUpperCase()}</dd></div>
+          <div><dt>Category</dt><dd>{category}</dd></div>
+          <div><dt>Source</dt><dd>{emoji.sourceLabel}</dd></div>
+          <div><dt>Format</dt><dd>{emoji.format.toUpperCase()}{emoji.animated ? ' · Animated' : ''}</dd></div>
+          {emoji.hexcode && <div><dt>Hexcode</dt><dd>{emoji.hexcode}</dd></div>}
           <div><dt>License</dt><dd>{emoji.license}</dd></div>
           <div><dt>Attribution</dt><dd>{emoji.attribution}</dd></div>
         </dl>
+
         <div class="detail-actions">
           <a class="primary-action" href={imageUrl} download>Download {emoji.format.toUpperCase()}</a>
-          <a class="secondary-action" href={emoji.sourceUrl} rel="noreferrer">View source</a>
+          <a class="secondary-action" href={emoji.sourceUrl} rel="noreferrer">View original source</a>
         </div>
       </div>
     </div>

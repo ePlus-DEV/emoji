@@ -3,7 +3,9 @@ name: CI
 on:
   pull_request:
   push:
-    branches-ignore: [main]
+    branches-ignore:
+      - main
+      - 'pr-preview-*'
 
 permissions:
   contents: read
@@ -14,15 +16,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+
       - name: Verify emoji data
         run: npm run check:data
+
       - name: Build
         run: npm run build
+
       - name: Verify built links
         run: npm run check:build

@@ -14,6 +14,9 @@ interface Emoji {
   license: string;
   tags: string[];
   group: string;
+  category?: string;
+  categorySlug?: string;
+  format?: string;
   animated: boolean;
 }
 
@@ -25,7 +28,17 @@ const { emoji } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
 const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
-const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group, ...emoji.tags]
+const category = emoji.category || emoji.group.replaceAll('-', ' ');
+const searchText = [
+  emoji.name,
+  emoji.shortcode,
+  emoji.sourceLabel,
+  emoji.group,
+  emoji.category,
+  emoji.categorySlug,
+  ...emoji.tags
+]
+  .filter(Boolean)
   .join(' ')
   .toLowerCase();
 ---
@@ -35,10 +48,12 @@ const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group,
   data-search={searchText}
   data-source={emoji.sourceLabel.toLowerCase()}
   data-group={emoji.group}
+  data-category={category.toLowerCase()}
   data-animated={emoji.animated ? 'yes' : 'no'}
 >
   <a class="emoji-preview" href={detailUrl} aria-label={`Open ${emoji.name}`}>
     <img src={imageUrl} alt={emoji.name} loading="lazy" width="128" height="128" />
+    {emoji.animated && <span class="card-motion-badge">GIF</span>}
   </a>
   <div class="emoji-card-body">
     <div class="emoji-title-row">
@@ -49,8 +64,8 @@ const searchText = [emoji.name, emoji.shortcode, emoji.sourceLabel, emoji.group,
       :{emoji.shortcode}:
     </button>
     <div class="emoji-meta">
-      <span>{emoji.sourceLabel}</span>
-      <span>{emoji.license}</span>
+      <span>{category}</span>
+      <span>{emoji.animated ? 'Animated' : (emoji.format || 'Static').toUpperCase()}</span>
     </div>
   </div>
 </article>
