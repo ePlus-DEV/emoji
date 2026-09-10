@@ -33,17 +33,20 @@ const heroPool = shuffle(emojis)
 const showcase = heroPool.slice(0, 12);
 const heroPoolIds = new Set(heroPool.map((emoji) => emoji.id));
 const heroPoolJson = JSON.stringify(heroPool).replaceAll('<', '\\u003c');
+const recent = [...emojis]
+  .sort((a, b) => {
+    const date = String(b.syncedAt || b.addedAt).localeCompare(String(a.syncedAt || a.addedAt));
+    return date || String(a.id).localeCompare(String(b.id));
+  })
+  .slice(0, 12);
 const animated = emojis
   .filter((emoji) => emoji.animated && !heroPoolIds.has(emoji.id))
-  .slice(0, 12);
-const staticEmoji = emojis
-  .filter((emoji) => !emoji.animated && !heroPoolIds.has(emoji.id))
   .slice(0, 12);
 const topCategories = [...categories].sort((a, b) => b.count - a.count).slice(0, 10);
 
 const sections = [
-  { title: 'Animated reactions', subtitle: 'GIFs and moving emoji for expressive conversations.', items: animated, href: `${allEmojiUrl}?motion=yes` },
-  { title: 'Static emoji', subtitle: 'Lightweight assets for Slack, Discord and the web.', items: staticEmoji, href: `${allEmojiUrl}?motion=no` }
+  { title: 'Recently added', subtitle: 'The newest emoji from recent catalog syncs.', items: recent, href: allEmojiUrl },
+  { title: 'Animated reactions', subtitle: 'GIFs and moving emoji for expressive conversations.', items: animated, href: `${allEmojiUrl}?motion=yes` }
 ];
 ---
 <Layout
