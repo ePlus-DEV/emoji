@@ -13,14 +13,82 @@ const {
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+const origin = Astro.site ?? Astro.url.origin;
 const homeUrl = withBase('/', base);
 const emojisUrl = withBase('/emojis', base);
 const faviconUrl = withBase('/favicon.svg', base);
 const apiUrl = withBase('/api/emojis.json', base);
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, origin);
 const pathname = Astro.url.pathname;
-const isHome = pathname === '/' || pathname === base;
-const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
+const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+const isHome = normalizedPath === '/' || normalizedPath === base.replace(/\/+$/, '');
+const isEmojiDetail = normalizedPath.startsWith('/emoji/');
+const isBrowseIndex = normalizedPath === '/emojis';
+const isBrowse = isBrowseIndex || isEmojiDetail;
+
+const absoluteHomeUrl = new URL(homeUrl, origin).toString();
+const absoluteBrowseUrl = new URL(emojisUrl, origin).toString();
+const websiteId = `${absoluteHomeUrl}#website`;
+const webpageId = `${canonical.toString()}#webpage`;
+
+const schemaGraph = [
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: absoluteHomeUrl,
+    name: 'ePlus Emoji',
+    description: 'An open custom emoji directory for developers and communities.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${absoluteBrowseUrl}?q={search_term_string}`
+      },
+      'query-input': 'required name=search_term_string'
+    }
+  },
+  {
+    '@type': isBrowseIndex ? 'CollectionPage' : 'WebPage',
+    '@id': webpageId,
+    url: canonical.toString(),
+    name: title,
+    description,
+    isPartOf: { '@id': websiteId },
+    ...(isBrowseIndex ? {
+      about: { '@type': 'Thing', name: 'Emoji' },
+      mainEntity: {
+        '@type': 'ItemList',
+        name: 'ePlus Emoji catalog'
+      }
+    } : {})
+  }
+];
+
+if (isBrowse) {
+  const itemListElement = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteHomeUrl },
+    { '@type': 'ListItem', position: 2, name: 'Browse', item: absoluteBrowseUrl }
+  ];
+
+  if (isEmojiDetail) {
+    itemListElement.push({
+      '@type': 'ListItem',
+      position: 3,
+      name: title.split('—')[0].trim(),
+      item: canonical.toString()
+    });
+  }
+
+  schemaGraph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement
+  });
+}
+
+const schemaJson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': schemaGraph
+}).replace(/</g, '\\u003c');
 ---
 <!doctype html>
 <html lang="en">
@@ -35,6 +103,7 @@ const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
     <meta property="og:url" content={canonical} />
     <link rel="icon" type="image/svg+xml" href={faviconUrl} />
     <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" set:html={schemaJson}></script>
     <title>{title}</title>
   </head>
   <body>
@@ -81,5 +150,45 @@ const isBrowse = pathname === '/emojis' || pathname.startsWith('/emoji/');
         <span>Emoji assets retain their upstream attribution and licenses.</span>
       </div>
     </footer>
+
+    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top" title="Back to top" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 14.5 5.5-5.5 5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Top</span>
+    </button>
+
+    <script is:inline>
+      (() => {
+        const backToTop = document.querySelector('#back-to-top');
+        const searchInput = document.querySelector('#emoji-search');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let ticking = false;
+
+        const syncBackToTop = () => {
+          backToTop.hidden = window.scrollY < Math.max(560, window.innerHeight * 0.72);
+          ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+          if (ticking) return;
+          ticking = true;
+          window.requestAnimationFrame(syncBackToTop);
+        }, { passive: true });
+
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (!searchInput || event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return;
+          const tag = document.activeElement?.tagName;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          event.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        });
+
+        syncBackToTop();
+      })();
+    </script>
   </body>
 </html>
