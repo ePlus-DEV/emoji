@@ -1,0 +1,1769 @@
+<!-- 4ed94608c1e0082a72713d8f33b084b453b67a9e -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <script type="text/javascript">
+  var ramp = { que: [], passiveMode: true };
+  </script>
+  <script id="ramp" data-cfasync="false" src="//cdn.intergient.com/1024842/73966/ramp.js?v=2" type="text/javascript"></script>
+  <title>Discord Emojis | Discord & Slack Emoji List</title>
+  <meta name="description" content="Discord Emojis, Slack Emojis and more. Easily browse and use thousands of custom emojis for your Discord server or Slack group. Browse emoji categories such as thinking, anime, meme, pepe, blobs and more.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Discord Emojis | Discord & Slack Emoji List">
+  <meta property="og:description" content="Discord Emojis, Slack Emojis and more. Easily browse and use thousands of custom emojis for your Discord server or Slack group. Browse emoji categories such as thinking, anime, meme, pepe, blobs and more.">
+  <meta property="og:url" content="https://emoji.gg/">
+  <meta property="og:image" content="https://emoji.gg/assets/img/logo.png">
+  <link rel="canonical" href="https://emoji.gg">
+  <meta name="twitter:card" content="summary_image">
+  <meta name="twitter:title" content="Discord Emojis | Discord & Slack Emoji List">
+  <meta name="twitter:description" content="Discord Emojis, Slack Emojis and more. Easily browse and use thousands of custom emojis for your Discord server or Slack group. Browse emoji categories such as thinking, anime, meme, pepe, blobs and more.">
+  <meta name="twitter:image" content="https://emoji.gg/assets/img/logo.png">
+  <meta name="twitter:url" content="https://emoji.gg/">
+  <meta name="theme-color" content="#f5c400">
+  <link rel="icon" href="https://emoji.gg/assets/img/logo.png?v=2">
+  <link type="application/json+oembed" href="https://emoji.gg/assets/oembed.json">
+  <link rel="preload" as="style" href="https://emoji.gg/assets/vendor/font-awesome/css/fontawesome.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload" as="style"  href="https://emoji.gg/assets/vendor/font-awesome/css/all.min.css" onload="this.rel='stylesheet'">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link href="https://emoji.gg/assets/css/boot.css" rel="stylesheet">
+  <link href="https://emoji.gg/assets/css/style.css?v=1" rel="stylesheet">
+
+  <meta name="google-site-verification" content="u6-CiQG03B8G88j3yGmqhE_bL-wTFEr4-rLtf2t5jus">
+  <meta name="google-adsense-account" content="ca-pub-3623984092494668">
+
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3623984092494668"
+       crossorigin="anonymous"></script> -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJ0NSZJXYE"></script>
+  <script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-84351039-13', 'auto');
+  ga('send', 'pageview');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SJ0NSZJXYE');
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-nav px-0 py-1 border-bottom" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <button class="navbar-toggler ms-n2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Open navigation menu">
+        <span class="navbar-toggler-icon" aria-hidden="true"></span>
+      </button>
+
+      <a class="navbar-brand me-2" href="https://emoji.gg" aria-label="Home">
+
+        <img src="https://emoji.gg/assets/img/logo.png?v=3" alt="Emoji.gg logo" width="28" height="28" loading="lazy">
+        emoji.gg      </a>
+
+              <div class="order order-lg-3 ms-lg-4">
+          <a href="#" class="btn btn-sm btn-primary pt-2 pb-2" data-bs-toggle="modal" data-bs-target="#loginModal" role="button" aria-controls="loginModal">Login</a>
+        </div>
+      
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 id="offcanvasNavbarLabel" class="offcanvas-title">Emoji.gg</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close navigation menu"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="emojisDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-controls="emojisMenu">Emojis</a>
+              <div class="dropdown-menu dropdown-menu-start mt-0 border shadow-sm" id="emojisMenu" style="min-width: 500px;" aria-labelledby="emojisDropdown">
+                <div class="container py-3">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h6 class="dropdown-header">Emojis</h6>
+                      <a class="dropdown-item" href="https://emoji.gg">Custom Emojis</a>
+                      <a class="dropdown-item" href="https://emoji.gg/unicode">Unicode Emojis</a>
+                      <a class="dropdown-item" href="https://emoji.gg/symbols">Unicode Symbols</a>
+                      <a class="dropdown-item" href="https://emoji.gg/emoticons">Emoticons</a>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="dropdown-header">Create</h6>
+                      <a class="dropdown-item" href="https://emoji.gg/maker">Emoji Maker</a>
+                      <a class="dropdown-item" href="https://emoji.gg/tools/emoji-animator">Emoji Animator</a>
+                      <a class="dropdown-item" href="https://emoji.gg/tools/emoji-kitchen">Emoji Kitchen</a>
+                      <a class="dropdown-item" href="https://emoji.gg/tools/icon-maker">Icon Maker</a>
+                    </div>
+                    <div class="col-md-4">
+                      <h6 class="dropdown-header">Integrations</h6>
+                      <a class="dropdown-item" href="#">Discord Bot</a>
+                      <a class="dropdown-item" href="#">Slack App</a>
+                      <a class="dropdown-item" href="#">Twitch</a>
+                      <a class="dropdown-item" href="#">Guilded</a>
+                    </div>
+                  </div>
+                  <a href="/marketplace" class="d-block border-top pt-5 mt-3 px-3 text-start small text-decoration-none" title="Emoji Marketplace">
+                    <div class="h6 mb-1 color-p-orange">Emoji Marketplace</div>
+                    Looking for emotes licensed for Streaming? Browse our Emoji Marketplace for premium assets with permissive licenses.
+                  </a>
+                </div>
+              </div>
+            </li>
+
+            <li class="nav-item"><a class="nav-link" href="https://emoji.gg/packs">Packs</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://emoji.gg/stickers">Stickers</a></li>
+            <li class="nav-item"><a class="nav-link color-p-orange" href="https://emoji.gg/marketplace">Marketplace</a></li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-controls="toolsMenu">Tools</a>
+              <div class="dropdown-menu dropdown-menu-start p-3" id="toolsMenu" aria-labelledby="toolsDropdown" style="min-width: 350px;">
+                <div class="row g-1">
+                                      <div class="col-6">
+                                              <a class="dropdown-item" href="https://emoji.gg/unicode">
+                          Meanings                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/symbols">
+                          Symbols                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/emoticons">
+                          Emoticons                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/maker">
+                          Emoji Maker                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/emoji-animator">
+                          Emoji Animator                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/icon-maker">
+                          Icon Maker                        </a>
+                                          </div>
+                                      <div class="col-6">
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/emoji-kitchen">
+                          Emoji Kitchen                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/keyboard">
+                          Emoji Keyboard                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/emoji-splitter">
+                          Emoji Splitter                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/ping-icon-maker">
+                          Ping Icon Maker                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/image-to-ascii">
+                          Image to Ascii                        </a>
+                                              <a class="dropdown-item" href="https://emoji.gg/tools/discord-timestamps">
+                          Discord Timestamps                        </a>
+                                          </div>
+                                  </div>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="moreDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu">More</a>
+              <ul class="dropdown-menu" id="moreMenu" aria-labelledby="moreDropdown">
+                <li><a class="dropdown-item" href="https://emoji.gg/creators">Leaderboards</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCollection" aria-controls="offcanvasCollection" onclick="App.loadCollectionItems()">Collection</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCollection" aria-labelledby="offcanvasCollectionLabel">
+    <div class="offcanvas-header">
+      <h5 id="offcanvasCollectionLabel" class="offcanvas-title">Your Collection</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close collection panel"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="row g-2 collection-items" aria-live="polite" aria-atomic="false">
+        <div class="col-12 text-muted small">Your collection items will appear here.</div>
+      </div>
+      <div class="row mt-4">
+                  <div class="col-12 mb-2"><a href="#" class="btn btn-primary btn-sm btn-block" data-bs-toggle="modal" data-bs-target="#loginModal" role="button" aria-controls="loginModal">Login to download collections</a></div>
+                  <div class="col-12"><a class="btn btn-link btn-sm btn-block clear-collection"><i class="fa-solid fa-trash-can"></i> Clear collection</a></div>
+      </div>
+    </div>
+  </div>
+<div class="hero-search pt-3 pb-3 border-bottom">
+  <div class="container">
+    <form method="POST" action="https://emoji.gg/search" class="w-full">
+      <div class="input-group input-group-sm input-group-inline shadow-none dropdown-center gradient-placeholder-wrapper">
+        <input
+          type="text"
+          class="form-control text-sm shadow-none px-6 pt-3 pb-3 dropdown-toggle"
+          placeholder=" "
+          name="q"
+          data-bs-toggle="dropdown"
+          autocomplete="off"
+          aria-label="search"
+        >
+        <div class="placeholder-overlay-text">Search and download over 125,000 custom emojis...</div>
+        <span class="input-group-text px-4 py-2 border-right" id="basic-addon2">
+          <i class="fas fa-search"></i>
+        </span>
+        <div class="dropdown-menu mt-1 w-100">
+          <h6 class="dropdown-header h6">Popular on Emoji.gg</h6>
+          <div class="tags px-4 py-2">
+            <a href="https://emoji.gg/emojis/0" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">0</a><a href="https://emoji.gg/emojis/cat" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cat</a><a href="https://emoji.gg/emojis/meme" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Meme</a><a href="https://emoji.gg/emojis/pepe" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pepe</a><a href="https://emoji.gg/emojis/animated" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Animated</a><a href="https://emoji.gg/emojis/anime" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Anime</a><a href="https://emoji.gg/emojis/heart" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Heart</a><a href="https://emoji.gg/emojis/staff" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Staff</a><a href="https://emoji.gg/emojis/crown" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Crown</a><a href="https://emoji.gg/emojis/cute" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cute</a><a href="https://emoji.gg/emojis/minecraft" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Minecraft</a><a href="https://emoji.gg/emojis/funny" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Funny</a><a href="https://emoji.gg/emojis/pink" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pink</a><a href="https://emoji.gg/emojis/purple" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Purple</a><a href="https://emoji.gg/emojis/admin" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Admin</a><a href="https://emoji.gg/emojis/discord" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Discord</a><a href="https://emoji.gg/emojis/blue" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Blue</a><a href="https://emoji.gg/emojis/pokemon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pokemon</a><a href="https://emoji.gg/emojis/arrow" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Arrow</a><a href="https://emoji.gg/emojis/owner" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Owner</a><a href="https://emoji.gg/emojis/star" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Star</a><a href="https://emoji.gg/emojis/red" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Red</a><a href="https://emoji.gg/emojis/black" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Black</a><a href="https://emoji.gg/emojis/white" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">White</a><a href="https://emoji.gg/emojis/aesthetic" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Aesthetic</a><a href="https://emoji.gg/emojis/halloween" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Halloween</a><a href="https://emoji.gg/emojis/pixel" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pixel</a><a href="https://emoji.gg/emojis/gif" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Gif</a><a href="https://emoji.gg/emojis/goth" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Goth</a><a href="https://emoji.gg/emojis/green" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Green</a><a href="https://emoji.gg/emojis/love" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Love</a><a href="https://emoji.gg/emojis/mod" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Mod</a><a href="https://emoji.gg/emojis/valorant" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Valorant</a><a href="https://emoji.gg/emojis/dance" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Dance</a><a href="https://emoji.gg/emojis/numbers" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Numbers</a>          </div>
+          <h6 class="dropdown-header h6">You might also like</h6>
+          <div class="px-4 py-2 mobile-hide">
+            <div class="row g-2 other-resources">
+              <div class="col-md-3">
+                  <a href="https://pfps.gg" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Pfps.gg</div>
+                      <p class="mt-1">Profile pictures & banners.</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://stickers.gg" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Stickers.gg</div>
+                      <p class="mt-1">Stickers for Discord & more</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://soundboards.gg" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Soundboards.gg</div>
+                      <p class="mt-1">Sound effects</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://fonts.gg/discord" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Fonts.gg</div>
+                      <p class="mt-1">Discord fonts generator</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://discordthemes.com" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Themes.gg</div>
+                      <p class="mt-1">Profile themes for Discord.</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://invites.gg" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Invites.gg</div>
+                      <p class="mt-1">Discord Vanity Urls</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://discordtemplates.net" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Discord Templates</div>
+                      <p class="mt-1">Discord server templates</p>
+                    </div>
+                  </a>
+                </div><div class="col-md-3">
+                  <a href="https://discordtools.net" target="_blank">
+                    <div class="resource px-3 py-3">
+                      <div class="h5">Discord Tools</div>
+                      <p class="mt-1">Discord Tools</p>
+                    </div>
+                  </a>
+                </div>            </div>
+          </div>
+        </div>
+        <div class="btn btn-secondary btn-settings mobile-hide collection-link ms-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCollection" aria-controls="offcanvasCollection" onclick="App.loadCollectionItems()">
+          <i class="fas fa-folder" data-toggle="tooltip" data-placement="bottom" data-title="View your emoji collection" data-original-title="" title=""></i>
+          <span class="position-absolute top-0 start-10 translate-middle badge rounded-pill bg-danger" style="display:none" id="collection-count">0</span>
+        </div>
+      </div>
+    </form>
+      <div class="search-notice" style="display:none">
+        <a href="https://emoji.gg/bot" class="badge text-bg-primary" target="_blank">
+          <i class="fab fa-discord" aria-hidden="true"></i> Add emojis faster with our bot
+        </a>
+      </div>
+  </div>
+</div>
+
+<div class="container content mt-4 mb-2">
+  <div class="row g-3 mb-5 mobile-hide">
+    <div class="col-md-8">
+      <div class="card feature-row">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4 border-right">
+              <a href="https://emoji.gg/unicode">
+                <div class="h6"><i class="fa-solid fa-book color-orange me-1"></i> Unicode Emojis</div>
+                <p class="fs-14 mt-2">Definitions, designs, tools and information.</p>
+              </a>
+            </div>
+            <div class="col-md-4 border-right ps-5">
+              <a href="https://emoji.gg/symbols">
+                <div class="h6"><i class="fa-sharp-duotone fa-solid fa-icons color-green me-1"></i> Symbols</div>
+                <p class="fs-14 mt-2">Quickly search and copy unicode symbols.</p>
+              </a>
+            </div>
+            <div class="col-md-4 ps-5">
+              <a href="https://emoji.gg/emoticons">
+                <div class="h6"><span class="color-pink me-1">:-)</span> Emoticons</div>
+                <p class="fs-14 mt-2">The coolest emoticons and kaomoji.</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <a href="https://emoji.gg/bot" class="card" target="_blank">
+        <div class="card-body text-center">
+          <div class="h6 mb-2"><i class="fab fa-discord me-1"></i> Get the Discord Bot</div>
+          <p class="fs-14">Join 1.2M+ communities already using the emoji.gg Discord bot</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="pt-4 overflow-hidden">
+    <div class="d-flex align-items-center mb-4">
+      <div>
+        <h1 class="h4 mb-1">Discord & Slack Emojis</h1>
+        <p>Browse thousands of free custom emojis<br> to use on Slack or Discord</p>
+      </div>
+      <div class="ms-auto">
+        <div class="dropdown d-inline">
+          <a class="btn btn-sm btn-secondary dropdown-toggle" href="#" role="button" id="categoryMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Category</a>
+          <div class="dropdown-menu dropdown-menu-start double-menu" aria-labelledby="categoryMenuLink" style="min-width: 300px;">
+            <div class="row">
+              <li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/1/original-style">Original Style</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/18/recolors">Recolors</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/2/tv-movie">TV / Movie</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/10/gaming">Gaming</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/3/meme">Meme</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/4/anime">Anime</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/13/pepe">Pepe</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/5/celebrity">Celebrity</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/21/pixel-art">Pixel Art</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/6/blobs">Blobs</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/7/thinking">Thinking</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/17/animals">Animals</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/15/cute">Cute</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/23/aesthetic">Aesthetic</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/11/letters">Letters</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/22/reactions">Reactions</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/14/logos">Logos</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/16/utility">Utility</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/19/flags">Flags</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/20/hearts">Hearts</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/12/other">Other</a></li><li class="col-md-6"><a class="dropdown-item" href="https://emoji.gg/category/8/animated">Animated</a></li>            </div>
+          </div>
+        </div>
+        <a class="btn btn-sm btn-secondary dropdown-toggle" href="#" role="button" id="sortMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Featured</a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortMenuLink">
+          <li><a class="dropdown-item" href="https://emoji.gg?sort=recent">Recent</a></li><li><a class="dropdown-item" href="https://emoji.gg?sort=downloads">Downloads</a></li><li><a class="dropdown-item" href="https://emoji.gg?sort=oldest">Oldest</a></li><li><a class="dropdown-item" href="https://emoji.gg?sort=verified">Verified</a></li><li><a class="dropdown-item" href="https://emoji.gg?sort=animated">Animated</a></li>        </div>
+      </div>
+    </div>
+
+    <div class="row g-3" id="items">
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 0</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/980170-flopunch.png"
+                alt="flopunch Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/980170-flopunch" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="980170-flopunch.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/980170-flopunch" class="fw-semibold fs-12 h4">flopunch</a></div>
+                <a href="https://emoji.gg/user/macidiapolitima" class="fs-12">Macidia politima</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 4</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/966401-cat.png"
+                alt="cat Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/966401-cat" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="966401-cat.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/966401-cat" class="fw-semibold fs-12 h4">cat</a></div>
+                <a href="https://emoji.gg/user/bruhbruhpatapin" class="fs-12">Noname</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 1</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/185036-clock-it.png"
+                alt="clock_it Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/185036-clock-it" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="185036-clock-it.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/185036-clock-it" class="fw-semibold fs-12 h4">clock_it</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 2</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/712478-readtherules.png"
+                alt="ReadTheRules Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/712478-readtherules" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="712478-readtherules.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/712478-readtherules" class="fw-semibold fs-12 h4">ReadTheRules</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 2</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/229468-this.png"
+                alt="this Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/229468-this" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="229468-this.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/229468-this" class="fw-semibold fs-12 h4">this</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 7.0K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/200538-period.png"
+                alt="Period Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/200538-period" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="200538-period.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/200538-period" class="fw-semibold fs-12 h4">Period</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 8.2K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/737279-thats-valid.png"
+                alt="Thats_Valid Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/737279-thats-valid" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="737279-thats-valid.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/737279-thats-valid" class="fw-semibold fs-12 h4">Thats_Valid</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 5.2K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/328456-crashout.png"
+                alt="crashout Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/328456-crashout" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="328456-crashout.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/328456-crashout" class="fw-semibold fs-12 h4">crashout</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 7.5K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/180707-ragebait.png"
+                alt="ragebait Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/180707-ragebait" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="180707-ragebait.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/180707-ragebait" class="fw-semibold fs-12 h4">ragebait</a></div>
+                <a href="https://emoji.gg/user/coppercab" class="fs-12"><i class="fas fa-badge-check text-primary me-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Content published by this user is verified to be unique and high quality"></i>Copper 🦧</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 17.0K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/781025-panic.gif"
+                alt="panic Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/781025-panic" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="781025-panic.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/781025-panic" class="fw-semibold fs-12 h4">panic</a></div>
+                <a href="https://emoji.gg/user/decaydrop" class="fs-12">spideyycat</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 7.7K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/501518-pepepumpkin.gif"
+                alt="pepepumpkin Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/501518-pepepumpkin" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="501518-pepepumpkin.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/501518-pepepumpkin" class="fw-semibold fs-12 h4">pepepumpkin</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 8.6K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/178703-pepepumpkin.gif"
+                alt="pepepumpkin Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/178703-pepepumpkin" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="178703-pepepumpkin.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/178703-pepepumpkin" class="fw-semibold fs-12 h4">pepepumpkin</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 2.4K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/313260-spookyseason.gif"
+                alt="spookyseason Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/313260-spookyseason" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="313260-spookyseason.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/313260-spookyseason" class="fw-semibold fs-12 h4">spookyseason</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 3.1K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/547784-pumpkinturtle.png"
+                alt="pumpkinturtle Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/547784-pumpkinturtle" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="547784-pumpkinturtle.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/547784-pumpkinturtle" class="fw-semibold fs-12 h4">pumpkinturtle</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 6.3K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/666725-pumpkintart.gif"
+                alt="pumpkintart Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/666725-pumpkintart" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="666725-pumpkintart.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/666725-pumpkintart" class="fw-semibold fs-12 h4">pumpkintart</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 1.4K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/193926-spooky.png"
+                alt="spooky Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/193926-spooky" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="193926-spooky.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/193926-spooky" class="fw-semibold fs-12 h4">spooky</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 1.8K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/309900-ghost.png"
+                alt="ghost Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/309900-ghost" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="309900-ghost.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/309900-ghost" class="fw-semibold fs-12 h4">ghost</a></div>
+                <a href="https://emoji.gg/user/xchasex" class="fs-12">xchasex</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 7.2K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/376973-sleepycat.gif"
+                alt="Sleepycat Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/376973-sleepycat" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="376973-sleepycat.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/376973-sleepycat" class="fw-semibold fs-12 h4">Sleepycat</a></div>
+                <a href="https://emoji.gg/user/hotpink1ne" class="fs-12">𝓓𝓮𝓪𝓭𝓵𝔂𝓹𝓸𝓲𝓼𝓸𝓷♡</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 8.1K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/994619-ola.gif"
+                alt="Ola Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/994619-ola" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="994619-ola.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/994619-ola" class="fw-semibold fs-12 h4">Ola</a></div>
+                <a href="https://emoji.gg/user/myael4859" class="fs-12">Yael Mtz</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 62.3K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/4172-omggg.gif"
+                alt="omggg Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/4172-omggg" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="4172-omggg.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/4172-omggg" class="fw-semibold fs-12 h4">omggg</a></div>
+                <a href="https://emoji.gg/user/gioonni" class="fs-12">Giiooo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 26.8K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/706241-hellochat.gif"
+                alt="hellochat Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/706241-hellochat" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="706241-hellochat.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/706241-hellochat" class="fw-semibold fs-12 h4">hellochat</a></div>
+                <a href="https://emoji.gg/user/.ryueu" class="fs-12">Azuma</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.gif</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 35.9K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/951062-goingcrazy.gif"
+                alt="Goingcrazy Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/951062-goingcrazy" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="951062-goingcrazy.gif">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/951062-goingcrazy" class="fw-semibold fs-12 h4">Goingcrazy</a></div>
+                <a href="https://emoji.gg/user/hotpink1ne" class="fs-12">𝓓𝓮𝓪𝓭𝓵𝔂𝓹𝓸𝓲𝓼𝓸𝓷♡</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 8.6K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/371995-inlove.png"
+                alt="Inlove Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/371995-inlove" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="371995-inlove.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/371995-inlove" class="fw-semibold fs-12 h4">Inlove</a></div>
+                <a href="https://emoji.gg/user/hotpink1ne" class="fs-12">𝓓𝓮𝓪𝓭𝓵𝔂𝓹𝓸𝓲𝓼𝓸𝓷♡</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 4.0K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/600675-happynap.png"
+                alt="Happynap Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/600675-happynap" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="600675-happynap.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/600675-happynap" class="fw-semibold fs-12 h4">Happynap</a></div>
+                <a href="https://emoji.gg/user/hotpink1ne" class="fs-12">𝓓𝓮𝓪𝓭𝓵𝔂𝓹𝓸𝓲𝓼𝓸𝓷♡</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                      <div class="col-6 col-md-2 item">
+          <div class="card asset-card">
+            <div class="card-image asset">
+              <span class="badge badge-light item-badge item-badge-left">.png</span>
+              <span class="badge badge-light item-badge item-badge-right"><i class="fas fa-download"></i> 3.1K</span>
+              <img
+                src="https://emoji.gg/assets/img/loading.png"
+                data-src="https://cdn3.emoji.gg/emojis/715792-pinkiewink.png"
+                alt="Pinkiewink Emoji"
+                class="lazy img-fluid"
+                width="128px"
+                height="128px"
+              >
+              <div class="ovrly"></div>
+              <div class="buttons text-center">
+                <a href="https://emoji.gg/emoji/715792-pinkiewink" class="btn btn-sm btn-primary">View</a>
+                <span class="btn btn-sm btn-secondary collection" data-id="715792-pinkiewink.png">
+                  <i class="fa-solid fa-folder-plus text-dark"></i>
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="asset-metadata text-truncate">
+                <div><a href="https://emoji.gg/emoji/715792-pinkiewink" class="fw-semibold fs-12 h4">Pinkiewink</a></div>
+                <a href="https://emoji.gg/user/hotpink1ne" class="fs-12">𝓓𝓮𝓪𝓭𝓵𝔂𝓹𝓸𝓲𝓼𝓸𝓷♡</a>
+              </div>
+            </div>
+          </div>
+        </div>
+                    <div id="pagination">
+          <a href="https://emoji.gg/?page=1&sort=featured" class="next-page">Next Page</a>
+        </div>
+          </div>
+
+    <h3 class="h5 mt-4">Popular Categories</h3>
+    <div class="tags px-0 py-4">
+      <a href="https://emoji.gg/emojis/0" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">0 Emojis</a><a href="https://emoji.gg/emojis/cat" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cat Emojis</a><a href="https://emoji.gg/emojis/meme" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Meme Emojis</a><a href="https://emoji.gg/emojis/pepe" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pepe Emojis</a><a href="https://emoji.gg/emojis/animated" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Animated Emojis</a><a href="https://emoji.gg/emojis/anime" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Anime Emojis</a><a href="https://emoji.gg/emojis/heart" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Heart Emojis</a><a href="https://emoji.gg/emojis/staff" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Staff Emojis</a><a href="https://emoji.gg/emojis/crown" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Crown Emojis</a><a href="https://emoji.gg/emojis/cute" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cute Emojis</a><a href="https://emoji.gg/emojis/minecraft" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Minecraft Emojis</a><a href="https://emoji.gg/emojis/funny" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Funny Emojis</a><a href="https://emoji.gg/emojis/pink" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pink Emojis</a><a href="https://emoji.gg/emojis/purple" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Purple Emojis</a><a href="https://emoji.gg/emojis/admin" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Admin Emojis</a><a href="https://emoji.gg/emojis/discord" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Discord Emojis</a><a href="https://emoji.gg/emojis/blue" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Blue Emojis</a><a href="https://emoji.gg/emojis/pokemon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pokemon Emojis</a><a href="https://emoji.gg/emojis/arrow" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Arrow Emojis</a><a href="https://emoji.gg/emojis/owner" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Owner Emojis</a><a href="https://emoji.gg/emojis/star" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Star Emojis</a><a href="https://emoji.gg/emojis/red" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Red Emojis</a><a href="https://emoji.gg/emojis/black" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Black Emojis</a><a href="https://emoji.gg/emojis/white" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">White Emojis</a><a href="https://emoji.gg/emojis/aesthetic" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Aesthetic Emojis</a><a href="https://emoji.gg/emojis/halloween" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Halloween Emojis</a><a href="https://emoji.gg/emojis/pixel" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Pixel Emojis</a><a href="https://emoji.gg/emojis/gif" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Gif Emojis</a><a href="https://emoji.gg/emojis/goth" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Goth Emojis</a><a href="https://emoji.gg/emojis/green" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Green Emojis</a><a href="https://emoji.gg/emojis/love" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Love Emojis</a><a href="https://emoji.gg/emojis/mod" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Mod Emojis</a><a href="https://emoji.gg/emojis/valorant" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Valorant Emojis</a><a href="https://emoji.gg/emojis/dance" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Dance Emojis</a><a href="https://emoji.gg/emojis/numbers" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Numbers Emojis</a><a href="https://emoji.gg/emojis/member" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Member Emojis</a><a href="https://emoji.gg/emojis/moderator" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Moderator Emojis</a><a href="https://emoji.gg/emojis/bunny" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Bunny Emojis</a><a href="https://emoji.gg/emojis/money" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Money Emojis</a><a href="https://emoji.gg/emojis/kiss" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Kiss Emojis</a><a href="https://emoji.gg/emojis/role-icons" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Role Icons Emojis</a><a href="https://emoji.gg/emojis/roblox" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Roblox Emojis</a><a href="https://emoji.gg/emojis/dog" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Dog Emojis</a><a href="https://emoji.gg/emojis/yellow" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Yellow Emojis</a><a href="https://emoji.gg/emojis/number" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Number Emojis</a><a href="https://emoji.gg/emojis/verified" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Verified Emojis</a><a href="https://emoji.gg/emojis/moon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Moon Emojis</a><a href="https://emoji.gg/emojis/laugh" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Laugh Emojis</a><a href="https://emoji.gg/emojis/check" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Check Emojis</a><a href="https://emoji.gg/emojis/flower" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Flower Emojis</a><a href="https://emoji.gg/emojis/frog" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Frog Emojis</a><a href="https://emoji.gg/emojis/tiktok" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Tiktok Emojis</a><a href="https://emoji.gg/emojis/fire" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Fire Emojis</a><a href="https://emoji.gg/emojis/genshin" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Genshin Emojis</a><a href="https://emoji.gg/emojis/shield" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Shield Emojis</a><a href="https://emoji.gg/emojis/cross" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cross Emojis</a><a href="https://emoji.gg/emojis/icon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Icon Emojis</a><a href="https://emoji.gg/emojis/sad" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Sad Emojis</a><a href="https://emoji.gg/emojis/spongebob" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Spongebob Emojis</a><a href="https://emoji.gg/emojis/bot" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Bot Emojis</a><a href="https://emoji.gg/emojis/diamond" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Diamond Emojis</a><a href="https://emoji.gg/emojis/boost" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Boost Emojis</a><a href="https://emoji.gg/emojis/girl" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Girl Emojis</a><a href="https://emoji.gg/emojis/memes" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Memes Emojis</a><a href="https://emoji.gg/emojis/overwatch" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Overwatch Emojis</a><a href="https://emoji.gg/emojis/orange" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Orange Emojis</a><a href="https://emoji.gg/emojis/sanrio" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Sanrio Emojis</a><a href="https://emoji.gg/emojis/neon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Neon Emojis</a><a href="https://emoji.gg/emojis/blush" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Blush Emojis</a><a href="https://emoji.gg/emojis/emoji" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Emoji Emojis</a><a href="https://emoji.gg/emojis/no" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">No Emojis</a><a href="https://emoji.gg/emojis/dark" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Dark Emojis</a><a href="https://emoji.gg/emojis/hug" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Hug Emojis</a><a href="https://emoji.gg/emojis/kawaii" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Kawaii Emojis</a><a href="https://emoji.gg/emojis/developer" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Developer Emojis</a><a href="https://emoji.gg/emojis/angry" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Angry Emojis</a><a href="https://emoji.gg/emojis/gold" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Gold Emojis</a><a href="https://emoji.gg/emojis/music" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Music Emojis</a><a href="https://emoji.gg/emojis/cry" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Cry Emojis</a><a href="https://emoji.gg/emojis/kitty" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Kitty Emojis</a><a href="https://emoji.gg/emojis/skull" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Skull Emojis</a><a href="https://emoji.gg/emojis/twitch" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Twitch Emojis</a><a href="https://emoji.gg/emojis/fortnite" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Fortnite Emojis</a><a href="https://emoji.gg/emojis/furry" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Furry Emojis</a><a href="https://emoji.gg/emojis/sword" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Sword Emojis</a><a href="https://emoji.gg/emojis/league-of-legends" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">League Of Legends Emojis</a><a href="https://emoji.gg/emojis/duck" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Duck Emojis</a><a href="https://emoji.gg/emojis/butterfly" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Butterfly Emojis</a><a href="https://emoji.gg/emojis/hello-kitty" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Hello Kitty Emojis</a><a href="https://emoji.gg/emojis/dragon" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Dragon Emojis</a><a href="https://emoji.gg/emojis/ghost" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Ghost Emojis</a><a href="https://emoji.gg/emojis/wave" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Wave Emojis</a><a href="https://emoji.gg/emojis/rank" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Rank Emojis</a><a href="https://emoji.gg/emojis/angel" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Angel Emojis</a><a href="https://emoji.gg/emojis/yes" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Yes Emojis</a><a href="https://emoji.gg/emojis/miku" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Miku Emojis</a><a href="https://emoji.gg/emojis/peepo" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Peepo Emojis</a><a href="https://emoji.gg/emojis/hamster" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Hamster Emojis</a><a href="https://emoji.gg/emojis/gothic" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Gothic Emojis</a><a href="https://emoji.gg/emojis/marvel-rivals" class="badge bg-secondary text-dark py-1 px-2 fs-12 me-1 mb-1">Marvel Rivals Emojis</a>    </div>
+
+    <div class="d-flex align-items-center mt-4 mb-3 pt-3 pb-3 my-3 psection-head">
+      <div class="lh-100">
+        <div class="h4 mb-0 lh-100">Emoji Tools</div>
+      </div>
+      <div class="ms-auto p-2"></div>
+    </div>
+
+    <div class="row g-3 py-4">
+      <div class="col-md-4 col-12">
+            <a href="/unicode" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Meanings</div>
+                  <p class="small mb-0">Browse definitions and information for all unicode emojis.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/symbols" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Symbols</div>
+                  <p class="small mb-0">Browse and copy over 150,000 symbols in the unicode standard.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/emoticons" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoticons</div>
+                  <p class="small mb-0">Browse japanese inspired faces and emoticons to copy and paste.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/maker" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoji Maker</div>
+                  <p class="small mb-0">Create new emojis based on Blobs, Twemoji, Noto and Fluent.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/emoji-animator" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoji Animator</div>
+                  <p class="small mb-0">Add animations like spin, party and zoom to any emoji.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/icon-maker" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Icon Maker</div>
+                  <p class="small mb-0">Create crisp icons to use on Discord in roles and more.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/emoji-kitchen" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoji Kitchen</div>
+                  <p class="small mb-0">Combine two emojis to create a new, noto-style emoji.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/keyboard" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoji Keyboard</div>
+                  <p class="small mb-0">Search and copy any unicode emoji fast using the keyboard.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/emoji-splitter" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Emoji Splitter</div>
+                  <p class="small mb-0">Split any image into smaller parts to use as a larger emoji.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/ping-icon-maker" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Ping Icon Maker</div>
+                  <p class="small mb-0">Add a fake Discord ping to your Discord server icon.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/image-to-ascii" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Image to Ascii</div>
+                  <p class="small mb-0">Turn any image into a copypasta-style ascii image.</p>
+                </div>
+              </div>
+            </a>
+          </div><div class="col-md-4 col-12">
+            <a href="/tools/discord-timestamps" class="text-decoration-none tool-card d-block h-100">
+              <div class="card tool-card-body border-1 rounded-2 overflow-hidden d-flex flex-column justify-content-between h-100">
+                <div class="p-4">
+                  <div class="h5 fw-bold mb-1 text-white">Discord Timestamps</div>
+                  <p class="small mb-0">Generate Discord Timestamps for any date.</p>
+                </div>
+              </div>
+            </a>
+          </div>    </div>
+
+    <div class="d-flex align-items-center mt-5 mb-3 pt-3 pb-3 my-3 section-head">
+      <div class="lh-100">
+        <div class="h4 mb-0 lh-100">Emoji Meanings</div>
+      </div>
+      <div class="ms-auto p-2"></div>
+    </div>
+
+    <div class="row row-cols-5 g-2 mb-5 pb-4">
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/red-heart"
+            class="fs-14 w-100"
+          >
+            ❤️ Red Heart Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/sparkles"
+            class="fs-14 w-100"
+          >
+            ✨ Sparkles Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/party-popper"
+            class="fs-14 w-100"
+          >
+            🎉 Party Popper Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/fire"
+            class="fs-14 w-100"
+          >
+            🔥 Fire Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/face-with-tears-of-joy"
+            class="fs-14 w-100"
+          >
+            😂 Joy Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/loudly-crying-face"
+            class="fs-14 w-100"
+          >
+            😭 Sobbing Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/eggplant"
+            class="fs-14 w-100"
+          >
+            🍆 Eggplant Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/skull"
+            class="fs-14 w-100"
+          >
+            💀 Skull Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/eyes"
+            class="fs-14 w-100"
+          >
+            👀 Eyes Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/thumbs-up"
+            class="fs-14 w-100"
+          >
+            👍 Thumbs Up Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/whale"
+            class="fs-14 w-100"
+          >
+            🐋 Whale Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/mouse"
+            class="fs-14 w-100"
+          >
+            🐁 Mouse Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/cow"
+            class="fs-14 w-100"
+          >
+            🐄 Cow Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/peach"
+            class="fs-14 w-100"
+          >
+            🍑 Peach Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/snail"
+            class="fs-14 w-100"
+          >
+            🐌 Snail Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/monkey"
+            class="fs-14 w-100"
+          >
+            🐒 Monkey Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/rose"
+            class="fs-14 w-100"
+          >
+            🌹 Rose Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/tiger"
+            class="fs-14 w-100"
+          >
+            🐅 Tiger Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/chicken"
+            class="fs-14 w-100"
+          >
+            🐔 Chicken Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/cold-face"
+            class="fs-14 w-100"
+          >
+            🥶 Cold Face Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/paw-prints"
+            class="fs-14 w-100"
+          >
+            🐾 Paw Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/church"
+            class="fs-14 w-100"
+          >
+            ⛪ Church Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/carrot"
+            class="fs-14 w-100"
+          >
+            🥕 Carrot Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/cat"
+            class="fs-14 w-100"
+          >
+            🐈 Cat Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/horse"
+            class="fs-14 w-100"
+          >
+            🐎 Horse Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/sun"
+            class="fs-14 w-100"
+          >
+            ☀️ Sun Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/star"
+            class="fs-14 w-100"
+          >
+            ⭐ Star Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/snowflake"
+            class="fs-14 w-100"
+          >
+            ❄️ Snowflake Emoji          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/phoenix"
+            class="fs-14 w-100"
+          >
+            🐦 Phoenix          </a>
+        </div>
+              <div class="col">
+          <a
+            href="https://emoji.gg/unicode/wilted-flower"
+            class="fs-14 w-100"
+          >
+            🥀 Wilted Flower          </a>
+        </div>
+          </div>
+
+
+    <h2 class="h4 mb-3 mt-5">Emojis for Discord, Slack and Everywhere Else</h2>
+    <p>Emoji.gg makes it easy to find the best Discord Emojis, Slack Emojis and more. Browse thousands of custom emojis by talented artists around the world in categories like Pepe, Anime, Meme, and Animated.</p>
+    <p>Download ready made <a href="https://emoji.gg/packs" class="text-white">emoji packs</a> curated by our users based on specific themes. Instantly add them to your Guilded servers with our mass upload feature or download a ZIP file and add them to your Discord or Slack group.</p>
+    <p>Make your own custom emoji with our feature rich <a href="https://emoji.gg/maker" class="text-white">emoji maker</a>, which includes hundreds of parts based on the Twemoji set plus many custom-made parts. Create up to 40,000,000 unique emoji combinations. You can also use presets to edit existing emojis.</p>
+
+    <h2 class="h4 mt-5 mb-3">How to Add Emojis to Discord</h2>
+    <p>Adding emojis to Discord brings your community to life with memes, reactions, and fun expressions using emojis like <a href="https://emoji.gg/emojis/pepe" class="text-white">Pepe</a>, <a href="https://emoji.gg/emojis/valorant" class="text-white">Valorant</a>, <a href="https://emoji.gg/emojis/wumpus" class="text-white">Wumpus</a>, and more.</p>
+    <ol class="ps-4">
+      <li>Navigate to your server settings and click the "Emoji" tab.</li>
+      <li>Click the blue "Upload Emoji" button.</li>
+      <li>Select an image file from your desktop and upload it.</li>
+      <li>Your emoji should now appear in your Discord server.</li>
+    </ol>
+
+    <h2 class="h4 mt-5 mb-3">Slack Emojis</h2>
+    <p>Browse thousands of the best custom emojis for your Slack workspace. Go beyond the boring default emojis with <a href="https://emoji.gg/emojis/party-parrot" class="text-white">Party Parrot</a>, gender icons, or emojis based on the Twemoji set.</p>
+
+    <h2 class="h4 mt-5 mb-3">How to Add Emojis to Slack</h2>
+    <p>Adding emojis to Slack is simple and brings more personality to your workflow. Use <a href="https://emoji.gg/emojis/utility" class="text-white">utility emojis</a> to help with voting, feedback, or displaying pronouns.</p>
+    <ol class="ps-4">
+      <li>Open your workspace and click the emoji icon in the message field.</li>
+      <li>Click the "Add Emoji" button.</li>
+      <li>Select an image file from your computer and upload it.</li>
+      <li>Name your emoji and click save</li>
+    </ol>
+  </div>
+</div>
+<footer class="pt-24">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a class="navbar-brand text-white fs-18" href="https://emoji.gg">
+          <img src="https://emoji.gg/assets/img/logo.png?v=2" alt="Emoji.gg Website" width="28px" height="28px"> Emoji.gg        </a>
+        <p class="text-sm mt-5 mb-5">
+          Share & discover emojis, stickers and tools to personalize your chats across the internet.
+        </p>
+        <a href="https://discord.gg/emojis" class="btn btn-sm btn-secondary text-white copy-data" target="_blank" rel="noopener noreferrer"><i class="fab fa-discord me-1"></i> Join our Discord</a>
+        <div class="mt-2">
+        <a href="https://play.google.com/store/apps/details?id=gg.emoji.app" target="_blank">
+          <img src="https://cdn3.emoji.gg/emojis/play-store.png" width="166" alt="Discord emojis app" />
+        </a>
+      </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="row g-2">
+          <div class="col-lg-3 col-sm-3 col-6 mb-4 mb-sm-0">
+            <nav aria-label="Content links">
+              <div class="h6 mb-3">Custom Emojis</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/packs/role-icons">Role Icons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emojis/pepe">Pepe Emojis</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emojis/anime">Anime Emojis</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emojis/blob">Blob Emojis</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emojis/meme">Meme Emojis</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3 col-sm-3 col-6 mb-4 mb-sm-0">
+            <nav aria-label="Other resources">
+              <div class="h6 mb-3">Unicode Emojis</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/unicode/red-heart">Red Heart Emoji</a></li>
+                <li class="py-1"><a href="https://emoji.gg/unicode/thumbs-up">Thumbs Up Emoji</a></li>
+                <li class="py-1"><a href="https://emoji.gg/unicode/star">Star Emoji</a></li>
+                <li class="py-1"><a href="https://emoji.gg/unicode/sparkles">Sparkles Emoji</a></li>
+                <li class="py-1"><a href="https://emoji.gg/unicode/clown-face">Clown Emoji</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3 col-sm-3 col-6 mb-4 mb-sm-0">
+            <nav aria-label="Tools links">
+              <div class="h6 mb-3">Unicode Symbols</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/symbols/heart">Heart Symbols</a></li>
+                <li class="py-1"><a href="https://emoji.gg/symbols/arrow">Arrow Symbols</a></li>
+                <li class="py-1"><a href="https://emoji.gg/symbols/star">Star Symbols</a></li>
+                <li class="py-1"><a href="https://emoji.gg/symbols/check">Check Symbols</a></li>
+                <li class="py-1"><a href="https://emoji.gg/symbols/roman">Roman Numerals</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3 col-sm-3 col-6 mb-4 mb-sm-0">
+            <nav aria-label="Anime profile pictures">
+              <div class="h6 mb-3">Emoticons</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/emoticons/heart">Heart Emoticons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emoticons/star">Star Emoticons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emoticons/sparkle">Sparkle Emoticons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emoticons/kawaii">Kawaii Emoticons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emoticons/blush">Blush Emoticons</a></li>
+              </ul>
+            </nav>
+          </div>
+
+
+          <div class="col-lg-3 col-sm-3 col-6 ms-lg-auto mb-4 mt-4 mb-sm-0">
+            <nav aria-label="Content links">
+              <div class="h6 mb-3">Content</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg">Custom Emojis</a></li>
+                <li class="py-1"><a href="https://emoji.gg/stickers">Custom Stickers</a></li>
+                <li class="py-1"><a href="https://emoji.gg/packs">Emoji Packs</a></li>
+                <li class="py-1"><a href="https://emoji.gg/creators">Leaderboards</a></li>
+                <li class="py-1"><a href="https://emoji.gg/marketplace" class="color-p-orange">Marketplace</a></li>
+              </ul>
+            </nav>
+          </div>
+
+
+
+          <div class="col-lg-3 col-sm-3 col-6 ms-lg-auto mb-4 mt-4 mb-sm-0">
+            <nav aria-label="Aesthetic profile pictures">
+              <div class="h6 mb-3">Create & Edit</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/maker">Emoji Maker</a></li>
+                <li class="py-1"><a href="https://emoji.gg/tools/emoji-animator">Emoji Animator</a></li>
+                <li class="py-1"><a href="https://emoji.gg/tools/emoji-kitchen">Emoji Kitchen</a></li>
+                <li class="py-1"><a href="https://emoji.gg/tools/emoji-splitter">Emoji Splitter</a></li>
+                <li class="py-1"><a href="https://emoji.gg/tools/icon-maker">Icon Maker</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3 col-sm-3 col-6 ms-lg-auto mb-4 mt-4 mb-sm-0">
+            <nav aria-label="Gaming profile pictures">
+              <div class="h6 mb-3">Unicode & More</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/unicode">Unicode Emojis</a></li>
+                <li class="py-1"><a href="https://emoji.gg/symbols">Unicode Symbols</a></li>
+                <li class="py-1"><a href="https://emoji.gg/emoticons">Emoticons</a></li>
+                <li class="py-1"><a href="https://emoji.gg/keyboard">Emoji Keyboard</a></li>
+                <li class="py-1"><a href="https://emoji.gg/tools/image-to-ascii">Image to ASCII</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3 col-sm-3 col-6 mb-4 mt-4 mb-sm-0">
+            <nav aria-label="Pfps.gg links">
+              <div class="h6 mb-3">Emoji.gg</div>
+              <ul class="list-unstyled text-sm">
+                <li class="py-1"><a href="https://emoji.gg/about">About Emoji.gg</a></li>
+                <li class="py-1"><a href="https://emoji.gg/developer">Developer API</a></li>
+                <li class="py-1"><a href="https://emoji.gg/content">Copyright/DMCA</a></li>
+                <li class="py-1"><a href="https://emoji.gg/faq">FAQ & Support</a></li>
+                <li class="py-1"><a href="https://emoji.gg/blog">Emoji.gg Blog</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-12 col-sm-12 col-12 mb-4 mt-4 mb-sm-0">
+            <nav aria-label="More website links">
+              <div class="h6 mb-3 text-white-500">We also made</div>
+              <ul class="list-unstyled list-group-horizontal text-sm mb-0">
+                <a href="https://fonts.gg" class="me-2">Fonts.gg</a>
+                <a href="https://kaomoji.gg" class="me-2">Kaomoji.gg</a>
+                <a href="https://pfps.gg" class="me-2">Pfps.gg</a>
+                <a href="https://stickers.gg" class="me-2">Stickers.gg</a>
+                <a href="https://soundboards.gg" class="me-2">Soundboards.gg</a>
+                <a href="https://pngs.gg" class="me-2">Pngs.gg</a>
+                <a href="https://serverlist.gg/hytale" class="me-2">Hytale Server List</a>
+                <a href="https://discordbots.net" class="me-2">Discord Bots</a>
+                <a href="https://discordservers.io" class="me-2">Discord Servers</a>
+                <a href="https://discordtools.net" class="me-2">Discord Tools</a>
+                <a href="https://discordtemplates.net" class="me-2">Discord Templates</a>
+                <a href="https://invites.gg" class="me-2">Discord Vanity Urls</a>
+              </ul>
+            </nav>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="mt-20 mb-7" />
+      <div class="row align-items-center justify-content-md-between pb-7">
+        <div class="col-md-6">
+          <div class="copyright text-sm text-center text-md-start">
+            &copy; 2017-2025 <a href="https://emoji.gg" class="h6 text-sm font-bold">Emoji.gg</a>. All rights reserved.
+          </div>
+        </div>
+        <div class="col-md-6">
+          <ul class="nav justify-content-center justify-content-md-end mt-3 mt-md-0 mx-n4">
+            <li class="nav-item"><a class="nav-link" href="https://emoji.gg/terms">Terms</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://emoji.gg/privacy">Privacy</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h6" id="exampleModalLabel">Login</h5>
+        <button type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <a href="https://emoji.gg/auth/discord" class="btn btn-primary btn-sm btn-block mb-2"><i class="fab fa-discord me-1"></i>Sign in with Discord</a>
+        <a href="https://emoji.gg/auth/twitch" class="btn btn-dark btn-sm btn-block mb-2"><i class="fab fa-twitch me-1"></i>Sign in with Twitch</a>
+        <a href="https://emoji.gg/auth/google" class="btn btn-dark btn-sm btn-block mb-2"><i class="fab fa-google me-1"></i>Sign in with Google</a>
+        <p class="small fs-12 text-center"><i class="fa-solid fa-handshake-simple"></i> This will join you to our Discord server</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="yousmell" class="angery-message" style="display:none;">
+  <div class="container mt-8">
+    <div class="row justify-content-md-center">
+    <div class="col-md-8 pt-6">
+      <div class="text-center mt-5">
+        <img src="https://cdn3.emoji.gg/emojis/1114-annoyed2.png" width="75px" height="75px" alt="annopyed" />
+        <h4 class="h5 mt-6 mb-2">Adblock Detected</h4>
+        <p class="mb-4">Please disable any adblock or anti-tracking</br>extensions to continue using Emoji.gg</p>
+        <a href="#" class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login to browse without ads</a>
+        <a href="#whyNoBlock" class="text-muted btn-block collapsed" data-toggle="collapse" style="display: none;">Why disable?</a>
+        <div id="whyNoBlock" class="collapse" style="">
+          <div class="card mt-4">
+          <div class="card-body">
+            <p>Every month we serve millions of requests from our servers. Without ads we wouldn't be able to keep the website online and free for everyone.</p>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="android" class="angery-message" style="display:none;">
+  <div class="container mt-8">
+    <div class="row justify-content-md-center">
+      <div class="col-md-8 pt-6">
+        <div class="text-center mt-5">
+          <button
+            id="android-close"
+            class="h6"
+            style="position:absolute;top:10px;right:15px;border:0;background:none;font-size:40px;cursor:pointer;"
+            aria-label="Close"
+          >
+            ×
+          </button>
+
+          <img src="https://cdn3.emoji.gg/emojis/517918-wechat-ok.png" width="75" height="75" alt="annoyed" />
+          <h4 class="h5 mt-6 mb-2">Get the Android app</h4>
+          <p class="mb-4">
+            Emoji.gg is better on the app, download<br>
+            it from the Google Play store
+          </p>
+          <a href="https://play.google.com/store/apps/details?id=gg.emoji.app" target="_blank">
+            <img src="https://cdn3.emoji.gg/emojis/play-store.png" width="200" alt="Discord emojis app" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="downloadlimit" class="angery-message" style="display:none;">
+  <div class="container mt-8">
+    <div class="row justify-content-md-center">
+    <div class="col-md-8 pt-6">
+      <div class="text-center mt-5">
+        <h4 class="h5 mt-6 mb-2">Login to download more</h4>
+        <p class="mb-4">You've hit your download limit as a guest</br>please login to download unlimited content</p>
+        <a href="#" class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login for unlimited downloads</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115311528-6"></script>
+<script src="https://emoji.gg/assets/js/jquery-3.2.1.min.js"></script>
+<script src="https://emoji.gg/assets/js/utility/popper.min.js"></script>
+<script src="https://emoji.gg/assets/js/bootstrap.min.js?v=3"></script>
+<script src="https://emoji.gg/assets/js/jquery-ias.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+<script src="https://emoji.gg/assets/js/utility/jszip.min.js?v=2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://emoji.gg/assets/js/app2.js?v=127"></script>
+
+<script type="text/javascript">
+self.loadPW = function() {
+  var defaultUnits = [{type: 'bottom_rail'}, {type: 'corner_ad_video'}, {type: 'flex_leaderboard'}, {type: 'in_content'}, {type: 'left_rail'}, {type: 'right_rail'}];
+  var noDisplay = ['login', 'submit', 'dashboard', 'submitpack', 'submitsticker', 'account', 'faq', 'content', 'privacy', 'category9nsfw', 'adminapprovals', 'adminapprovalsemojis', 'marketplace', 'product', 'about', 'toolsemoji-animator'];
+  if(noDisplay.includes($(location).attr("pathname").replace(/\//g, "")) || noDisplay.includes($(location).attr("pathname").substring(0, $(location).attr("pathname").lastIndexOf("/") ).replace(/\//g, ""))) return;
+  ($('#pwDeskLbAtf').length > 0) ?  window.ramp.addUnits([{ selectorId: 'pwDeskLbAtf', type: 'leaderboard_atf' }]) : '';
+  ($('#pwMobiMedRectAtf').length > 0) ?  window.ramp.addUnits([{ selectorId: 'pwMobiMedRectAtf', type: 'med_rect_atf' }]) : '';
+  window.ramp.addUnits(defaultUnits).then( () => {
+       window.ramp.displayUnits();
+   }).catch( (e) =>{
+       console.log(e);
+   });
+}
+window.ramp.onReady = function initFunction(){
+  self.loadPW();
+}
+
+App.checkIfUserSmells(function(smelly) {
+  if (smelly == true) {
+    window.onload = function() {
+      document.getElementById("yousmell").style.display = "block";
+    }
+  }
+});
+if (self.downloadCount >= 300) {
+    window.onload = function() {
+      document.getElementById("downloadlimit").style.display = "block";
+  }
+}
+
+(function () {
+  var ua = navigator.userAgent.toLowerCase();
+  var cookieName = 'hide_android_banner';
+
+  function hasCookie(name) {
+    return document.cookie.indexOf(name + '=1') !== -1;
+  }
+
+  function setCookie(name, hours) {
+    var d = new Date();
+    d.setTime(d.getTime() + hours * 60 * 60 * 1000);
+    document.cookie = name + '=1; expires=' + d.toUTCString() + '; path=/';
+  }
+
+  var isAndroid = ua.indexOf('android') !== -1;
+  var isBrowser = /(chrome|firefox|safari|edge|opera)/.test(ua);
+  var isWebView = /(wv|webview|fbav|instagram|twitter|discord)/.test(ua);
+
+  if (isAndroid && isBrowser && !isWebView && !hasCookie(cookieName)) {
+    var banner = document.getElementById('android');
+    var close  = document.getElementById('android-close');
+
+    banner.style.display = 'block';
+
+    close.onclick = function () {
+      banner.style.display = 'none';
+      setCookie(cookieName, 12); // 12 hours
+    };
+  }
+})();
+
+
+</script>
