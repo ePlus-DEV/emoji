@@ -1,16 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import EmojiCard from '../../components/EmojiCard.astro';
+import { catalogConfig } from '../../config/catalog';
 import { withBase } from '../../lib/url';
 import emojis from '../../data/emojis.json';
 import '../../styles/pagination.css';
 
-const PAGE_SIZE = 48;
+const PAGE_SIZE = catalogConfig.pageSize;
+const BROWSE_MODE = catalogConfig.mode;
 const initialEmojis = emojis.slice(0, PAGE_SIZE);
 const categories = [...new Set(emojis.map((emoji) => emoji.category || emoji.group.replaceAll('-', ' ')))].sort();
 const sources = [...new Set(emojis.map((emoji) => emoji.sourceLabel))].sort();
 const base = import.meta.env.BASE_URL;
 const apiUrl = withBase('/api/emojis.json', base);
+const totalPages = Math.max(1, Math.ceil(emojis.length / PAGE_SIZE));
 ---
 <Layout
   title="Browse all emoji — ePlus Emoji"
@@ -34,6 +37,9 @@ const apiUrl = withBase('/api/emojis.json', base);
     data-api-url={apiUrl}
     data-base={base}
     data-total={emojis.length}
+    data-mode={BROWSE_MODE}
+    data-page-size={PAGE_SIZE}
+    data-scroll-root-margin={catalogConfig.scrollRootMargin}
   >
     <div class="section-heading">
       <div><p class="eyebrow">Explore</p><h2 id="explore-title">Emoji library</h2></div>
@@ -63,7 +69,7 @@ const apiUrl = withBase('/api/emojis.json', base);
 
     <div class="results-summary" aria-live="polite">
       <span id="range-count">Showing 1–{Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')}</span>
-      <span>48 at a time</span>
+      <span id="browse-mode-label">{BROWSE_MODE === 'pagination' ? `${PAGE_SIZE} per page` : `${PAGE_SIZE} at a time`}</span>
     </div>
 
     <div class="emoji-grid" id="emoji-grid">
@@ -74,15 +80,20 @@ const apiUrl = withBase('/api/emojis.json', base);
       <div>🫥</div><h3>No emoji found</h3><p>Try another keyword or clear one of the filters.</p>
     </div>
 
-    <div class="infinite-loader" id="infinite-loader" hidden={emojis.length <= PAGE_SIZE}>
+    <div class="infinite-loader" id="infinite-loader" hidden={BROWSE_MODE !== 'scroll' || emojis.length <= PAGE_SIZE}>
       <span class="infinite-loader-spinner" id="infinite-loader-spinner" aria-hidden="true"></span>
       <span id="infinite-loader-status">Scroll to load more · {Math.min(PAGE_SIZE, emojis.length).toLocaleString('en-US')} of {emojis.length.toLocaleString('en-US')} loaded</span>
-      <button class="load-more-fallback" id="load-more-fallback" type="button" hidden>Load 48 more</button>
+      <button class="load-more-fallback" id="load-more-fallback" type="button" hidden>Load {PAGE_SIZE} more</button>
     </div>
+
+    <nav class="pagination" id="pagination" aria-label="Emoji pagination" hidden={BROWSE_MODE !== 'pagination' || totalPages <= 1}>
+      <button class="pagination-nav" type="button" data-page-action="prev">← Prev</button>
+      <div class="pagination-pages" id="pagination-pages"></div>
+      <button class="pagination-nav" type="button" data-page-action="next">Next →</button>
+    </nav>
   </section>
 
   <script>
-    const PAGE_SIZE = 48;
     const explorer = document.querySelector('#explorer');
     const grid = document.querySelector('#emoji-grid');
     const search = document.querySelector('#emoji-search');
@@ -96,9 +107,16 @@ const apiUrl = withBase('/api/emojis.json', base);
     const loaderSpinner = document.querySelector('#infinite-loader-spinner');
     const loaderStatus = document.querySelector('#infinite-loader-status');
     const loadMoreFallback = document.querySelector('#load-more-fallback');
+    const pagination = document.querySelector('#pagination');
+    const paginationPages = document.querySelector('#pagination-pages');
+    const previousButton = pagination.querySelector('[data-page-action="prev"]');
+    const nextButton = pagination.querySelector('[data-page-action="next"]');
 
     const apiUrl = explorer.dataset.apiUrl;
     const base = explorer.dataset.base || '/';
+    const mode = explorer.dataset.mode === 'pagination' ? 'pagination' : 'scroll';
+    const PAGE_SIZE = Math.max(1, Number.parseInt(explorer.dataset.pageSize || '48', 10));
+    const scrollRootMargin = explorer.dataset.scrollRootMargin || '700px 0px';
     const totalCatalogCount = Number.parseInt(explorer.dataset.total || '0', 10);
     const basePrefix = base === '/' ? '' : base.replace(/\/$/, '');
 
@@ -107,6 +125,12 @@ const apiUrl = withBase('/api/emojis.json', base);
     let visibleCount = PAGE_SIZE;
     let searchTimer;
     let isLoadingMore = false;
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedPage = Number.parseInt(params.get('page') || '1', 10);
+    let currentPage = mode === 'pagination' && Number.isFinite(requestedPage) && requestedPage > 0
+      ? requestedPage
+      : 1;
 
     const withBase = (path) => `${basePrefix}${path.startsWith('/') ? path : `/${path}`}`;
 
@@ -188,6 +212,12 @@ const apiUrl = withBase('/api/emojis.json', base);
       return article;
     };
 
+    const buildFragment = (items) => {
+      const fragment = document.createDocumentFragment();
+      for (const emoji of items) fragment.append(createEmojiCard(emoji));
+      return fragment;
+    };
+
     const loadCatalog = async () => {
       if (!catalogPromise) {
         catalogPromise = fetch(apiUrl)
@@ -210,7 +240,6 @@ const apiUrl = withBase('/api/emojis.json', base);
       if (exists) control.value = normalized;
     };
 
-    const params = new URLSearchParams(window.location.search);
     search.value = params.get('q') || '';
     setSelectFromParam(source, params.get('source'));
     setSelectFromParam(category, params.get('category') || params.get('group'));
@@ -231,7 +260,10 @@ const apiUrl = withBase('/api/emojis.json', base);
       if (category.value !== 'all') url.searchParams.set('category', category.value); else url.searchParams.delete('category');
       if (motion.value !== 'all') url.searchParams.set('motion', motion.value); else url.searchParams.delete('motion');
       url.searchParams.delete('group');
-      url.searchParams.delete('page');
+
+      if (mode === 'pagination' && currentPage > 1) url.searchParams.set('page', String(currentPage));
+      else url.searchParams.delete('page');
+
       window.history.replaceState({}, '', url);
     };
 
@@ -256,37 +288,122 @@ const apiUrl = withBase('/api/emojis.json', base);
       });
     };
 
-    const updateLoader = (total, shown) => {
+    const pageItems = (totalPages) => {
+      if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
+      const items = [1];
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      if (start > 2) items.push('ellipsis-start');
+      for (let page = start; page <= end; page += 1) items.push(page);
+      if (end < totalPages - 1) items.push('ellipsis-end');
+      items.push(totalPages);
+      return items;
+    };
+
+    const renderPagination = (total) => {
+      if (mode !== 'pagination') {
+        pagination.hidden = true;
+        return;
+      }
+
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      pagination.hidden = totalPages <= 1 || total === 0;
+      paginationPages.replaceChildren();
+      previousButton.disabled = currentPage <= 1;
+      nextButton.disabled = currentPage >= totalPages;
+
+      for (const item of pageItems(totalPages)) {
+        if (typeof item === 'string') {
+          const ellipsis = document.createElement('span');
+          ellipsis.className = 'pagination-ellipsis';
+          ellipsis.textContent = '…';
+          paginationPages.append(ellipsis);
+          continue;
+        }
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'pagination-page';
+        button.textContent = String(item);
+        button.dataset.page = String(item);
+        if (item === currentPage) {
+          button.classList.add('is-active');
+          button.setAttribute('aria-current', 'page');
+        }
+        paginationPages.append(button);
+      }
+    };
+
+    const updateInfiniteLoader = (total, shown) => {
+      if (mode !== 'scroll') {
+        infiniteLoader.hidden = true;
+        return;
+      }
+
       const hasMore = shown < total;
       infiniteLoader.hidden = !hasMore || total === 0;
       if (!hasMore) return;
       loaderStatus.textContent = `${shown.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} loaded`;
     };
 
-    const renderCatalog = () => {
+    const renderScrollCatalog = () => {
       const items = filteredCatalog || [];
       const shown = Math.min(visibleCount, items.length);
-      const fragment = document.createDocumentFragment();
-      for (const emoji of items.slice(0, shown)) fragment.append(createEmojiCard(emoji));
-      grid.replaceChildren(fragment);
+      grid.replaceChildren(buildFragment(items.slice(0, shown)));
 
       count.textContent = `${items.length.toLocaleString('en-US')} result${items.length === 1 ? '' : 's'}`;
       rangeCount.textContent = items.length === 0
         ? '0 results'
         : `Showing 1–${shown.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')}`;
       empty.hidden = items.length !== 0;
-      updateLoader(items.length, shown);
+      updateInfiniteLoader(items.length, shown);
+      updateUrl();
     };
 
-    const applyFilters = async ({ reset = true } = {}) => {
-      if (reset) visibleCount = PAGE_SIZE;
+    const renderPaginationCatalog = ({ scrollIntoView = false } = {}) => {
+      const items = filteredCatalog || [];
+      const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = Math.min(start + PAGE_SIZE, items.length);
+      grid.replaceChildren(buildFragment(items.slice(start, end)));
+
+      count.textContent = `${items.length.toLocaleString('en-US')} result${items.length === 1 ? '' : 's'}`;
+      rangeCount.textContent = items.length === 0
+        ? '0 results'
+        : `Showing ${(start + 1).toLocaleString('en-US')}–${end.toLocaleString('en-US')} of ${items.length.toLocaleString('en-US')}`;
+      empty.hidden = items.length !== 0;
+      infiniteLoader.hidden = true;
+      renderPagination(items.length);
       updateUrl();
+
+      if (scrollIntoView) explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const renderInitialPagination = () => {
+      currentPage = 1;
+      count.textContent = `${totalCatalogCount.toLocaleString('en-US')} results`;
+      rangeCount.textContent = totalCatalogCount === 0
+        ? '0 results'
+        : `Showing 1–${Math.min(PAGE_SIZE, totalCatalogCount).toLocaleString('en-US')} of ${totalCatalogCount.toLocaleString('en-US')}`;
+      empty.hidden = totalCatalogCount !== 0;
+      infiniteLoader.hidden = true;
+      renderPagination(totalCatalogCount);
+      updateUrl();
+    };
+
+    const applyFilters = async ({ resetPage = true } = {}) => {
+      if (resetPage) {
+        currentPage = 1;
+        visibleCount = PAGE_SIZE;
+      }
       rangeCount.textContent = 'Loading matching emoji…';
 
       try {
         const catalog = await loadCatalog();
         filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
-        renderCatalog();
+        if (mode === 'pagination') renderPaginationCatalog();
+        else renderScrollCatalog();
       } catch (error) {
         console.error(error);
         rangeCount.textContent = 'Could not load the emoji index. Please try again.';
@@ -294,7 +411,7 @@ const apiUrl = withBase('/api/emojis.json', base);
     };
 
     const loadNextBatch = async () => {
-      if (isLoadingMore || infiniteLoader.hidden) return;
+      if (mode !== 'scroll' || isLoadingMore || infiniteLoader.hidden) return;
       isLoadingMore = true;
       loaderSpinner.classList.add('is-loading');
       loaderStatus.textContent = 'Loading more emoji…';
@@ -306,16 +423,14 @@ const apiUrl = withBase('/api/emojis.json', base);
 
         const start = Math.min(visibleCount, filteredCatalog.length);
         const end = Math.min(start + PAGE_SIZE, filteredCatalog.length);
-        const fragment = document.createDocumentFragment();
-        for (const emoji of filteredCatalog.slice(start, end)) fragment.append(createEmojiCard(emoji));
-        grid.append(fragment);
+        grid.append(buildFragment(filteredCatalog.slice(start, end)));
         visibleCount = end;
 
         count.textContent = `${filteredCatalog.length.toLocaleString('en-US')} result${filteredCatalog.length === 1 ? '' : 's'}`;
         rangeCount.textContent = filteredCatalog.length === 0
           ? '0 results'
           : `Showing 1–${visibleCount.toLocaleString('en-US')} of ${filteredCatalog.length.toLocaleString('en-US')}`;
-        updateLoader(filteredCatalog.length, visibleCount);
+        updateInfiniteLoader(filteredCatalog.length, visibleCount);
         loadMoreFallback.hidden = true;
       } catch (error) {
         console.error(error);
@@ -328,23 +443,57 @@ const apiUrl = withBase('/api/emojis.json', base);
       }
     };
 
+    const goToPage = async (page) => {
+      if (mode !== 'pagination') return;
+      const total = filteredCatalog?.length ?? totalCatalogCount;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      const nextPage = Math.min(Math.max(page, 1), totalPages);
+      if (nextPage === currentPage && filteredCatalog) return;
+
+      currentPage = nextPage;
+      rangeCount.textContent = 'Loading page…';
+      try {
+        if (!filteredCatalog) {
+          const catalog = await loadCatalog();
+          filteredCatalog = hasActiveFilters() ? filterCatalog(catalog) : catalog;
+        }
+        renderPaginationCatalog({ scrollIntoView: true });
+      } catch (error) {
+        console.error(error);
+        rangeCount.textContent = 'Could not load this page. Please try again.';
+      }
+    };
+
     search.addEventListener('input', () => {
       clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => applyFilters({ reset: true }), 180);
+      searchTimer = setTimeout(() => applyFilters({ resetPage: true }), 180);
     });
     [source, category, motion].forEach((control) =>
-      control.addEventListener('input', () => applyFilters({ reset: true }))
+      control.addEventListener('input', () => applyFilters({ resetPage: true }))
     );
 
     loadMoreFallback.addEventListener('click', loadNextBatch);
 
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
-      }, { rootMargin: '700px 0px' });
-      observer.observe(infiniteLoader);
+    pagination.addEventListener('click', (event) => {
+      const target = event.target.closest('button');
+      if (!target) return;
+      if (target.dataset.pageAction === 'prev') goToPage(currentPage - 1);
+      else if (target.dataset.pageAction === 'next') goToPage(currentPage + 1);
+      else if (target.dataset.page) goToPage(Number.parseInt(target.dataset.page, 10));
+    });
+
+    if (mode === 'scroll') {
+      pagination.hidden = true;
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) loadNextBatch();
+        }, { rootMargin: scrollRootMargin });
+        observer.observe(infiniteLoader);
+      } else {
+        loadMoreFallback.hidden = false;
+      }
     } else {
-      loadMoreFallback.hidden = false;
+      infiniteLoader.hidden = true;
     }
 
     document.addEventListener('click', async (event) => {
@@ -356,10 +505,25 @@ const apiUrl = withBase('/api/emojis.json', base);
       setTimeout(() => { button.textContent = previous; }, 900);
     });
 
-    if (hasActiveFilters()) applyFilters({ reset: true });
-    else {
+    const initialize = async () => {
+      if (hasActiveFilters()) {
+        await applyFilters({ resetPage: false });
+        return;
+      }
+
+      if (mode === 'pagination') {
+        if (currentPage > 1) {
+          await goToPage(currentPage);
+        } else {
+          renderInitialPagination();
+        }
+        return;
+      }
+
       count.textContent = `${totalCatalogCount.toLocaleString('en-US')} results`;
       infiniteLoader.hidden = totalCatalogCount <= PAGE_SIZE;
-    }
+    };
+
+    initialize();
   </script>
 </Layout>
