@@ -4,135 +4,135 @@
     "slug": "aesthetic",
     "name": "Aesthetic",
     "source": "emojigg",
-    "count": 750,
-    "animated": 71,
-    "static": 679
+    "count": 825,
+    "animated": 77,
+    "static": 748
   },
   {
     "id": "17",
     "slug": "animals",
     "name": "Animals",
     "source": "emojigg",
-    "count": 750,
-    "animated": 72,
-    "static": 678
+    "count": 825,
+    "animated": 76,
+    "static": 749
   },
   {
     "id": "8",
     "slug": "animated",
     "name": "Animated",
     "source": "emojigg",
-    "count": 752,
-    "animated": 747,
-    "static": 5
+    "count": 827,
+    "animated": 821,
+    "static": 6
   },
   {
     "id": "4",
     "slug": "anime",
     "name": "Anime",
     "source": "emojigg",
-    "count": 750,
-    "animated": 61,
-    "static": 689
+    "count": 825,
+    "animated": 68,
+    "static": 757
   },
   {
     "id": "6",
     "slug": "blobs",
     "name": "Blobs",
     "source": "emojigg",
-    "count": 749,
-    "animated": 27,
-    "static": 722
+    "count": 824,
+    "animated": 28,
+    "static": 796
   },
   {
     "id": "5",
     "slug": "celebrity",
     "name": "Celebrity",
     "source": "emojigg",
-    "count": 750,
-    "animated": 53,
-    "static": 697
+    "count": 825,
+    "animated": 55,
+    "static": 770
   },
   {
     "id": "15",
     "slug": "cute",
     "name": "Cute",
     "source": "emojigg",
-    "count": 752,
-    "animated": 123,
-    "static": 629
+    "count": 827,
+    "animated": 136,
+    "static": 691
   },
   {
     "id": "19",
     "slug": "flags",
     "name": "Flags",
     "source": "emojigg",
-    "count": 746,
-    "animated": 19,
-    "static": 727
+    "count": 818,
+    "animated": 23,
+    "static": 795
   },
   {
     "id": "10",
     "slug": "gaming",
     "name": "Gaming",
     "source": "emojigg",
-    "count": 750,
-    "animated": 39,
-    "static": 711
+    "count": 825,
+    "animated": 44,
+    "static": 781
   },
   {
     "id": "20",
     "slug": "hearts",
     "name": "Hearts",
     "source": "emojigg",
-    "count": 749,
-    "animated": 167,
-    "static": 582
+    "count": 824,
+    "animated": 186,
+    "static": 638
   },
   {
     "id": "11",
     "slug": "letters",
     "name": "Letters",
     "source": "emojigg",
-    "count": 749,
-    "animated": 30,
-    "static": 719
+    "count": 823,
+    "animated": 36,
+    "static": 787
   },
   {
     "id": "14",
     "slug": "logos",
     "name": "Logos",
     "source": "emojigg",
-    "count": 750,
-    "animated": 66,
-    "static": 684
+    "count": 825,
+    "animated": 69,
+    "static": 756
   },
   {
     "id": "3",
     "slug": "meme",
     "name": "Meme",
     "source": "emojigg",
-    "count": 751,
-    "animated": 52,
-    "static": 699
+    "count": 826,
+    "animated": 55,
+    "static": 771
   },
   {
     "id": "1",
     "slug": "original-style",
     "name": "Original Style",
     "source": "emojigg",
-    "count": 749,
-    "animated": 27,
-    "static": 722
+    "count": 824,
+    "animated": 29,
+    "static": 795
   },
   {
     "id": "12",
     "slug": "other",
     "name": "Other",
     "source": "emojigg",
-    "count": 750,
-    "animated": 30,
-    "static": 720
+    "count": 825,
+    "animated": 31,
+    "static": 794
   },
   {
     "id": "13",
@@ -148,27 +148,27 @@
     "slug": "pixel-art",
     "name": "Pixel Art",
     "source": "emojigg",
-    "count": 750,
-    "animated": 336,
-    "static": 414
+    "count": 825,
+    "animated": 376,
+    "static": 449
   },
   {
     "id": "22",
     "slug": "reactions",
     "name": "Reactions",
     "source": "emojigg",
-    "count": 750,
-    "animated": 34,
-    "static": 716
+    "count": 825,
+    "animated": 40,
+    "static": 785
   },
   {
     "id": "18",
     "slug": "recolors",
     "name": "Recolors",
     "source": "emojigg",
-    "count": 750,
-    "animated": 42,
-    "static": 708
+    "count": 825,
+    "animated": 46,
+    "static": 779
   },
   {
     "id": "7",
@@ -184,17 +184,17 @@
     "slug": "tv-movie",
     "name": "TV / Movie",
     "source": "emojigg",
-    "count": 749,
-    "animated": 54,
-    "static": 695
+    "count": 823,
+    "animated": 57,
+    "static": 766
   },
   {
     "id": "16",
     "slug": "utility",
     "name": "Utility",
     "source": "emojigg",
-    "count": 750,
-    "animated": 23,
-    "static": 727
+    "count": 825,
+    "animated": 24,
+    "static": 801
   }
 ]
