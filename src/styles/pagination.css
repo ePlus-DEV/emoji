@@ -1,10 +1,17 @@
-.results-summary {
+.results-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 28px;
   margin: -4px 0 18px;
+}
+
+.results-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  margin: 0;
   color: var(--muted-light);
   font-size: .78rem;
 }
@@ -14,6 +21,103 @@
   font-weight: 700;
 }
 
+.browse-mode-switcher {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-subtle);
+}
+
+.browse-mode-button {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 720;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.browse-mode-button:hover {
+  color: var(--ink);
+}
+
+.browse-mode-button.is-active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.browse-mode-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Infinite scroll */
+.infinite-loader {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+  color: var(--muted-light);
+  font-size: .74rem;
+  text-align: center;
+}
+
+.infinite-loader[hidden] {
+  display: none;
+}
+
+.infinite-loader-spinner {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  border: 2px solid var(--line-strong);
+  border-top-color: transparent;
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.infinite-loader-spinner.is-loading {
+  opacity: 1;
+  animation: emoji-loader-spin .7s linear infinite;
+}
+
+.load-more-fallback {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font-size: .76rem;
+  font-weight: 760;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.load-more-fallback[hidden] {
+  display: none;
+}
+
+.load-more-fallback:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
@@ -22,7 +126,9 @@
   margin-top: 36px;
 }
 
-.pagination[hidden] { display: none; }
+.pagination[hidden] {
+  display: none;
+}
 
 .pagination-pages {
   display: flex;
@@ -56,7 +162,7 @@
   border-color: var(--ink);
   background: var(--ink);
   color: #fff;
-  box-shadow: 0 7px 16px rgba(11,16,32,.14);
+  box-shadow: 0 7px 16px rgba(11, 16, 32, .14);
 }
 
 .pagination button:disabled {
@@ -64,7 +170,9 @@
   cursor: not-allowed;
 }
 
-.pagination-nav { min-width: 82px !important; }
+.pagination-nav {
+  min-width: 82px !important;
+}
 
 .pagination-ellipsis {
   display: grid;
@@ -75,11 +183,63 @@
   user-select: none;
 }
 
+@keyframes emoji-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 620px) {
-  .results-summary { align-items: flex-start; flex-direction: column; gap: 4px; }
-  .pagination { gap: 4px; margin-top: 26px; }
-  .pagination-pages { gap: 3px; }
-  .pagination button { min-width: 34px; height: 36px; padding: 0 8px; border-radius: 9px; font-size: .76rem; }
-  .pagination-nav { min-width: 62px !important; font-size: .72rem !important; }
-  .pagination-ellipsis { width: 18px; height: 36px; }
+  .results-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .results-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+  }
+
+  .browse-mode-switcher {
+    align-self: flex-start;
+  }
+
+  .browse-mode-button {
+    min-height: 34px;
+    padding-inline: 12px;
+  }
+
+  .infinite-loader {
+    min-height: 64px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .pagination {
+    gap: 4px;
+    margin-top: 26px;
+  }
+
+  .pagination-pages {
+    gap: 3px;
+  }
+
+  .pagination button {
+    min-width: 34px;
+    height: 36px;
+    padding: 0 8px;
+    border-radius: 9px;
+    font-size: .76rem;
+  }
+
+  .pagination-nav {
+    min-width: 62px !important;
+    font-size: .72rem !important;
+  }
+
+  .pagination-ellipsis {
+    width: 18px;
+    height: 36px;
+  }
 }
