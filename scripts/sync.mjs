@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { SOURCES } from './lib/sources.mjs';
+import { sourceAttribution, sourceFilename } from './lib/source-assets.mjs';
 
 const args = process.argv.slice(2);
 const valueFor = (name, fallback) => {
@@ -71,14 +72,6 @@ function shortcodeFor(annotation, hexcode) {
   return slugify(annotation).replaceAll('-', '_') || hexcode.toLowerCase().replaceAll('-', '_');
 }
 
-function twemojiFilename(hexcode) {
-  return `${hexcode
-    .split('-')
-    .filter((part) => part.toUpperCase() !== 'FE0F')
-    .map((part) => part.toLowerCase().replace(/^0+/, '') || '0')
-    .join('-')}.svg`;
-}
-
 async function fetchText(url, options = {}) {
   const response = await fetch(url, options);
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${url}`);
@@ -128,7 +121,7 @@ for (const source of selectedSources) {
   console.log(`\n[${source.label}] reading upstream tree...`);
   const upstreamFiles = source.id === 'openmoji' ? null : await fetchTree(source);
   let candidates = metadata.filter((item) => {
-    const filename = source.id === 'twemoji' ? twemojiFilename(item.hexcode) : `${item.hexcode}.svg`;
+    const filename = sourceFilename(source, item.hexcode);
     const id = `${source.id}-${item.hexcode.toLowerCase()}`;
     const current = byId.get(id);
     const available = upstreamFiles ? upstreamFiles.has(filename) : true;
@@ -149,7 +142,7 @@ for (const source of selectedSources) {
 
   await runPool(candidates, async (item) => {
     try {
-      const filename = source.id === 'twemoji' ? twemojiFilename(item.hexcode) : `${item.hexcode}.svg`;
+      const filename = sourceFilename(source, item.hexcode);
       const rawUrl = `https://raw.githubusercontent.com/${source.owner}/${source.repo}/${source.branch}/${source.assetPrefix}${filename}`;
       const svg = await fetchText(rawUrl);
       const hash = createHash('sha256').update(svg).digest('hex');
@@ -183,9 +176,7 @@ for (const source of selectedSources) {
         format: 'svg',
         animated: false,
         license: source.license,
-        attribution: source.id === 'openmoji'
-          ? [item.openmoji_author, 'OpenMoji'].filter(Boolean).join(' / ')
-          : 'Twemoji contributors',
+        attribution: sourceAttribution(source, item),
         addedAt: item.openmoji_date || new Date().toISOString().slice(0, 10),
         assetSha256: hash,
         duplicateAsset: hashes.has(hash)
