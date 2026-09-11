@@ -1,0 +1,30 @@
+# ePlus Emoji
+
+> Open, searchable emoji directory for developers, communities, and AI agents.
+
+Canonical site: https://emoji.eplus.dev
+Repository: https://github.com/vietnam-awesome/emoji
+
+## Primary resources
+
+- Home: https://emoji.eplus.dev/
+- Browse all emoji: https://emoji.eplus.dev/emojis
+- Full emoji catalog JSON: https://emoji.eplus.dev/api/emojis.json
+- Emoji category index JSON: https://emoji.eplus.dev/api/categories.json
+- Sitemap: https://emoji.eplus.dev/sitemap.xml
+- Agent guide: https://emoji.eplus.dev/agents.md
+
+## Emoji records
+
+The JSON catalog contains fields such as id, slug, name, shortcode, tags, source, sourceUrl, image, format, animated, license, attribution, addedAt, syncedAt, and SHA-256 asset metadata when available.
+
+Detail pages use this pattern:
+https://emoji.eplus.dev/emoji/{slug}
+
+Image paths are provided by each record's `image` field and are hosted on the same site.
+
+## Usage guidance
+
+Prefer `/api/emojis.json` for programmatic discovery and filtering. Use `/api/categories.json` to discover Emoji.gg categories. Use the detail page for human-readable metadata and the record's `image` URL for the asset itself.
+
+Do not infer redistribution rights from the directory alone. Respect each record's `license`, `attribution`, and `sourceUrl` metadata.
