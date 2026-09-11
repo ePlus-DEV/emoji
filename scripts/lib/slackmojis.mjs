@@ -1,11 +1,16 @@
 const HOME = 'https://slackmojis.com';
+export const SLACKMOJIS_JSON_URL = `${HOME}/emojis.json`;
 const DETAIL_PATTERN = /^\/emojis\/(\d+)-([^/?#]+)\/?$/i;
 
-export const SLACKMOJIS_COLLECTIONS = {
-  recent: `${HOME}/emojis/recent`,
-  popular: `${HOME}/emojis/popular`,
-  home: `${HOME}/emojis/`
-};
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100);
+}
 
 export function slackmojisDetailInfo(value) {
   try {
@@ -23,17 +28,52 @@ export function slackmojisDetailInfo(value) {
   }
 }
 
-export function slackmojisDownloadUrl(value) {
-  const detail = slackmojisDetailInfo(value);
-  return detail ? `${detail.url}/download` : '';
+export function slackmojisRecordInfo(record) {
+  const id = String(record?.id ?? '').trim();
+  const name = String(record?.name ?? '').trim();
+  const imageUrl = String(record?.image_url ?? '').trim();
+  if (!id || !/^\d+$/.test(id) || !name || !imageUrl) return null;
+
+  try {
+    const image = new URL(imageUrl);
+    if (image.protocol !== 'https:' && image.protocol !== 'http:') return null;
+  } catch {
+    return null;
+  }
+
+  const slug = slugify(name) || `emoji-${id}`;
+  const categoryName = String(record?.category?.name ?? 'Community').trim() || 'Community';
+  const categoryId = String(record?.category?.id ?? '').trim();
+
+  return {
+    id,
+    name,
+    slug,
+    shortcode: slug.replaceAll('-', '_'),
+    credit: String(record?.credit ?? '').trim(),
+    createdAt: String(record?.created_at ?? '').trim(),
+    updatedAt: String(record?.updated_at ?? '').trim(),
+    imageUrl,
+    categoryId,
+    categoryName,
+    categorySlug: slugify(categoryName) || 'community',
+    url: `${HOME}/emojis/${id}-${slug}`
+  };
 }
 
-export function slackmojisCollectionUrls(collection = 'recent') {
-  const normalized = String(collection || 'recent').trim().toLowerCase();
-  if (normalized === 'all') return Object.values(SLACKMOJIS_COLLECTIONS);
-  const url = SLACKMOJIS_COLLECTIONS[normalized];
-  if (!url) {
-    throw new Error(`Unknown Slackmojis collection: ${collection}. Available: ${Object.keys(SLACKMOJIS_COLLECTIONS).join(', ')}, all`);
+export function selectSlackmojisRecords(records, mode = 'recent') {
+  const normalized = String(mode || 'recent').trim().toLowerCase();
+  if (!['recent', 'all'].includes(normalized)) {
+    throw new Error(`Unknown Slackmojis mode: ${mode}. Available: recent, all`);
   }
-  return [url];
+
+  const items = (Array.isArray(records) ? records : [])
+    .map(slackmojisRecordInfo)
+    .filter(Boolean);
+
+  if (normalized === 'recent') {
+    items.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)) || Number(b.id) - Number(a.id));
+  }
+
+  return items;
 }
