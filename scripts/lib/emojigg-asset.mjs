@@ -7,6 +7,12 @@ function startsWith(buffer, bytes) {
   return bytes.every((byte, index) => buffer[index] === byte);
 }
 
+function isAnimatedWebP(buffer) {
+  if (!Buffer.isBuffer(buffer)) return false;
+  return buffer.indexOf(Buffer.from('ANIM', 'ascii')) >= 0
+    || buffer.indexOf(Buffer.from('ANMF', 'ascii')) >= 0;
+}
+
 export function detectImageAsset(buffer) {
   if (!Buffer.isBuffer(buffer) || buffer.length === 0) return null;
 
@@ -19,7 +25,7 @@ export function detectImageAsset(buffer) {
     && buffer.subarray(0, 4).toString('ascii') === 'RIFF'
     && buffer.subarray(8, 12).toString('ascii') === 'WEBP'
   ) {
-    return { ext: '.webp', format: 'webp', animated: true };
+    return { ext: '.webp', format: 'webp', animated: isAnimatedWebP(buffer) };
   }
 
   if (startsWith(buffer, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) {

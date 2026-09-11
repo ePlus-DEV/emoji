@@ -1,0 +1,142 @@
+name: Import Discords.com Emojis
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to import: home, all, Pepe, Anime, Blob Cats, etc."
+        required: true
+        default: "home"
+        type: string
+      limit:
+        description: "Maximum missing emoji to import. Use 0 for all discovered within page limits."
+        required: true
+        default: "200"
+        type: string
+      max_pages:
+        description: "Maximum pages to scan per tag"
+        required: true
+        default: "10"
+        type: string
+      concurrency:
+        description: "Parallel image downloads (1-8)"
+        required: true
+        default: "4"
+        type: string
+  schedule:
+    # Daily at 12:17 Asia/Ho_Chi_Minh (05:17 UTC), scanning the home/trending list only.
+    - cron: "17 5 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: emoji-data-write
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      IMPORT_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || 'home' }}
+      IMPORT_LIMIT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit || '75' }}
+      IMPORT_MAX_PAGES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.max_pages || '3' }}
+      IMPORT_CONCURRENCY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.concurrency || '4' }}
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Import Discords.com emoji list
+        run: |
+          echo "Tag: $IMPORT_TAG"
+          echo "Limit: $IMPORT_LIMIT"
+          echo "Max pages: $IMPORT_MAX_PAGES"
+          echo "Concurrency: $IMPORT_CONCURRENCY"
+
+          node scripts/import-discords.mjs \
+            --tag="$IMPORT_TAG" \
+            --limit="$IMPORT_LIMIT" \
+            --max-pages="$IMPORT_MAX_PAGES" \
+            --concurrency="$IMPORT_CONCURRENCY" \
+            --delay-ms=350
+
+      - name: Verify emoji index
+        run: npm run check:data
+
+      - name: Show import summary
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const emojis = JSON.parse(await readFile('src/data/emojis.json', 'utf8'));
+          const discords = emojis.filter((item) => item.source === 'discords');
+          console.log(`Discords.com indexed: ${discords.length}`);
+          console.log(`All emoji indexed: ${emojis.length}`);
+          NODE
+
+      - name: Commit imported assets and indexes
+        id: import_commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/api/emojis.json src/data/emojis.json src/data/community-sync-state.json
+          if [ -d public/emojis/community/discords ]; then
+            git add public/emojis/community/discords
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No Discords.com updates found."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "chore: import Discords.com emojis"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Push imported commit safely
+        if: steps.import_commit.outputs.created == 'true'
+        run: |
+          set -e
+          for attempt in 1 2 3; do
+            echo "Push attempt $attempt/3"
+            git fetch origin main
+
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Could not rebase import commit onto latest main." >&2
+              exit 1
+            fi
+
+            if git push origin HEAD:main; then
+              echo "Import pushed successfully."
+              exit 0
+            fi
+
+            echo "main changed while pushing; retrying..."
+            sleep $((attempt * 5))
+          done
+
+          echo "Push failed after 3 attempts." >&2
+          exit 1

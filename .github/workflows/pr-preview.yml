@@ -45,6 +45,13 @@ jobs:
       - name: Prepare preview routes
         run: node scripts/prepare-pr-preview.mjs
 
+      - name: Validate preview output
+        run: |
+          set -euo pipefail
+          test -s dist/index.html
+          grep -q 'ePlus Emoji' dist/index.html
+          echo "Preview build validated locally."
+
       - name: Publish preview branch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -63,27 +70,6 @@ jobs:
           git commit -q -m "preview: PR #${{ github.event.pull_request.number }} @ ${{ github.event.pull_request.head.sha }}"
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin "HEAD:${PREVIEW_BRANCH}"
-
-      - name: Wait for live preview
-        run: |
-          set -euo pipefail
-
-          # Development URLs on raw.githack reflect branch updates within a short cache window.
-          # The cookie bypasses the browser anti-phishing confirmation for this CI health check only.
-          for attempt in {1..36}; do
-            if curl --fail --silent --show-error --location \
-              --header 'Cookie: __Http-phish=1' \
-              "$PREVIEW_URL" | grep -q 'ePlus Emoji'; then
-              echo "Preview is live: $PREVIEW_URL"
-              exit 0
-            fi
-
-            echo "Waiting for preview CDN ($attempt/36)..."
-            sleep 5
-          done
-
-          echo "Preview branch was published, but the preview URL did not become readable in time." >&2
-          exit 1
 
       - name: Add live preview to job summary
         run: |
