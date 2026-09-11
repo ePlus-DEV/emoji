@@ -2,6 +2,11 @@ import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import {
+  detectImageAsset,
+  isCandidateAssetUrl,
+  validateImageAsset
+} from './lib/emojigg-asset.mjs';
 
 const args = process.argv.slice(2);
 const valueFor = (name, fallback) => {
@@ -64,18 +69,6 @@ function normalizeUrl(value) {
 
 function hashBuffer(buffer) {
   return createHash('sha256').update(buffer).digest('hex');
-}
-
-function detectAsset(buffer, contentType = '', url = '') {
-  if (buffer.subarray(0, 3).toString('ascii') === 'GIF') return { ext: '.gif', format: 'gif', animated: true };
-  if (buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP') return { ext: '.webp', format: 'webp', animated: true };
-  if (buffer.length >= 8 && buffer.subarray(1, 4).toString('ascii') === 'PNG') return { ext: '.png', format: 'png', animated: false };
-  if (buffer[0] === 0xff && buffer[1] === 0xd8) return { ext: '.jpg', format: 'jpg', animated: false };
-  const lower = `${contentType} ${url}`.toLowerCase();
-  if (lower.includes('gif')) return { ext: '.gif', format: 'gif', animated: true };
-  if (lower.includes('webp')) return { ext: '.webp', format: 'webp', animated: true };
-  if (lower.includes('jpeg') || lower.includes('.jpg') || lower.includes('.jpeg')) return { ext: '.jpg', format: 'jpg', animated: false };
-  return { ext: '.png', format: 'png', animated: false };
 }
 
 async function readJson(file, fallback) {
@@ -244,44 +237,46 @@ async function extractDetail(page, detailUrl, fallbackCategory) {
     .map((url) => absoluteUrl(url, detailUrl))
     .filter(Boolean);
 
-  const assetUrl = urls.find((url) => {
-    try {
-      const parsed = new URL(url);
-      const value = `${parsed.hostname}${parsed.pathname}${parsed.search}`.toLowerCase();
-      return /\.(png|gif|webp|jpe?g)(\?|$)/i.test(parsed.pathname + parsed.search)
-        && !/logo|avatar|favicon|banner|ads?\//i.test(value);
-    } catch {
-      return false;
-    }
-  });
+  const assetUrls = [...new Set(urls.filter(isCandidateAssetUrl))];
+  if (!assetUrls.length) throw new Error('no downloadable emoji image found');
 
-  if (!assetUrl) throw new Error('no downloadable emoji image found');
-  return { name: cleanName, assetUrl, category: canonicalCategory };
+  return { name: cleanName, assetUrls, category: canonicalCategory };
 }
 
-async function downloadAsset(context, detailUrl, assetUrl, stableId) {
-  const response = await context.request.get(assetUrl, {
-    headers: {
-      Referer: detailUrl,
-      'User-Agent': 'Mozilla/5.0 VietnamAwesomeEmojiBot/1.0'
-    },
-    timeout: 60000
-  });
+async function downloadAsset(context, detailUrl, assetUrls, stableId) {
+  const failures = [];
 
-  if (!response.ok()) throw new Error(`asset HTTP ${response.status()}`);
-  const buffer = await response.body();
-  if (!buffer.length || buffer.length > maxBytes) throw new Error(`asset size ${buffer.length} is invalid`);
+  for (const assetUrl of assetUrls) {
+    try {
+      const response = await context.request.get(assetUrl, {
+        headers: {
+          Referer: detailUrl,
+          'User-Agent': 'Mozilla/5.0 VietnamAwesomeEmojiBot/1.0'
+        },
+        timeout: 60000
+      });
 
-  const detected = detectAsset(buffer, response.headers()['content-type'] || '', assetUrl);
-  await mkdir(OUT_ROOT, { recursive: true });
-  const filename = `${stableId}${detected.ext}`;
-  await writeFile(path.join(OUT_ROOT, filename), buffer);
+      if (!response.ok()) throw new Error(`HTTP ${response.status()}`);
+      const buffer = await response.body();
+      if (!buffer.length || buffer.length > maxBytes) throw new Error(`size ${buffer.length} is invalid`);
 
-  return {
-    ...detected,
-    hash: hashBuffer(buffer),
-    image: `/emojis/community/${SOURCE.id}/${filename}`
-  };
+      const contentType = response.headers()['content-type'] || '';
+      const detected = validateImageAsset(buffer, contentType, assetUrl);
+      await mkdir(OUT_ROOT, { recursive: true });
+      const filename = `${stableId}${detected.ext}`;
+      await writeFile(path.join(OUT_ROOT, filename), buffer);
+
+      return {
+        ...detected,
+        hash: hashBuffer(buffer),
+        image: `/emojis/community/${SOURCE.id}/${filename}`
+      };
+    } catch (error) {
+      failures.push(`${assetUrl} -> ${error.message}`);
+    }
+  }
+
+  throw new Error(`no valid downloadable emoji image found: ${failures.slice(0, 3).join('; ')}`);
 }
 
 async function runPool(items, worker, size) {
@@ -309,7 +304,39 @@ function migrateLegacyEmojiGg(record) {
   };
 }
 
+async function pruneInvalidExistingEmojiGg(records) {
+  const valid = [];
+  let removed = 0;
+
+  for (const record of records) {
+    if (record.source !== SOURCE.id || !String(record.image || '').startsWith('/emojis/community/')) {
+      valid.push(record);
+      continue;
+    }
+
+    const localPath = path.resolve('public', String(record.image).replace(/^\//, ''));
+    try {
+      const buffer = await readFile(localPath);
+      if (!detectImageAsset(buffer)) {
+        removed += 1;
+        console.warn(`[${SOURCE.label}] dropping invalid existing asset ${record.id}: ${record.image}`);
+        continue;
+      }
+    } catch (error) {
+      removed += 1;
+      console.warn(`[${SOURCE.label}] dropping unreadable existing asset ${record.id}: ${error.message}`);
+      continue;
+    }
+
+    valid.push(record);
+  }
+
+  if (removed) console.warn(`[${SOURCE.label}] removed ${removed} invalid existing record(s) before sync.`);
+  return valid;
+}
+
 let existing = (await readJson(DATA_FILE, [])).map(migrateLegacyEmojiGg);
+existing = await pruneInvalidExistingEmojiGg(existing);
 const byId = new Map(existing.map((emoji) => [emoji.id, emoji]));
 const bySourceUrl = new Map(existing.filter((emoji) => emoji.sourceUrl).map((emoji) => [normalizeUrl(emoji.sourceUrl), emoji.id]));
 const byHash = new Map(existing.filter((emoji) => emoji.assetSha256).map((emoji) => [emoji.assetSha256, emoji.id]));
@@ -357,7 +384,7 @@ try {
         const detail = await extractDetail(detailPage, detailUrl, resolvedCategory);
         const remoteKey = path.basename(new URL(detailUrl).pathname).replace(/[^a-zA-Z0-9_-]+/g, '-');
         const stableId = `emojigg-${slugify(remoteKey || detail.name)}`;
-        const asset = await downloadAsset(detailPage.context(), detailUrl, detail.assetUrl, stableId);
+        const asset = await downloadAsset(detailPage.context(), detailUrl, detail.assetUrls, stableId);
         const duplicateOf = byHash.get(asset.hash);
         const now = new Date().toISOString().slice(0, 10);
 
