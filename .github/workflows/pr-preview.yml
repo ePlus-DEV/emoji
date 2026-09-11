@@ -21,6 +21,7 @@ jobs:
       PR_PREVIEW_BASE: /${{ github.repository }}/pr-preview-${{ github.event.pull_request.number }}/
       PR_PREVIEW_SITE: https://raw.githack.com/${{ github.repository }}/pr-preview-${{ github.event.pull_request.number }}/
       PREVIEW_URL: https://raw.githack.com/${{ github.repository }}/pr-preview-${{ github.event.pull_request.number }}/index.html
+      PREVIEW_HEALTH_URL: https://raw.githubusercontent.com/${{ github.repository }}/pr-preview-${{ github.event.pull_request.number }}/index.html
 
     steps:
       - name: Checkout PR
@@ -64,25 +65,27 @@ jobs:
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin "HEAD:${PREVIEW_BRANCH}"
 
-      - name: Wait for live preview
+      - name: Wait for published preview
         run: |
           set -euo pipefail
 
-          # Development URLs on raw.githack reflect branch updates within a short cache window.
-          # The cookie bypasses the browser anti-phishing confirmation for this CI health check only.
+          # Verify the branch directly on GitHub instead of using raw.githack as a
+          # CI health check. raw.githack is a third-party CDN and can be delayed or
+          # blocked independently of whether the preview branch was published.
           for attempt in {1..36}; do
             if curl --fail --silent --show-error --location \
-              --header 'Cookie: __Http-phish=1' \
-              "$PREVIEW_URL" | grep -q 'ePlus Emoji'; then
-              echo "Preview is live: $PREVIEW_URL"
+              --max-time 10 \
+              "$PREVIEW_HEALTH_URL" | grep -q 'ePlus Emoji'; then
+              echo "Preview branch is published: $PREVIEW_HEALTH_URL"
+              echo "Browser preview: $PREVIEW_URL"
               exit 0
             fi
 
-            echo "Waiting for preview CDN ($attempt/36)..."
+            echo "Waiting for GitHub preview branch ($attempt/36)..."
             sleep 5
           done
 
-          echo "Preview branch was published, but the preview URL did not become readable in time." >&2
+          echo "Preview branch did not become readable from GitHub in time." >&2
           exit 1
 
       - name: Add live preview to job summary
