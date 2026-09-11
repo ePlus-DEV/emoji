@@ -1,7 +1,7 @@
 # Asset licenses and attribution
 
 The code in this repository is licensed under the MIT License. Emoji artwork is **not** relicensed under MIT.
-Each imported asset keeps the license of its upstream project and each record in `src/data/emojis.json` stores its source, license and attribution.
+Each imported asset keeps the license or source-rights metadata recorded for that source in `src/data/emojis.json`.
 
 ## OpenMoji
 
@@ -23,8 +23,20 @@ Each imported asset keeps the license of its upstream project and each record in
 - Imported SVG files live under `public/emojis/noto/`.
 - Attribution: Google / Noto Emoji contributors.
 
+## Emoji.gg
+
+- Source: https://emoji.gg/
+- Imported files live under `public/emojis/community/emojigg/`.
+- Rights and attribution can vary by submitted asset. Keep the original detail-page URL on each record and review source-specific rights before redistribution.
+
+## Slackmojis
+
+- Source: https://slackmojis.com/
+- Imported files live under `public/emojis/community/slackmojis/`.
+- Each catalog record keeps its original Slackmojis detail-page URL.
+- Artwork ownership, licensing, and redistribution rights can vary by original contributor. Records use `Source terms / rights vary` rather than claiming an open-content license.
+- The project operator is responsible for deciding whether and how to run this importer and for compliance with source terms and applicable rights.
+
 ## Community assets
 
-Do not add scraped or copied emoji whose redistribution rights are unknown. Community pull requests must include an original source URL and an explicit license/permission statement.
-
-Sites such as Slackmojis and Discadia may be used as UX inspiration, but this project does not treat them as automatic scraping sources.
+Community pull requests should include an original source URL and an explicit license/permission statement whenever one is available. Do not assume that inclusion in a public emoji directory transfers copyright or grants redistribution rights.
