@@ -98,3 +98,25 @@ const searchText = [
     </div>
   </div>
 </article>
+
+<style is:global>
+  @media (hover: hover) and (pointer: fine) {
+    .catalog-page .emoji-card .emoji-select-control,
+    .catalog-page .emoji-card .emoji-card-download {
+      opacity: 0 !important;
+      transform: translateY(-4px) scale(.96) !important;
+      pointer-events: none;
+      transition: opacity .14s ease, transform .14s ease;
+    }
+
+    .catalog-page .emoji-card:hover .emoji-select-control,
+    .catalog-page .emoji-card:hover .emoji-card-download,
+    .catalog-page .emoji-card:focus-within .emoji-select-control,
+    .catalog-page .emoji-card:focus-within .emoji-card-download,
+    .catalog-page .emoji-card.is-selected .emoji-select-control {
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: auto;
+    }
+  }
+</style>
