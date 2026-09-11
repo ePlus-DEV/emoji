@@ -9,10 +9,10 @@ An open, searchable emoji directory for developers and communities, inspired by 
 - Copy Slack/Discord-style shortcodes in one click.
 - Individual emoji pages with download, source, license and attribution.
 - Public JSON index at `/api/emojis.json`.
-- Automated importers for licensed upstream emoji sources.
+- Automated importers for upstream Unicode sources and selected custom-emoji directories.
 - SHA-256 metadata for exact duplicate detection.
 - GitHub Pages deployment workflow.
-- Weekly source sync workflow with a configurable import limit.
+- Scheduled source sync workflows with configurable import limits.
 
 ## Current sources
 
@@ -21,6 +21,8 @@ An open, searchable emoji directory for developers and communities, inspired by 
 | OpenMoji | CC BY-SA 4.0 | Yes |
 | Twemoji | CC BY 4.0 | Yes |
 | Noto Emoji | OFL 1.1 | Yes |
+| Emoji.gg | Per asset / source terms | Yes |
+| Slackmojis | Source terms / rights vary | Yes |
 | Community submissions | Per contribution | Planned / PR-based |
 
 See [NOTICE.md](NOTICE.md) before redistributing artwork.
@@ -35,13 +37,14 @@ npm run dev
 Build and verify:
 
 ```bash
+npm test
 npm run check:data
 npm run build
 ```
 
 ## Sync emoji assets
 
-Import up to 200 new assets from each supported source:
+Import up to 200 new assets from each supported Unicode source:
 
 ```bash
 npm run sync
@@ -59,13 +62,25 @@ Import 500 Noto Emoji assets:
 npm run sync -- --source=noto --limit=500
 ```
 
-Import every remaining supported asset:
+Import every remaining supported Unicode asset:
 
 ```bash
 npm run sync -- --source=all --limit=0
 ```
 
 The sync script downloads SVG files into `public/emojis/<source>/`, merges metadata into `src/data/emojis.json`, and updates `public/api/emojis.json`. Existing local assets are skipped, so scheduled runs gradually fill the repository without re-downloading the same files.
+
+## Import Slackmojis
+
+Import up to 200 missing emoji from the recently-added collection:
+
+```bash
+npm run import:slackmojis -- --collection=recent --limit=200
+```
+
+Available collection modes are `recent`, `popular`, `home`, and `all`. `all` combines the three public collection pages; it is not presented as a guaranteed exhaustive historical export.
+
+The importer resolves each public detail page, requests its `/download` endpoint first, validates the downloaded bytes as a real PNG/GIF/WebP/JPEG before writing anything, stores files in `public/emojis/community/slackmojis/`, and deduplicates exact assets by SHA-256.
 
 ## Data schema
 
@@ -98,10 +113,10 @@ After merging to `main`, enable **Settings → Pages → Source: GitHub Actions*
 
 ## Adding another source
 
-Only add automated sources where redistribution is clearly permitted. Add the source definition in `scripts/lib/sources.mjs`, implement any filename/metadata normalization needed in `scripts/lib/source-assets.mjs`, and update `NOTICE.md`.
+For upstream Unicode projects, prefer sources with an explicit redistribution license and add them through `scripts/lib/sources.mjs` plus `scripts/lib/source-assets.mjs`. Custom-directory importers should keep source URLs and rights metadata on every record and validate asset bytes before writing files.
 
 ## License
 
 Repository code: MIT.
 
-Emoji artwork: upstream licenses; see [NOTICE.md](NOTICE.md).
+Emoji artwork: upstream licenses and source-specific terms; see [NOTICE.md](NOTICE.md).
