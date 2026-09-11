@@ -110,6 +110,14 @@ const schemaJson = JSON.stringify({
     <link rel="icon" type="image/svg+xml" href={faviconUrl} />
     <link rel="canonical" href={canonical} />
     <script type="application/ld+json" set:html={schemaJson}></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z8VQQ5NSBH"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Z8VQQ5NSBH');
+    </script>
     <title>{title}</title>
   </head>
   <body>
