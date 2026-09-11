@@ -1,0 +1,414 @@
+<div class="emoji-selection-bar" id="emoji-selection-bar" hidden aria-live="polite">
+  <div class="emoji-selection-summary">
+    <strong id="emoji-selection-count">0</strong>
+    <span>selected</span>
+  </div>
+  <div class="emoji-selection-actions">
+    <button class="emoji-selection-clear" id="emoji-selection-clear" type="button">Clear</button>
+    <button class="emoji-selection-download" id="emoji-selection-download" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Download ZIP</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const grid = document.querySelector('#emoji-grid');
+  const selectionBar = document.querySelector('#emoji-selection-bar');
+  const selectionCount = document.querySelector('#emoji-selection-count');
+  const clearButton = document.querySelector('#emoji-selection-clear');
+  const downloadButton = document.querySelector('#emoji-selection-download');
+
+  if (grid && selectionBar && selectionCount && clearButton && downloadButton) {
+    const selected = new Map();
+
+    const sanitizeFilename = (value) => String(value || 'emoji')
+      .trim()
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^[-.]+|[-.]+$/g, '')
+      .slice(0, 90) || 'emoji';
+
+    const extensionFromUrl = (value) => {
+      try {
+        return new URL(value, window.location.href).pathname.match(/\.([a-z0-9]{2,5})$/i)?.[1]?.toLowerCase() || 'png';
+      } catch {
+        return 'png';
+      }
+    };
+
+    const cardItem = (card) => {
+      if (!(card instanceof HTMLElement)) return null;
+      const image = card.querySelector('.emoji-preview img');
+      const nameLink = card.querySelector('.emoji-name');
+      if (!(image instanceof HTMLImageElement)) return null;
+
+      const url = card.dataset.downloadUrl || image.currentSrc || image.src;
+      const name = card.dataset.downloadName || nameLink?.textContent?.trim() || image.alt || 'emoji';
+      const key = card.dataset.downloadKey || nameLink?.getAttribute('href') || url;
+      const filename = card.dataset.downloadFilename || `${sanitizeFilename(name)}.${extensionFromUrl(url)}`;
+      return { key, name, url, filename };
+    };
+
+    const syncSelectionBar = () => {
+      const count = selected.size;
+      selectionCount.textContent = String(count);
+      selectionBar.hidden = count === 0;
+      downloadButton.disabled = count === 0;
+    };
+
+    const syncCard = (card) => {
+      const item = cardItem(card);
+      const input = card.querySelector('[data-emoji-select]');
+      if (!item || !(input instanceof HTMLInputElement)) return;
+      const checked = selected.has(item.key);
+      input.checked = checked;
+      card.classList.toggle('is-selected', checked);
+    };
+
+    const ensureControls = (card) => {
+      if (!(card instanceof HTMLElement)) return;
+      const item = cardItem(card);
+      if (!item) return;
+
+      card.dataset.downloadKey ||= item.key;
+      card.dataset.downloadName ||= item.name;
+      card.dataset.downloadUrl ||= item.url;
+      card.dataset.downloadFilename ||= item.filename;
+
+      if (!card.querySelector('[data-emoji-select]')) {
+        const selectLabel = document.createElement('label');
+        selectLabel.className = 'emoji-select-control';
+        selectLabel.title = `Select ${item.name}`;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.dataset.emojiSelect = '';
+        checkbox.setAttribute('aria-label', `Select ${item.name}`);
+
+        const checkmark = document.createElement('span');
+        checkmark.setAttribute('aria-hidden', 'true');
+        checkmark.textContent = '✓';
+        selectLabel.append(checkbox, checkmark);
+        card.prepend(selectLabel);
+      }
+
+      if (!card.querySelector('.emoji-card-download')) {
+        const directDownload = document.createElement('a');
+        directDownload.className = 'emoji-card-download';
+        directDownload.href = item.url;
+        directDownload.download = item.filename;
+        directDownload.title = `Download ${item.name}`;
+        directDownload.setAttribute('aria-label', `Download ${item.name}`);
+        directDownload.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        card.prepend(directDownload);
+      }
+
+      syncCard(card);
+    };
+
+    const enhanceCards = (root = grid) => {
+      if (root instanceof HTMLElement && root.matches('.emoji-card')) ensureControls(root);
+      root.querySelectorAll?.('.emoji-card').forEach(ensureControls);
+    };
+
+    enhanceCards();
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) enhanceCards(node);
+        }
+      }
+    });
+    observer.observe(grid, { childList: true, subtree: true });
+
+    grid.addEventListener('change', (event) => {
+      const input = event.target instanceof Element ? event.target.closest('[data-emoji-select]') : null;
+      if (!(input instanceof HTMLInputElement)) return;
+      const card = input.closest('.emoji-card');
+      if (!(card instanceof HTMLElement)) return;
+      const item = cardItem(card);
+      if (!item) return;
+
+      if (input.checked) selected.set(item.key, item);
+      else selected.delete(item.key);
+      syncCard(card);
+      syncSelectionBar();
+    });
+
+    clearButton.addEventListener('click', () => {
+      selected.clear();
+      grid.querySelectorAll('.emoji-card').forEach(syncCard);
+      syncSelectionBar();
+    });
+
+    const crcTable = (() => {
+      const table = new Uint32Array(256);
+      for (let n = 0; n < 256; n += 1) {
+        let value = n;
+        for (let bit = 0; bit < 8; bit += 1) value = (value & 1) ? (0xedb88320 ^ (value >>> 1)) : (value >>> 1);
+        table[n] = value >>> 0;
+      }
+      return table;
+    })();
+
+    const crc32 = (bytes) => {
+      let crc = 0xffffffff;
+      for (const byte of bytes) crc = crcTable[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+      return (crc ^ 0xffffffff) >>> 0;
+    };
+
+    const concatBytes = (parts) => {
+      const total = parts.reduce((sum, part) => sum + part.length, 0);
+      const output = new Uint8Array(total);
+      let offset = 0;
+      for (const part of parts) {
+        output.set(part, offset);
+        offset += part.length;
+      }
+      return output;
+    };
+
+    const dosDateTime = (date = new Date()) => {
+      const year = Math.max(1980, date.getFullYear());
+      return {
+        date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),
+        time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2)
+      };
+    };
+
+    const uniqueFilename = (filename, used) => {
+      if (!used.has(filename)) {
+        used.add(filename);
+        return filename;
+      }
+      const dot = filename.lastIndexOf('.');
+      const stem = dot > 0 ? filename.slice(0, dot) : filename;
+      const extension = dot > 0 ? filename.slice(dot) : '';
+      let index = 2;
+      while (used.has(`${stem}-${index}${extension}`)) index += 1;
+      const resolved = `${stem}-${index}${extension}`;
+      used.add(resolved);
+      return resolved;
+    };
+
+    const buildZip = (files) => {
+      const encoder = new TextEncoder();
+      const localParts = [];
+      const centralParts = [];
+      let localOffset = 0;
+      const stamp = dosDateTime();
+
+      for (const file of files) {
+        const nameBytes = encoder.encode(file.name);
+        const data = file.data;
+        const checksum = crc32(data);
+
+        const localHeader = new Uint8Array(30);
+        const localView = new DataView(localHeader.buffer);
+        localView.setUint32(0, 0x04034b50, true);
+        localView.setUint16(4, 20, true);
+        localView.setUint16(6, 0x0800, true);
+        localView.setUint16(8, 0, true);
+        localView.setUint16(10, stamp.time, true);
+        localView.setUint16(12, stamp.date, true);
+        localView.setUint32(14, checksum, true);
+        localView.setUint32(18, data.length, true);
+        localView.setUint32(22, data.length, true);
+        localView.setUint16(26, nameBytes.length, true);
+
+        const centralHeader = new Uint8Array(46);
+        const centralView = new DataView(centralHeader.buffer);
+        centralView.setUint32(0, 0x02014b50, true);
+        centralView.setUint16(4, 20, true);
+        centralView.setUint16(6, 20, true);
+        centralView.setUint16(8, 0x0800, true);
+        centralView.setUint16(10, 0, true);
+        centralView.setUint16(12, stamp.time, true);
+        centralView.setUint16(14, stamp.date, true);
+        centralView.setUint32(16, checksum, true);
+        centralView.setUint32(20, data.length, true);
+        centralView.setUint32(24, data.length, true);
+        centralView.setUint16(28, nameBytes.length, true);
+        centralView.setUint32(42, localOffset, true);
+
+        localParts.push(localHeader, nameBytes, data);
+        centralParts.push(centralHeader, nameBytes);
+        localOffset += localHeader.length + nameBytes.length + data.length;
+      }
+
+      const centralBytes = concatBytes(centralParts);
+      const end = new Uint8Array(22);
+      const endView = new DataView(end.buffer);
+      endView.setUint32(0, 0x06054b50, true);
+      endView.setUint16(8, files.length, true);
+      endView.setUint16(10, files.length, true);
+      endView.setUint32(12, centralBytes.length, true);
+      endView.setUint32(16, localOffset, true);
+
+      return new Blob([concatBytes([...localParts, centralBytes, end])], { type: 'application/zip' });
+    };
+
+    downloadButton.addEventListener('click', async () => {
+      const items = [...selected.values()];
+      if (!items.length) return;
+
+      const label = downloadButton.querySelector('span');
+      const originalLabel = label?.textContent || 'Download ZIP';
+      const files = [];
+      const failures = [];
+      const usedNames = new Set();
+      downloadButton.disabled = true;
+
+      try {
+        for (let index = 0; index < items.length; index += 1) {
+          const item = items[index];
+          if (label) label.textContent = `Preparing ${index + 1}/${items.length}`;
+          try {
+            const response = await fetch(item.url);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            files.push({
+              name: uniqueFilename(item.filename, usedNames),
+              data: new Uint8Array(await response.arrayBuffer())
+            });
+          } catch {
+            failures.push(item.name);
+          }
+        }
+
+        if (!files.length) throw new Error('No selected files could be downloaded.');
+        if (label) label.textContent = 'Creating ZIP…';
+
+        const objectUrl = URL.createObjectURL(buildZip(files));
+        const anchor = document.createElement('a');
+        anchor.href = objectUrl;
+        anchor.download = `eplus-emoji-${files.length}-items.zip`;
+        document.body.append(anchor);
+        anchor.click();
+        anchor.remove();
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+
+        if (failures.length) window.alert(`Downloaded ${files.length} item(s). ${failures.length} item(s) could not be fetched.`);
+      } catch (error) {
+        window.alert(error instanceof Error ? error.message : 'Could not create the download.');
+      } finally {
+        if (label) label.textContent = originalLabel;
+        downloadButton.disabled = false;
+      }
+    });
+
+    syncSelectionBar();
+  }
+</script>
+
+<style is:global>
+  .catalog-page .emoji-card { position: relative; }
+
+  .emoji-select-control,
+  .emoji-card-download {
+    position: absolute;
+    top: 9px;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #fff;
+    color: #344054;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, .10);
+    opacity: 1;
+    transform: none;
+  }
+
+  .emoji-select-control { left: 9px; cursor: pointer; }
+  .emoji-card-download { right: 9px; text-decoration: none; }
+  .emoji-card-download:hover { border-color: #98a2b3; color: #101828; background: #f9fafb; }
+  .emoji-card-download svg { width: 17px; height: 17px; }
+
+  .emoji-select-control input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .emoji-select-control > span {
+    display: grid;
+    place-items: center;
+    width: 17px;
+    height: 17px;
+    border: 1.5px solid #98a2b3;
+    border-radius: 4px;
+    color: transparent;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .emoji-select-control input:checked + span {
+    border-color: #101828;
+    background: #101828;
+    color: #fff;
+  }
+
+  .emoji-select-control:has(input:focus-visible),
+  .emoji-card-download:focus-visible {
+    outline: 2px solid #101828;
+    outline-offset: 2px;
+  }
+
+  .catalog-page .emoji-card.is-selected {
+    border-color: #667085;
+    box-shadow: 0 0 0 2px rgba(16, 24, 40, .08), 0 10px 24px rgba(16, 24, 40, .06);
+  }
+
+  .emoji-selection-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-width: min(440px, calc(100vw - 32px));
+    padding: 10px 10px 10px 16px;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 12px;
+    background: #101828;
+    color: #fff;
+    box-shadow: 0 18px 50px rgba(16, 24, 40, .28);
+    transform: translateX(-50%);
+  }
+
+  .emoji-selection-bar[hidden] { display: none; }
+  .emoji-selection-summary { display: flex; align-items: baseline; gap: 6px; font-size: .78rem; }
+  .emoji-selection-summary strong { font-size: .92rem; }
+  .emoji-selection-actions { display: flex; align-items: center; gap: 7px; }
+
+  .emoji-selection-clear,
+  .emoji-selection-download {
+    min-height: 34px;
+    border-radius: 8px;
+    font: inherit;
+    font-size: .74rem;
+    font-weight: 750;
+    cursor: pointer;
+  }
+
+  .emoji-selection-clear { padding: 0 10px; border: 0; background: transparent; color: #d0d5dd; }
+  .emoji-selection-clear:hover { color: #fff; }
+  .emoji-selection-download { display: inline-flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid #fff; background: #fff; color: #101828; }
+  .emoji-selection-download:hover { background: #f2f4f7; }
+  .emoji-selection-download:disabled { opacity: .58; cursor: wait; }
+  .emoji-selection-download svg { width: 15px; height: 15px; }
+
+  @media (max-width: 720px) {
+    .emoji-selection-bar { bottom: 12px; gap: 12px; min-width: calc(100vw - 24px); }
+  }
+</style>
