@@ -1,5 +1,6 @@
 const HTML_CONTENT_TYPE = /(?:^|;)\s*(?:text\/html|application\/xhtml\+xml)\b/i;
 const IMAGE_CONTENT_TYPE = /^image\/(?:gif|png|webp|jpe?g)\b/i;
+const GENERIC_BINARY_CONTENT_TYPE = /^(?:application|binary)\/octet-stream\b/i;
 
 function startsWith(buffer, bytes) {
   if (!Buffer.isBuffer(buffer) || buffer.length < bytes.length) return false;
@@ -45,7 +46,11 @@ export function validateImageAsset(buffer, contentType = '', url = '') {
     throw new Error(`asset body is not a supported image (${typeHint})${url ? `: ${url}` : ''}`);
   }
 
-  if (normalizedContentType && !IMAGE_CONTENT_TYPE.test(normalizedContentType)) {
+  if (
+    normalizedContentType
+    && !IMAGE_CONTENT_TYPE.test(normalizedContentType)
+    && !GENERIC_BINARY_CONTENT_TYPE.test(normalizedContentType)
+  ) {
     throw new Error(`asset has unexpected content-type ${normalizedContentType}${url ? `: ${url}` : ''}`);
   }
 
