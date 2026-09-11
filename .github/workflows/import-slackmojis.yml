@@ -1,0 +1,139 @@
+name: Import Slackmojis
+
+on:
+  workflow_dispatch:
+    inputs:
+      collection:
+        description: "Collection to import: recent, popular, home, or all"
+        required: true
+        default: "recent"
+        type: choice
+        options:
+          - recent
+          - popular
+          - home
+          - all
+      limit:
+        description: "Maximum missing emoji to import. Use 0 for all discovered on the selected collection pages."
+        required: true
+        default: "200"
+        type: string
+      concurrency:
+        description: "Parallel detail/download workers (1-8)"
+        required: true
+        default: "4"
+        type: string
+  schedule:
+    # Daily at 11:17 Asia/Ho_Chi_Minh (04:17 UTC), syncing only the recent collection.
+    - cron: "17 4 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: emoji-data-write
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      IMPORT_COLLECTION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.collection || 'recent' }}
+      IMPORT_LIMIT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit || '75' }}
+      IMPORT_CONCURRENCY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.concurrency || '3' }}
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Import Slackmojis
+        run: |
+          echo "Collection: $IMPORT_COLLECTION"
+          echo "Limit: $IMPORT_LIMIT"
+          echo "Concurrency: $IMPORT_CONCURRENCY"
+
+          node scripts/import-slackmojis.mjs \
+            --collection="$IMPORT_COLLECTION" \
+            --limit="$IMPORT_LIMIT" \
+            --concurrency="$IMPORT_CONCURRENCY" \
+            --delay-ms=350
+
+      - name: Verify emoji index
+        run: npm run check:data
+
+      - name: Show import summary
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const emojis = JSON.parse(await readFile('src/data/emojis.json', 'utf8'));
+          const slackmojis = emojis.filter((item) => item.source === 'slackmojis');
+          console.log(`Slackmojis indexed: ${slackmojis.length}`);
+          console.log(`All emoji indexed: ${emojis.length}`);
+          NODE
+
+      - name: Commit imported assets and indexes
+        id: import_commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add public/api/emojis.json src/data/emojis.json src/data/community-sync-state.json
+          if [ -d public/emojis/community/slackmojis ]; then
+            git add public/emojis/community/slackmojis
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No Slackmojis updates found."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "chore: import Slackmojis"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Push imported commit safely
+        if: steps.import_commit.outputs.created == 'true'
+        run: |
+          set -e
+          for attempt in 1 2 3; do
+            echo "Push attempt $attempt/3"
+            git fetch origin main
+
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Could not rebase import commit onto latest main." >&2
+              exit 1
+            fi
+
+            if git push origin HEAD:main; then
+              echo "Import pushed successfully."
+              exit 0
+            fi
+
+            echo "main changed while pushing; retrying..."
+            sleep $((attempt * 5))
+          done
+
+          echo "Push failed after 3 attempts." >&2
+          exit 1
