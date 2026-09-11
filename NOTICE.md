@@ -16,6 +16,13 @@ Each imported asset keeps the license of its upstream project and each record in
 - Artwork license: Creative Commons Attribution 4.0 International (CC BY 4.0)
 - Imported files live under `public/emojis/twemoji/`.
 
+## Noto Emoji
+
+- Upstream: https://github.com/googlefonts/noto-emoji
+- License: SIL Open Font License 1.1 (OFL-1.1), as declared by the upstream repository.
+- Imported SVG files live under `public/emojis/noto/`.
+- Attribution: Google / Noto Emoji contributors.
+
 ## Community assets
 
 Do not add scraped or copied emoji whose redistribution rights are unknown. Community pull requests must include an original source URL and an explicit license/permission statement.

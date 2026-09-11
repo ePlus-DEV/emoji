@@ -12,6 +12,7 @@ on:
           - all
           - openmoji
           - twemoji
+          - noto
       limit:
         description: Maximum new assets per source. Use 0 for all remaining assets.
         required: true

@@ -20,6 +20,7 @@ An open, searchable emoji directory for developers and communities, inspired by 
 | --- | --- | --- |
 | OpenMoji | CC BY-SA 4.0 | Yes |
 | Twemoji | CC BY 4.0 | Yes |
+| Noto Emoji | OFL 1.1 | Yes |
 | Community submissions | Per contribution | Planned / PR-based |
 
 See [NOTICE.md](NOTICE.md) before redistributing artwork.
@@ -50,6 +51,12 @@ Import 500 new OpenMoji assets:
 
 ```bash
 npm run sync -- --source=openmoji --limit=500
+```
+
+Import 500 Noto Emoji assets:
+
+```bash
+npm run sync -- --source=noto --limit=500
 ```
 
 Import every remaining supported asset:
@@ -91,7 +98,7 @@ After merging to `main`, enable **Settings → Pages → Source: GitHub Actions*
 
 ## Adding another source
 
-Only add automated sources where redistribution is clearly permitted. Add the source definition in `scripts/lib/sources.mjs`, implement any filename/metadata normalization needed in `scripts/sync.mjs`, and update `NOTICE.md`.
+Only add automated sources where redistribution is clearly permitted. Add the source definition in `scripts/lib/sources.mjs`, implement any filename/metadata normalization needed in `scripts/lib/source-assets.mjs`, and update `NOTICE.md`.
 
 ## License
 
