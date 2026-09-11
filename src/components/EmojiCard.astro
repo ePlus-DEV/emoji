@@ -29,6 +29,8 @@ const base = import.meta.env.BASE_URL;
 const imageUrl = emojiAssetUrl(emoji, base);
 const detailUrl = withBase(`/emoji/${emoji.slug}`, base);
 const category = emoji.category || emoji.group.replaceAll('-', ' ');
+const extension = (emoji.format || imageUrl.match(/\.([a-z0-9]+)(?:\?|$)/i)?.[1] || 'png').toLowerCase();
+const downloadFilename = `${emoji.slug}.${extension}`;
 const searchText = [
   emoji.name,
   emoji.shortcode,
@@ -50,7 +52,28 @@ const searchText = [
   data-group={emoji.group}
   data-category={category.toLowerCase()}
   data-animated={emoji.animated ? 'yes' : 'no'}
+  data-download-key={emoji.slug}
+  data-download-name={emoji.name}
+  data-download-url={imageUrl}
+  data-download-filename={downloadFilename}
 >
+  <label class="emoji-select-control" title={`Select ${emoji.name}`}>
+    <input type="checkbox" data-emoji-select aria-label={`Select ${emoji.name}`} />
+    <span aria-hidden="true">✓</span>
+  </label>
+
+  <a
+    class="emoji-card-download"
+    href={imageUrl}
+    download={downloadFilename}
+    title={`Download ${emoji.name}`}
+    aria-label={`Download ${emoji.name}`}
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
+
   <a class="emoji-preview" href={detailUrl} aria-label={`Open ${emoji.name}`}>
     <img src={imageUrl} alt={emoji.name} loading="lazy" width="128" height="128" />
     {emoji.animated && <span class="card-motion-badge">GIF</span>}
