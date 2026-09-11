@@ -31,10 +31,18 @@ Each imported asset keeps the license or source-rights metadata recorded for tha
 
 ## Slackmojis
 
-- Source: https://slackmojis.com/
+- Source catalog: https://slackmojis.com/emojis.json
 - Imported files live under `public/emojis/community/slackmojis/`.
-- Each catalog record keeps its original Slackmojis detail-page URL.
+- Catalog metadata includes contributor credit, category, timestamps and the upstream asset URL.
 - Artwork ownership, licensing, and redistribution rights can vary by original contributor. Records use `Source terms / rights vary` rather than claiming an open-content license.
+- The project operator is responsible for deciding whether and how to run this importer and for compliance with source terms and applicable rights.
+
+## Discords.com
+
+- Source: https://discords.com/emoji-list
+- Imported files live under `public/emojis/community/discords/`.
+- The importer accepts only Discord CDN emoji asset URLs (`cdn.discordapp.com/emojis/...` and `media.discordapp.net/emojis/...`) surfaced by the public emoji-list/tag pages.
+- Artwork ownership, licensing, and redistribution rights can vary by the originating Discord server/contributor. Records use `Source terms / rights vary`.
 - The project operator is responsible for deciding whether and how to run this importer and for compliance with source terms and applicable rights.
 
 ## Community assets
