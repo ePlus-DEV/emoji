@@ -1,12 +1,10 @@
-import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { validateImageAsset } from './lib/emojigg-asset.mjs';
 import {
-  slackmojisCollectionUrls,
-  slackmojisDetailInfo,
-  slackmojisDownloadUrl
+  SLACKMOJIS_JSON_URL,
+  selectSlackmojisRecords
 } from './lib/slackmojis.mjs';
 
 const args = process.argv.slice(2);
@@ -17,11 +15,10 @@ const valueFor = (name, fallback) => {
   return index >= 0 && args[index + 1] ? args[index + 1] : fallback;
 };
 
-const collection = String(valueFor('collection', 'recent')).trim().toLowerCase();
+const mode = String(valueFor('mode', valueFor('collection', 'recent'))).trim().toLowerCase();
 const rawLimit = Number.parseInt(valueFor('limit', '200'), 10);
 const limit = Number.isFinite(rawLimit) ? Math.max(0, rawLimit) : 200;
-const concurrency = Math.max(1, Math.min(8, Number.parseInt(valueFor('concurrency', '4'), 10) || 4));
-const delayMs = Math.max(0, Math.min(5000, Number.parseInt(valueFor('delay-ms', '200'), 10) || 0));
+const concurrency = Math.max(1, Math.min(12, Number.parseInt(valueFor('concurrency', '6'), 10) || 6));
 const maxBytes = 8 * 1024 * 1024;
 
 const SOURCE = {
@@ -45,14 +42,6 @@ function slugify(value) {
     .slice(0, 100);
 }
 
-function titleize(value) {
-  return String(value || '')
-    .replace(/[_-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
 function hashBuffer(buffer) {
   return createHash('sha256').update(buffer).digest('hex');
 }
@@ -66,113 +55,43 @@ async function writeJson(file, value) {
   await writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-async function discoverDetailUrls(page, urls) {
-  const discovered = new Map();
-
-  for (const collectionUrl of urls) {
-    console.log(`[${SOURCE.label}] reading ${collectionUrl}`);
-    await page.goto(collectionUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    if (delayMs) await page.waitForTimeout(delayMs);
-
-    const links = await page.locator('a[href]').evaluateAll((nodes) =>
-      nodes.map((node) => ({
-        href: node.getAttribute('href') || '',
-        text: (node.textContent || '').trim()
-      }))
-    );
-
-    let added = 0;
-    for (const link of links) {
-      let absolute = '';
-      try { absolute = new URL(link.href, collectionUrl).toString(); } catch { continue; }
-      const detail = slackmojisDetailInfo(absolute);
-      if (!detail || discovered.has(detail.url)) continue;
-      discovered.set(detail.url, { ...detail, linkText: link.text });
-      added += 1;
+async function fetchCatalog() {
+  const response = await fetch(SLACKMOJIS_JSON_URL, {
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': 'Mozilla/5.0 VietnamAwesomeEmojiBot/1.0'
     }
-
-    console.log(`[${SOURCE.label}] ${collectionUrl}: +${added}, total ${discovered.size}`);
-  }
-
-  return [...discovered.values()];
+  });
+  if (!response.ok) throw new Error(`Slackmojis catalog returned HTTP ${response.status}`);
+  const payload = await response.json();
+  if (!Array.isArray(payload)) throw new Error('Slackmojis emojis.json did not return an array');
+  return selectSlackmojisRecords(payload, mode);
 }
 
-async function extractDetail(page, detail) {
-  await page.goto(detail.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  if (delayMs) await page.waitForTimeout(delayMs);
+async function downloadAsset(item) {
+  const response = await fetch(item.imageUrl, {
+    headers: {
+      Referer: item.url,
+      'User-Agent': 'Mozilla/5.0 VietnamAwesomeEmojiBot/1.0'
+    },
+    redirect: 'follow'
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-  const pageTitle = await page.title().catch(() => '');
-  const titleName = String(pageTitle || '')
-    .replace(/\s+Emoji\s+(?:—|-).*$/i, '')
-    .replace(/\s+Emoji\s+for\s+Slack.*$/i, '')
-    .trim();
+  const buffer = Buffer.from(await response.arrayBuffer());
+  if (!buffer.length || buffer.length > maxBytes) throw new Error(`size ${buffer.length} is invalid`);
+  const contentType = response.headers.get('content-type') || '';
+  const detected = validateImageAsset(buffer, contentType, item.imageUrl);
 
-  const hrefs = await page.locator('a[href], img[src], img[data-src], source[src]').evaluateAll((nodes) =>
-    nodes.map((node) => ({
-      href: node.getAttribute('href') || '',
-      src: node.getAttribute('src') || node.getAttribute('data-src') || '',
-      text: (node.textContent || '').trim()
-    }))
-  );
-  const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content').catch(() => '');
+  await mkdir(OUT_ROOT, { recursive: true });
+  const filename = `${item.id}${detected.ext}`;
+  await writeFile(path.join(OUT_ROOT, filename), buffer);
 
-  const candidates = [slackmojisDownloadUrl(detail.url)];
-  for (const item of hrefs) {
-    for (const value of [item.href, item.src]) {
-      if (!value) continue;
-      let absolute = '';
-      try { absolute = new URL(value, detail.url).toString(); } catch { continue; }
-      if (/\/download(?:[/?#]|$)/i.test(absolute) || /\.(?:png|gif|webp|jpe?g)(?:[?#]|$)/i.test(absolute)) {
-        candidates.push(absolute);
-      }
-    }
-  }
-  if (ogImage) {
-    try { candidates.push(new URL(ogImage, detail.url).toString()); } catch {}
-  }
-
-  const shortName = detail.slug || 'emoji';
   return {
-    name: titleName && !/^slackmojis$/i.test(titleName) ? titleName : titleize(shortName),
-    shortcode: shortName,
-    assetUrls: [...new Set(candidates.filter(Boolean))]
+    ...detected,
+    hash: hashBuffer(buffer),
+    image: `/emojis/community/${SOURCE.id}/${filename}`
   };
-}
-
-async function downloadAsset(context, detailUrl, assetUrls, stableId) {
-  const failures = [];
-
-  for (const assetUrl of assetUrls) {
-    try {
-      const response = await context.request.get(assetUrl, {
-        headers: {
-          Referer: detailUrl,
-          'User-Agent': 'Mozilla/5.0 VietnamAwesomeEmojiBot/1.0'
-        },
-        timeout: 60000
-      });
-      if (!response.ok()) throw new Error(`HTTP ${response.status()}`);
-
-      const buffer = await response.body();
-      if (!buffer.length || buffer.length > maxBytes) throw new Error(`size ${buffer.length} is invalid`);
-      const contentType = response.headers()['content-type'] || '';
-      const detected = validateImageAsset(buffer, contentType, assetUrl);
-
-      await mkdir(OUT_ROOT, { recursive: true });
-      const filename = `${stableId}${detected.ext}`;
-      await writeFile(path.join(OUT_ROOT, filename), buffer);
-
-      return {
-        ...detected,
-        hash: hashBuffer(buffer),
-        image: `/emojis/community/${SOURCE.id}/${filename}`
-      };
-    } catch (error) {
-      failures.push(`${assetUrl} -> ${error.message}`);
-    }
-  }
-
-  throw new Error(`no valid image found: ${failures.slice(0, 4).join('; ')}`);
 }
 
 async function runPool(items, worker, size) {
@@ -188,93 +107,79 @@ async function runPool(items, worker, size) {
 
 const existing = await readJson(DATA_FILE, []);
 const byId = new Map(existing.map((emoji) => [emoji.id, emoji]));
-const bySourceUrl = new Map(existing.filter((emoji) => emoji.sourceUrl).map((emoji) => [emoji.sourceUrl, emoji.id]));
 const byHash = new Map(existing.filter((emoji) => emoji.assetSha256).map((emoji) => [emoji.assetSha256, emoji.id]));
 const state = await readJson(STATE_FILE, {});
 
-const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext();
+const catalog = await fetchCatalog();
+const missing = catalog.filter((item) => !byId.has(`slackmojis-${item.id}`));
+const chosen = limit === 0 ? missing : missing.slice(0, limit);
 let imported = 0;
 let failed = 0;
-let discovered = [];
 
-try {
-  const discoveryPage = await context.newPage();
+console.log(`[${SOURCE.label}] endpoint=${SLACKMOJIS_JSON_URL}`);
+console.log(`[${SOURCE.label}] catalog=${catalog.length}, missing=${missing.length}, selected=${chosen.length}, mode=${mode}`);
+
+await runPool(chosen, async (item, index) => {
   try {
-    discovered = await discoverDetailUrls(discoveryPage, slackmojisCollectionUrls(collection));
-  } finally {
-    await discoveryPage.close();
+    const asset = await downloadAsset(item);
+    const now = new Date().toISOString();
+    const id = `slackmojis-${item.id}`;
+    const current = byId.get(id);
+    const duplicateId = byHash.get(asset.hash);
+
+    const record = {
+      id,
+      slug: `slackmojis-${item.slug}-${item.id}`,
+      name: item.name,
+      shortcode: item.shortcode,
+      group: 'community',
+      subgroup: `slackmojis-${item.categorySlug}`,
+      category: item.categoryName,
+      categorySlug: item.categorySlug,
+      categoryId: item.categoryId || undefined,
+      tags: [...new Set(['slackmojis', 'custom-emoji', item.categorySlug, asset.animated ? 'animated' : 'static'].filter(Boolean))],
+      source: SOURCE.id,
+      sourceLabel: SOURCE.label,
+      sourceUrl: item.url,
+      upstreamAssetUrl: item.imageUrl,
+      image: asset.image,
+      format: asset.format,
+      animated: asset.animated,
+      license: 'Source terms / rights vary',
+      attribution: item.credit ? `Slackmojis / ${item.credit}` : 'Slackmojis / original contributor',
+      addedAt: current?.addedAt || item.createdAt?.slice(0, 10) || now.slice(0, 10),
+      syncedAt: now,
+      assetSha256: asset.hash,
+      duplicateAsset: Boolean(duplicateId && duplicateId !== id)
+    };
+
+    byId.set(id, record);
+    if (!byHash.has(asset.hash)) byHash.set(asset.hash, id);
+    imported += 1;
+    console.log(`[${SOURCE.label}] ${index + 1}/${chosen.length} imported ${record.shortcode}${record.duplicateAsset ? ` (duplicate of ${duplicateId})` : ''}`);
+  } catch (error) {
+    failed += 1;
+    console.warn(`[${SOURCE.label}] ${item.imageUrl} skipped: ${error.message}`);
   }
+}, concurrency);
 
-  const missing = discovered.filter((item) => !byId.has(`slackmojis-${item.id}`) && !bySourceUrl.has(item.url));
-  const chosen = limit === 0 ? missing : missing.slice(0, limit);
-  console.log(`[${SOURCE.label}] discovered=${discovered.length}, missing=${missing.length}, selected=${chosen.length}`);
+state[SOURCE.id] = {
+  mode,
+  endpoint: SLACKMOJIS_JSON_URL,
+  discovered: catalog.length,
+  missingBeforeRun: missing.length,
+  attemptedThisRun: chosen.length,
+  importedThisRun: imported,
+  failedThisRun: failed,
+  lastRunAt: new Date().toISOString()
+};
 
-  await runPool(chosen, async (detail, index) => {
-    const page = await context.newPage();
-    try {
-      const meta = await extractDetail(page, detail);
-      const asset = await downloadAsset(context, detail.url, meta.assetUrls, detail.id);
-      const now = new Date().toISOString();
-      const id = `slackmojis-${detail.id}`;
-      const duplicateId = byHash.get(asset.hash);
-      const current = byId.get(id);
+const all = [...byId.values()].sort((a, b) => {
+  const date = String(b.syncedAt || b.addedAt || '').localeCompare(String(a.syncedAt || a.addedAt || ''));
+  return date || String(a.name || '').localeCompare(String(b.name || ''));
+});
 
-      const record = {
-        id,
-        slug: `slackmojis-${slugify(meta.shortcode || detail.slug)}-${detail.id}`,
-        name: meta.name || titleize(detail.slug),
-        shortcode: meta.shortcode || detail.slug,
-        group: 'community',
-        subgroup: 'slackmojis',
-        tags: [...new Set(['slackmojis', 'custom-emoji', asset.animated ? 'animated' : 'static'])],
-        source: SOURCE.id,
-        sourceLabel: SOURCE.label,
-        sourceUrl: detail.url,
-        image: asset.image,
-        format: asset.format,
-        animated: asset.animated,
-        license: 'Source terms / rights vary',
-        attribution: 'Slackmojis / original contributor',
-        addedAt: current?.addedAt || now.slice(0, 10),
-        syncedAt: now,
-        assetSha256: asset.hash,
-        duplicateAsset: Boolean(duplicateId && duplicateId !== id)
-      };
-
-      byId.set(id, record);
-      bySourceUrl.set(detail.url, id);
-      if (!byHash.has(asset.hash)) byHash.set(asset.hash, id);
-      imported += 1;
-      console.log(`[${SOURCE.label}] ${index + 1}/${chosen.length} imported ${record.shortcode}${record.duplicateAsset ? ` (duplicate of ${duplicateId})` : ''}`);
-    } catch (error) {
-      failed += 1;
-      console.warn(`[${SOURCE.label}] ${detail.url} skipped: ${error.message}`);
-    } finally {
-      await page.close();
-    }
-  }, concurrency);
-
-  state[SOURCE.id] = {
-    collection,
-    discovered: discovered.length,
-    missingBeforeRun: missing.length,
-    attemptedThisRun: chosen.length,
-    importedThisRun: imported,
-    failedThisRun: failed,
-    lastRunAt: new Date().toISOString()
-  };
-
-  const all = [...byId.values()].sort((a, b) => {
-    const date = String(b.syncedAt || b.addedAt || '').localeCompare(String(a.syncedAt || a.addedAt || ''));
-    return date || String(a.name || '').localeCompare(String(b.name || ''));
-  });
-
-  await writeJson(DATA_FILE, all);
-  await writeJson(API_FILE, all);
-  await writeJson(STATE_FILE, state);
-  console.log(`[${SOURCE.label}] done. imported=${imported}, failed=${failed}, total=${all.length}`);
-} finally {
-  await context.close();
-  await browser.close();
-}
+await writeJson(DATA_FILE, all);
+await writeJson(API_FILE, all);
+await writeJson(STATE_FILE, state);
+console.log(`[${SOURCE.label}] done. imported=${imported}, failed=${failed}, total=${all.length}`);
