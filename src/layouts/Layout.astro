@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { withBase } from '../lib/url';
+import CatalogDownload from '../components/CatalogDownload.astro';
 
 interface Props {
   title?: string;
@@ -132,6 +133,7 @@ const schemaJson = JSON.stringify({
     </header>
 
     <main><slot /></main>
+    {isBrowseIndex && <CatalogDownload />}
 
     <footer class="site-footer">
       <div class="shell footer-grid">
