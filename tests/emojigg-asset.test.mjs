@@ -23,7 +23,12 @@ test('detectImageAsset identifies supported raster formats by magic bytes', () =
   );
 
   assert.deepEqual(
-    detectImageAsset(Buffer.from('RIFFxxxxWEBP', 'ascii')),
+    detectImageAsset(Buffer.from('RIFFxxxxWEBPVP8 ', 'ascii')),
+    { ext: '.webp', format: 'webp', animated: false }
+  );
+
+  assert.deepEqual(
+    detectImageAsset(Buffer.from('RIFFxxxxWEBPVP8XxxxxANIM', 'ascii')),
     { ext: '.webp', format: 'webp', animated: true }
   );
 });
