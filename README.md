@@ -23,6 +23,7 @@ An open, searchable emoji directory for developers and communities, inspired by 
 | Noto Emoji | OFL 1.1 | Yes |
 | Emoji.gg | Per asset / source terms | Yes |
 | Slackmojis | Source terms / rights vary | Yes |
+| Discords.com | Source terms / rights vary | Yes |
 | Community submissions | Per contribution | Planned / PR-based |
 
 See [NOTICE.md](NOTICE.md) before redistributing artwork.
@@ -72,15 +73,39 @@ The sync script downloads SVG files into `public/emojis/<source>/`, merges metad
 
 ## Import Slackmojis
 
-Import up to 200 missing emoji from the recently-added collection:
+Slackmojis is read directly from its public JSON catalog at `https://slackmojis.com/emojis.json`, including the asset URL, category, contributor credit, and timestamps.
+
+Import the 200 newest missing records:
 
 ```bash
-npm run import:slackmojis -- --collection=recent --limit=200
+npm run import:slackmojis -- --mode=recent --limit=200
 ```
 
-Available collection modes are `recent`, `popular`, `home`, and `all`. `all` combines the three public collection pages; it is not presented as a guaranteed exhaustive historical export.
+Import every missing record returned by the JSON catalog:
 
-The importer resolves each public detail page, requests its `/download` endpoint first, validates the downloaded bytes as a real PNG/GIF/WebP/JPEG before writing anything, stores files in `public/emojis/community/slackmojis/`, and deduplicates exact assets by SHA-256.
+```bash
+npm run import:slackmojis -- --mode=all --limit=0
+```
+
+The importer validates downloaded PNG/GIF/WebP/JPEG bytes before writing anything, stores files in `public/emojis/community/slackmojis/`, and deduplicates exact assets by SHA-256.
+
+## Import Discords.com
+
+Discords.com exposes emoji previews from Discord's CDN on `https://discords.com/emoji-list` and tag pages. The importer scans only `cdn.discordapp.com/emojis/...` / `media.discordapp.net/emojis/...` assets and ignores unrelated site images.
+
+Import up to 200 emoji from the home/trending page:
+
+```bash
+npm run import:discords -- --tag=home --limit=200
+```
+
+Import a specific tag:
+
+```bash
+npm run import:discords -- --tag=Pepe --limit=500 --max-pages=10
+```
+
+`--tag=all` first discovers public tag links from the emoji-list page and then scans them within the configured page and item limits.
 
 ## Data schema
 
