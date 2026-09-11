@@ -3,28 +3,26 @@ name: Import Slackmojis
 on:
   workflow_dispatch:
     inputs:
-      collection:
-        description: "Collection to import: recent, popular, home, or all"
+      mode:
+        description: "Catalog mode: recent sorts by created_at; all keeps the full JSON catalog order"
         required: true
         default: "recent"
         type: choice
         options:
           - recent
-          - popular
-          - home
           - all
       limit:
-        description: "Maximum missing emoji to import. Use 0 for all discovered on the selected collection pages."
+        description: "Maximum missing emoji to import. Use 0 for all missing records."
         required: true
         default: "200"
         type: string
       concurrency:
-        description: "Parallel detail/download workers (1-8)"
+        description: "Parallel image downloads (1-12)"
         required: true
-        default: "4"
+        default: "6"
         type: string
   schedule:
-    # Daily at 11:17 Asia/Ho_Chi_Minh (04:17 UTC), syncing only the recent collection.
+    # Daily at 11:17 Asia/Ho_Chi_Minh (04:17 UTC).
     - cron: "17 4 * * *"
 
 permissions:
@@ -39,9 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
-      IMPORT_COLLECTION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.collection || 'recent' }}
+      IMPORT_MODE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode || 'recent' }}
       IMPORT_LIMIT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.limit || '75' }}
-      IMPORT_CONCURRENCY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.concurrency || '3' }}
+      IMPORT_CONCURRENCY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.concurrency || '6' }}
 
     steps:
       - name: Checkout latest main
@@ -64,20 +62,16 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Import Slackmojis
+      - name: Import Slackmojis JSON catalog
         run: |
-          echo "Collection: $IMPORT_COLLECTION"
+          echo "Mode: $IMPORT_MODE"
           echo "Limit: $IMPORT_LIMIT"
           echo "Concurrency: $IMPORT_CONCURRENCY"
 
           node scripts/import-slackmojis.mjs \
-            --collection="$IMPORT_COLLECTION" \
+            --mode="$IMPORT_MODE" \
             --limit="$IMPORT_LIMIT" \
-            --concurrency="$IMPORT_CONCURRENCY" \
-            --delay-ms=350
+            --concurrency="$IMPORT_CONCURRENCY"
 
       - name: Verify emoji index
         run: npm run check:data
