@@ -22,9 +22,13 @@ const apiUrl = withBase('/api/emojis.json', base);
 const canonical = new URL(Astro.url.pathname, origin);
 const pathname = Astro.url.pathname;
 const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-const isHome = normalizedPath === '/' || normalizedPath === base.replace(/\/+$/, '');
-const isEmojiDetail = normalizedPath.startsWith('/emoji/');
-const isBrowseIndex = normalizedPath === '/emojis';
+const normalizedBase = base === '/' ? '' : base.replace(/\/+$/, '');
+const routePath = normalizedBase && normalizedPath.startsWith(normalizedBase)
+  ? normalizedPath.slice(normalizedBase.length) || '/'
+  : normalizedPath;
+const isHome = routePath === '/';
+const isEmojiDetail = routePath.startsWith('/emoji/');
+const isBrowseIndex = routePath === '/emojis';
 const isBrowse = isBrowseIndex || isEmojiDetail;
 
 const absoluteHomeUrl = new URL(homeUrl, origin).toString();
