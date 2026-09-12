@@ -22,11 +22,11 @@
         "name": "Original Style",
         "url": "https://emoji.gg/category/1/original-style",
         "discovered": 10362,
-        "missingBeforeRun": 9537,
+        "missingBeforeRun": 9462,
         "attemptedThisRun": 75,
         "pagesDiscovered": 418,
-        "lastRunAt": "2026-09-11T08:11:28.135Z",
-        "remainingAfterRun": 9462,
+        "lastRunAt": "2026-09-12T08:04:24.619Z",
+        "remainingAfterRun": 9387,
         "complete": false
       },
       "tv-movie": {
@@ -34,11 +34,11 @@
         "name": "TV / Movie",
         "url": "https://emoji.gg/category/2/tv-movie",
         "discovered": 4285,
-        "missingBeforeRun": 3462,
+        "missingBeforeRun": 3387,
         "attemptedThisRun": 75,
         "pagesDiscovered": 175,
-        "lastRunAt": "2026-09-11T08:14:18.271Z",
-        "remainingAfterRun": 3387,
+        "lastRunAt": "2026-09-12T08:07:18.328Z",
+        "remainingAfterRun": 3312,
         "complete": false
       },
       "meme": {
@@ -46,11 +46,11 @@
         "name": "Meme",
         "url": "https://emoji.gg/category/3/meme",
         "discovered": 11039,
-        "missingBeforeRun": 10212,
+        "missingBeforeRun": 10137,
         "attemptedThisRun": 75,
         "pagesDiscovered": 445,
-        "lastRunAt": "2026-09-11T08:21:04.718Z",
-        "remainingAfterRun": 10137,
+        "lastRunAt": "2026-09-12T08:14:25.628Z",
+        "remainingAfterRun": 10062,
         "complete": false
       },
       "anime": {
@@ -58,11 +58,11 @@
         "name": "Anime",
         "url": "https://emoji.gg/category/4/anime",
         "discovered": 11740,
-        "missingBeforeRun": 10915,
+        "missingBeforeRun": 10840,
         "attemptedThisRun": 75,
         "pagesDiscovered": 473,
-        "lastRunAt": "2026-09-11T08:28:15.770Z",
-        "remainingAfterRun": 10840,
+        "lastRunAt": "2026-09-12T08:21:57.543Z",
+        "remainingAfterRun": 10765,
         "complete": false
       },
       "celebrity": {
@@ -70,11 +70,11 @@
         "name": "Celebrity",
         "url": "https://emoji.gg/category/5/celebrity",
         "discovered": 1512,
-        "missingBeforeRun": 687,
+        "missingBeforeRun": 612,
         "attemptedThisRun": 75,
         "pagesDiscovered": 64,
-        "lastRunAt": "2026-09-11T08:29:38.861Z",
-        "remainingAfterRun": 612,
+        "lastRunAt": "2026-09-12T08:23:22.546Z",
+        "remainingAfterRun": 537,
         "complete": false
       },
       "blobs": {
@@ -82,11 +82,11 @@
         "name": "Blobs",
         "url": "https://emoji.gg/category/6/blobs",
         "discovered": 1694,
-        "missingBeforeRun": 870,
+        "missingBeforeRun": 795,
         "attemptedThisRun": 75,
         "pagesDiscovered": 71,
-        "lastRunAt": "2026-09-11T08:31:04.665Z",
-        "remainingAfterRun": 795,
+        "lastRunAt": "2026-09-12T08:24:54.013Z",
+        "remainingAfterRun": 720,
         "complete": false
       },
       "thinking": {
@@ -94,10 +94,10 @@
         "name": "Thinking",
         "url": "https://emoji.gg/category/7/thinking",
         "discovered": 714,
-        "missingBeforeRun": 2,
-        "attemptedThisRun": 2,
+        "missingBeforeRun": 1,
+        "attemptedThisRun": 1,
         "pagesDiscovered": 32,
-        "lastRunAt": "2026-09-11T08:32:01.534Z",
+        "lastRunAt": "2026-09-12T08:25:51.316Z",
         "remainingAfterRun": 0,
         "complete": true
       },
@@ -106,11 +106,11 @@
         "name": "Animated",
         "url": "https://emoji.gg/category/8/animated",
         "discovered": 18727,
-        "missingBeforeRun": 18010,
+        "missingBeforeRun": 17935,
         "attemptedThisRun": 75,
         "pagesDiscovered": 750,
-        "lastRunAt": "2026-09-11T08:43:18.705Z",
-        "remainingAfterRun": 17935,
+        "lastRunAt": "2026-09-12T08:37:55.488Z",
+        "remainingAfterRun": 17860,
         "complete": false
       },
       "gaming": {
@@ -118,11 +118,11 @@
         "name": "Gaming",
         "url": "https://emoji.gg/category/10/gaming",
         "discovered": 18730,
-        "missingBeforeRun": 17918,
+        "missingBeforeRun": 17843,
         "attemptedThisRun": 75,
         "pagesDiscovered": 750,
-        "lastRunAt": "2026-09-11T08:54:57.390Z",
-        "remainingAfterRun": 17843,
+        "lastRunAt": "2026-09-12T08:50:55.854Z",
+        "remainingAfterRun": 17768,
         "complete": false
       },
       "letters": {
@@ -130,11 +130,11 @@
         "name": "Letters",
         "url": "https://emoji.gg/category/11/letters",
         "discovered": 6152,
-        "missingBeforeRun": 5329,
+        "missingBeforeRun": 5254,
         "attemptedThisRun": 75,
         "pagesDiscovered": 250,
-        "lastRunAt": "2026-09-11T08:58:53.673Z",
-        "remainingAfterRun": 5254,
+        "lastRunAt": "2026-09-12T08:55:14.027Z",
+        "remainingAfterRun": 5179,
         "complete": false
       },
       "other": {
@@ -142,11 +142,11 @@
         "name": "Other",
         "url": "https://emoji.gg/category/12/other",
         "discovered": 17363,
-        "missingBeforeRun": 16538,
+        "missingBeforeRun": 16463,
         "attemptedThisRun": 75,
         "pagesDiscovered": 699,
-        "lastRunAt": "2026-09-11T09:09:38.824Z",
-        "remainingAfterRun": 16463,
+        "lastRunAt": "2026-09-12T09:07:16.470Z",
+        "remainingAfterRun": 16388,
         "complete": false
       },
       "pepe": {
@@ -157,7 +157,7 @@
         "missingBeforeRun": 1,
         "attemptedThisRun": 1,
         "pagesDiscovered": 155,
-        "lastRunAt": "2026-09-11T09:12:15.331Z",
+        "lastRunAt": "2026-09-12T09:09:59.113Z",
         "remainingAfterRun": 1,
         "complete": false
       },
@@ -166,11 +166,11 @@
         "name": "Logos",
         "url": "https://emoji.gg/category/14/logos",
         "discovered": 4680,
-        "missingBeforeRun": 3855,
+        "missingBeforeRun": 3780,
         "attemptedThisRun": 75,
         "pagesDiscovered": 191,
-        "lastRunAt": "2026-09-11T09:14:52.020Z",
-        "remainingAfterRun": 3780,
+        "lastRunAt": "2026-09-12T09:12:57.329Z",
+        "remainingAfterRun": 3705,
         "complete": false
       },
       "cute": {
@@ -178,11 +178,11 @@
         "name": "Cute",
         "url": "https://emoji.gg/category/15/cute",
         "discovered": 9667,
-        "missingBeforeRun": 8840,
+        "missingBeforeRun": 8765,
         "attemptedThisRun": 75,
         "pagesDiscovered": 391,
-        "lastRunAt": "2026-09-11T09:20:48.974Z",
-        "remainingAfterRun": 8765,
+        "lastRunAt": "2026-09-12T09:19:26.137Z",
+        "remainingAfterRun": 8690,
         "complete": false
       },
       "utility": {
@@ -190,11 +190,11 @@
         "name": "Utility",
         "url": "https://emoji.gg/category/16/utility",
         "discovered": 9802,
-        "missingBeforeRun": 8977,
+        "missingBeforeRun": 8902,
         "attemptedThisRun": 75,
         "pagesDiscovered": 397,
-        "lastRunAt": "2026-09-11T09:26:31.733Z",
-        "remainingAfterRun": 8902,
+        "lastRunAt": "2026-09-12T09:25:58.005Z",
+        "remainingAfterRun": 8827,
         "complete": false
       },
       "animals": {
@@ -202,11 +202,11 @@
         "name": "Animals",
         "url": "https://emoji.gg/category/17/animals",
         "discovered": 5234,
-        "missingBeforeRun": 4409,
+        "missingBeforeRun": 4334,
         "attemptedThisRun": 75,
         "pagesDiscovered": 213,
-        "lastRunAt": "2026-09-11T09:29:59.889Z",
-        "remainingAfterRun": 4334,
+        "lastRunAt": "2026-09-12T09:29:26.835Z",
+        "remainingAfterRun": 4259,
         "complete": false
       },
       "recolors": {
@@ -214,11 +214,11 @@
         "name": "Recolors",
         "url": "https://emoji.gg/category/18/recolors",
         "discovered": 2807,
-        "missingBeforeRun": 1982,
+        "missingBeforeRun": 1907,
         "attemptedThisRun": 75,
         "pagesDiscovered": 116,
-        "lastRunAt": "2026-09-11T09:31:56.748Z",
-        "remainingAfterRun": 1907,
+        "lastRunAt": "2026-09-12T09:31:35.027Z",
+        "remainingAfterRun": 1832,
         "complete": false
       },
       "flags": {
@@ -226,11 +226,11 @@
         "name": "Flags",
         "url": "https://emoji.gg/category/19/flags",
         "discovered": 2762,
-        "missingBeforeRun": 1944,
+        "missingBeforeRun": 1869,
         "attemptedThisRun": 75,
         "pagesDiscovered": 114,
-        "lastRunAt": "2026-09-11T09:33:57.232Z",
-        "remainingAfterRun": 1869,
+        "lastRunAt": "2026-09-12T09:33:40.538Z",
+        "remainingAfterRun": 1794,
         "complete": false
       },
       "hearts": {
@@ -238,11 +238,11 @@
         "name": "Hearts",
         "url": "https://emoji.gg/category/20/hearts",
         "discovered": 2592,
-        "missingBeforeRun": 1767,
+        "missingBeforeRun": 1692,
         "attemptedThisRun": 75,
         "pagesDiscovered": 107,
-        "lastRunAt": "2026-09-11T09:35:52.404Z",
-        "remainingAfterRun": 1692,
+        "lastRunAt": "2026-09-12T09:35:37.118Z",
+        "remainingAfterRun": 1617,
         "complete": false
       },
       "pixel-art": {
@@ -250,11 +250,11 @@
         "name": "Pixel Art",
         "url": "https://emoji.gg/category/21/pixel-art",
         "discovered": 1493,
-        "missingBeforeRun": 668,
+        "missingBeforeRun": 593,
         "attemptedThisRun": 75,
         "pagesDiscovered": 63,
-        "lastRunAt": "2026-09-11T09:37:12.003Z",
-        "remainingAfterRun": 593,
+        "lastRunAt": "2026-09-12T09:36:58.561Z",
+        "remainingAfterRun": 518,
         "complete": false
       },
       "reactions": {
@@ -262,11 +262,11 @@
         "name": "Reactions",
         "url": "https://emoji.gg/category/22/reactions",
         "discovered": 1906,
-        "missingBeforeRun": 1081,
+        "missingBeforeRun": 1006,
         "attemptedThisRun": 75,
         "pagesDiscovered": 80,
-        "lastRunAt": "2026-09-11T09:38:45.148Z",
-        "remainingAfterRun": 1006,
+        "lastRunAt": "2026-09-12T09:38:35.744Z",
+        "remainingAfterRun": 931,
         "complete": false
       },
       "aesthetic": {
@@ -274,15 +274,15 @@
         "name": "Aesthetic",
         "url": "https://emoji.gg/category/23/aesthetic",
         "discovered": 1551,
-        "missingBeforeRun": 726,
+        "missingBeforeRun": 651,
         "attemptedThisRun": 75,
         "pagesDiscovered": 66,
-        "lastRunAt": "2026-09-11T09:40:10.469Z",
-        "remainingAfterRun": 651,
+        "lastRunAt": "2026-09-12T09:40:00.858Z",
+        "remainingAfterRun": 576,
         "complete": false
       }
     },
-    "lastRunAt": "2026-09-11T09:40:43.607Z",
+    "lastRunAt": "2026-09-12T09:40:34.368Z",
     "selectedCategory": "all"
   }
 }
